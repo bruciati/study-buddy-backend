@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class AuthenticationMicroserviceApplication
 
 fun main(args: Array<String>) {
-	runApplication<AuthenticationMicroserviceApplication>(*args)
+    runApplication<AuthenticationMicroserviceApplication>(*args)
 }
