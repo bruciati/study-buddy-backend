@@ -17,4 +17,5 @@ class AuthController {
     fun handleGet(): Mono<ServiceResponse<AuthToken>> =
         Mono.just(AuthToken("j5n3wsxj09j3", 345897u))
             .toServiceResponse()
+
 }
