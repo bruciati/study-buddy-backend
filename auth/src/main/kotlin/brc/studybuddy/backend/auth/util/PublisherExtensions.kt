@@ -5,8 +5,6 @@ import brc.studybuddy.backend.auth.models.ServiceResponse
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-class ResponseWrapper
-
 /* TODO: Handle errors correctly */
 fun <T> Mono<T>.toServiceResponse(): Mono<ServiceResponse<T>> =
     this.map { r -> ServiceResponse(true, r, null) }

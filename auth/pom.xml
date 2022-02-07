@@ -8,6 +8,7 @@
         <version>2.7.0-M1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>brc.studybuddy.backend</groupId>
     <artifactId>auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -75,7 +76,11 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-core</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.bruciati</groupId>
+            <artifactId>study-buddy-models</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <dependency>
             <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
@@ -140,6 +145,11 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+        <!-- Support GitHub repositories as dependency-->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     <pluginRepositories>
