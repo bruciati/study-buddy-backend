@@ -8,5 +8,5 @@ data class ServiceResponse<T>(
 
 data class ServiceError(
     val code: Int,
-    val message: String,
+    val message: String?,
 )
