@@ -79,7 +79,7 @@
         <dependency>
             <groupId>com.github.bruciati</groupId>
             <artifactId>study-buddy-models</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-backend</version>
         </dependency>
         <dependency>
             <groupId>io.r2dbc</groupId>
