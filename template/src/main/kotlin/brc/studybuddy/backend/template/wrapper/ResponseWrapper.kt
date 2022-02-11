@@ -18,9 +18,9 @@ class ResponseWrapper(writers: List<HttpMessageWriter<*>>, resolver: RequestedCo
                 || (result.returnType.resolve() === Flux::class.java)
 
     override fun handleResult(exchange: ServerWebExchange, result: HandlerResult): Mono<Void> {
-        val body = when (result.returnValue) {
-            is Mono<*> -> (result.returnValue as Mono<*>).toServiceResponse()
-            is Flux<*> -> (result.returnValue as Flux<*>).toServiceResponse()
+        val body = when (val value = result.returnValue) {
+            is Mono<*> -> value.toServiceResponse()
+            is Flux<*> -> value.toServiceResponse()
             else -> throw RuntimeException("The \"body\" should be Mono<*> or Flux<*>!")
         }
 
