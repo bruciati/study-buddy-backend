@@ -27,13 +27,14 @@ class ResponseWrapper(writers: List<HttpMessageWriter<*>>, resolver: RequestedCo
         return writeBody(body, param, exchange)
     }
 
-    /* TODO Better work-around for the "param" static variable (too long name?) */
-    private fun uselessMethodForParamsSomeoneHelpsMeInOrderToRemoveThis(): Mono<Any>? = null
-
+    // TODO Better work-around for the "param" static variable
     companion object {
         private val param: MethodParameter = MethodParameter(
-            ResponseWrapper::class.java
-                .getDeclaredMethod("uselessMethodForParamsSomeoneHelpsMeInOrderToRemoveThis"), -1
+            ResponseWrapper::class.java.getDeclaredMethod("methodForParamsDoesAnyoneKnowHowToRemoveIt"),
+            -1
         )
+
+        @JvmStatic
+        private fun methodForParamsDoesAnyoneKnowHowToRemoveIt(): Mono<Any>? = null
     }
 }
