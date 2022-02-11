@@ -14,8 +14,8 @@ class ResponseWrapper(writers: List<HttpMessageWriter<*>>, resolver: RequestedCo
     ResponseBodyResultHandler(writers, resolver) {
 
     override fun supports(result: HandlerResult): Boolean =
-        (result.returnType.resolve() === Mono::class.java)
-                || (result.returnType.resolve() === Flux::class.java)
+        (result.returnType.resolve() == Mono::class.java)
+                || (result.returnType.resolve() == Flux::class.java)
 
     override fun handleResult(exchange: ServerWebExchange, result: HandlerResult): Mono<Void> {
         val body = when (val value = result.returnValue) {
@@ -24,17 +24,6 @@ class ResponseWrapper(writers: List<HttpMessageWriter<*>>, resolver: RequestedCo
             else -> throw RuntimeException("The \"body\" should be Mono<*> or Flux<*>!")
         }
 
-        return writeBody(body, param, exchange)
-    }
-
-    // TODO Better work-around for the "param" static variable
-    companion object {
-        private val param: MethodParameter = MethodParameter(
-            ResponseWrapper::class.java.getDeclaredMethod("methodForParamsDoesAnyoneKnowHowToRemoveIt"),
-            -1
-        )
-
-        @JvmStatic
-        private fun methodForParamsDoesAnyoneKnowHowToRemoveIt(): Mono<Any>? = null
+        return writeBody(body, result.returnTypeSource, exchange)
     }
 }
