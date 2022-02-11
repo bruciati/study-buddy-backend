@@ -23,9 +23,7 @@ class MicroserviceApplication {
     )
 
     @Bean
-    fun resources(): WebProperties.Resources {
-        return WebProperties.Resources()
-    }
+    fun resources(): WebProperties.Resources = WebProperties.Resources()
 }
 
 fun main(args: Array<String>) {
