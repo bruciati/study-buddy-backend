@@ -1,4 +1,4 @@
-package brc.studybuddy.backend.template.wrapper
+package brc.studybuddy.backend.template.wrapper.model
 
 data class Response<T>(
     val ok: Boolean,

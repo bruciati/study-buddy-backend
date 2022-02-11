@@ -1,6 +1,6 @@
 package brc.studybuddy.backend.template.wrapper
 
-import brc.studybuddy.backend.template.util.toServiceResponse
+import brc.studybuddy.backend.template.wrapper.util.toServiceResponse
 import org.springframework.core.MethodParameter
 import org.springframework.http.codec.HttpMessageWriter
 import org.springframework.web.reactive.HandlerResult

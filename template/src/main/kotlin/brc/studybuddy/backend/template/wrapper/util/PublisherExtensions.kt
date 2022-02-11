@@ -1,6 +1,6 @@
-package brc.studybuddy.backend.template.util
+package brc.studybuddy.backend.template.wrapper.util
 
-import brc.studybuddy.backend.template.wrapper.Response
+import brc.studybuddy.backend.template.wrapper.model.Response
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 

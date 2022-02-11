@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.template.wrapper
 
+import brc.studybuddy.backend.template.wrapper.model.Response
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler
