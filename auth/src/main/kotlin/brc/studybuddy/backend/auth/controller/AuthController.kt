@@ -17,13 +17,14 @@ class AuthController {
     // TODO: WIP
     @GetMapping("{user}")
     fun authenticate(@PathVariable("user") user: String): Mono<User> =
-        userRepository.findFirstByEmail(user)
-            .switchIfEmpty(Mono.error(Exception("User not found")))
-
+        userRepository
+            .findFirstByEmail(user)
+            .switchIfEmpty(Mono.error(Error("User not found")))
 
     @PutMapping("{user}")
     fun register(@PathVariable user: User): Mono<String> =
-        userRepository.save(user)
+        userRepository
+            .save(user)
             .map {"Success"}
 
 }
