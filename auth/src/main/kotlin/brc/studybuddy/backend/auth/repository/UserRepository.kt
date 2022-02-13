@@ -1,4 +1,4 @@
-package brc.studybuddy.backend.auth.repositories
+package brc.studybuddy.backend.auth.repository
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository

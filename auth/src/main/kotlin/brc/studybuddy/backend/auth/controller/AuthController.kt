@@ -1,16 +1,14 @@
-package brc.studybuddy.backend.auth.controllers
+package brc.studybuddy.backend.auth.controller
 
 import reactor.core.publisher.Mono
 import org.springframework.http.MediaType
-import brc.studybuddy.backend.auth.models.ServiceResponse
-import brc.studybuddy.backend.auth.repositories.UserRepository
-import brc.studybuddy.backend.auth.util.toServiceResponse
+import brc.studybuddy.backend.auth.repository.UserRepository
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping(value = ["/auth"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(value = ["auth"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class AuthController {
 
     @Autowired
@@ -18,15 +16,14 @@ class AuthController {
 
     // TODO: WIP
     @GetMapping("{user}")
-    fun authenticate(@PathVariable("user") user: String): Mono<ServiceResponse<User>> =
+    fun authenticate(@PathVariable("user") user: String): Mono<User> =
         userRepository.findFirstByEmail(user)
             .switchIfEmpty(Mono.error(Exception("User not found")))
-            .toServiceResponse()
+
 
     @PutMapping("{user}")
-    fun register(@PathVariable user: User): Mono<ServiceResponse<String>> =
+    fun register(@PathVariable user: User): Mono<String> =
         userRepository.save(user)
             .map {"Success"}
-            .toServiceResponse()
 
 }
