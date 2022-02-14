@@ -1,5 +1,5 @@
 type Query {
-    user(id: ID): User
+    userById(id: ID): User
     users: [User]
 }
 
@@ -7,9 +7,4 @@ type User {
     id: ID!
     email: String!
     groups: Int!
-}
-
-enum LoginType {
-    PASSWORD
-    FACEBOOK
 }
