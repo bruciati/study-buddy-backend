@@ -4,6 +4,7 @@ import reactor.core.publisher.Mono
 import org.springframework.http.MediaType
 import brc.studybuddy.backend.auth.repository.UserRepository
 import brc.studybuddy.backend.wrapper.model.Response
+import brc.studybuddy.model.LoginType
 import brc.studybuddy.model.User
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.Jwts
@@ -36,16 +37,11 @@ class AuthController {
 
     // TODO: WIP
     @GetMapping("{user}")
-    fun authenticate(@PathVariable("user") user: String): Mono<String> =
+    fun authenticate(@PathVariable("user") user: User): Mono<String> =
         userRepository
-            .findFirstByEmail(user)
+            .findFirstByEmailAndLoginValue(user.email, user.loginValue)
+            .filter { u -> u.loginType == LoginType.PASSWORD }
+            .switchIfEmpty(Mono.error(Response.Error(401, "Incorrect credentials")))
             .map(this::generateToken)
-            .switchIfEmpty(Mono.error(Response.Error(300, "User not found")))
-
-    @PutMapping("{user}")
-    fun register(@PathVariable user: User): Mono<String> =
-        userRepository
-            .save(user)
-            .map {"Success"}
 
 }
