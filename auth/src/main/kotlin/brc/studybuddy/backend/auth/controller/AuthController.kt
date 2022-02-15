@@ -25,6 +25,7 @@ class AuthController {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
     @Autowired
     lateinit var key: Key
     lateinit var signer: JwtBuilder
@@ -32,7 +33,9 @@ class AuthController {
     // Since JWTS depends on the private Key (which is Autowired) we're not exactly sure when the container
     // system will eventually autowire that parameter. We use @PostConstruct to be sure
     @PostConstruct
-    fun finalizeConstruction() { signer = Jwts.builder().signWith(key) }
+    fun finalizeConstruction() {
+        signer = Jwts.builder().signWith(key)
+    }
 
     // TODO: Should be put on a separate module
     fun generateToken(user: User): Token =
@@ -41,11 +44,12 @@ class AuthController {
             .compact()
 
     @PostMapping
-    fun authenticate(@RequestBody user: User): Mono<Token> {
-        return userRepository
-            .findFirstByEmailAndLoginValue(user.email, user.loginValue)
+    fun authenticate(@RequestBody user: User): Mono<Token> =
+        Mono.just(user)
             .filter { u -> u.loginType == LoginType.PASSWORD }
+            .switchIfEmpty(Mono.error(Response.Error(401, "Login type not allowed")))
+            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.loginValue) }
             .switchIfEmpty(Mono.error(Response.Error(401, "Incorrect credentials")))
             .map(this::generateToken)
-    }
+
 }
