@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 @Controller
 class UsersController {
     @Autowired
-    lateinit var userRepository: UserRepository
+    private lateinit var userRepository: UserRepository
 
     @QueryMapping
     fun users(): Flux<User> = userRepository.findAll()
