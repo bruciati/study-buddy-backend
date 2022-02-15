@@ -19,4 +19,7 @@ class UsersController {
 
     @QueryMapping
     fun userById(@Argument id: Long): Mono<User> = userRepository.findById(id)
+
+    @QueryMapping
+    fun userByEmail(@Argument email: String): Mono<User> = userRepository.findByEmail(email)
 }

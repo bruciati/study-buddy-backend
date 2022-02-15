@@ -1,6 +1,7 @@
 type Query {
-    userById(id: ID): User
     users: [User]
+    userById(id: ID): User
+    userByEmail(email: String): User
 }
 
 type User {
