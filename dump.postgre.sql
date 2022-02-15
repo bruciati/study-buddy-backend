@@ -25,3 +25,9 @@ CREATE TABLE IF NOT EXISTS meetings (
     FOREIGN KEY (group_id) REFERENCES groups(id),
     FOREIGN KEY (host_id) REFERENCES users(id)
 );
+
+-- Insert Mock Data
+INSERT INTO users VALUES
+(0, 'matteo.brunello@mail.com', 'PASSWORD', 'pwd', 2),
+(1, 'giuseppe.eletto@mail.com', 'PASSWORD', 'pwd', 5),
+(2, 'edoardo.chiavazza@mail.com', 'FACEBOOK', 'token', 3);
