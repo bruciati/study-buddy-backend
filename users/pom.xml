@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.github.bruciati</groupId>
             <artifactId>study-buddy-utils</artifactId>
-            <version>v0.1.8-backend</version>
+            <version>v0.1.9-backend</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
