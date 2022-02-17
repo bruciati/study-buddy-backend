@@ -1,0 +1,13 @@
+type Query {
+    groups: [Group]
+    groupById(id: ID): Group
+    groupByTitle(title: String): Group
+}
+
+type Group {
+    id: ID!
+    owner_id: ID! # User!
+    title: String!
+    description: String
+    #members: [User]
+}
