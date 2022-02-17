@@ -1,6 +1,6 @@
 package brc.studybuddy.backend.users.controller
 
-import brc.studybuddy.backend.users.repository.UserRepository
+import brc.studybuddy.backend.users.repository.UsersRepository
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
@@ -12,14 +12,14 @@ import reactor.core.publisher.Mono
 @Controller
 class UsersController {
     @Autowired
-    private lateinit var userRepository: UserRepository
+    private lateinit var usersRepository: UsersRepository
 
     @QueryMapping
-    fun users(): Flux<User> = userRepository.findAll()
+    fun users(): Flux<User> = usersRepository.findAll()
 
     @QueryMapping
-    fun userById(@Argument id: Long): Mono<User> = userRepository.findById(id)
+    fun userById(@Argument id: Long): Mono<User> = usersRepository.findById(id)
 
     @QueryMapping
-    fun userByEmail(@Argument email: String): Mono<User> = userRepository.findByEmail(email)
+    fun userByEmail(@Argument email: String): Mono<User> = usersRepository.findByEmail(email)
 }
