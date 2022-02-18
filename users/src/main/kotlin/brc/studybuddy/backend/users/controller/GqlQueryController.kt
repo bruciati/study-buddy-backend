@@ -2,7 +2,7 @@ package brc.studybuddy.backend.users.controller
 
 import brc.studybuddy.backend.users.config.RMQ_GROUPS_QUEUE
 import brc.studybuddy.backend.users.repository.UsersRepository
-import brc.studybuddy.model.User
+import brc.studybuddy.database.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
