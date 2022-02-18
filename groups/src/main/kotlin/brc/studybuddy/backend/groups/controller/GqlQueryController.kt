@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Controller
-class GroupsController {
+class GqlQueryController {
     @Autowired
     private lateinit var groupsRepository: GroupsRepository
 
