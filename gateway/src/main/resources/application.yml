@@ -3,6 +3,8 @@
 # server.error.whitelabel.enabled=false
 
 spring:
+  application:
+    name: gateway
   cloud:
     gateway:
       routes:
@@ -11,3 +13,5 @@ spring:
           predicates:
             - Path=/auth/**
       enabled: true
+server:
+  port: 8081
