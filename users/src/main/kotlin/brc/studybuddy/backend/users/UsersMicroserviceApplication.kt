@@ -1,23 +1,12 @@
 package brc.studybuddy.backend.users
 
-import com.rabbitmq.client.Connection
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import reactor.core.publisher.Mono
-import javax.annotation.PreDestroy
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 
+@EnableEurekaClient
 @SpringBootApplication
-class UsersMicroserviceApplication {
-    @Autowired
-    private lateinit var rabbitConnection: Mono<Connection>
-
-    @PreDestroy
-    @Throws(Exception::class)
-    fun close() {
-        rabbitConnection.block()!!.close()
-    }
-}
+class UsersMicroserviceApplication
 
 fun main(args: Array<String>) {
     runApplication<UsersMicroserviceApplication>(*args)
