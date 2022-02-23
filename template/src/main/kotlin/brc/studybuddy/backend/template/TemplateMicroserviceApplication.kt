@@ -1,12 +1,13 @@
 package brc.studybuddy.backend.template
 
-import brc.studybuddy.backend.wrapper.WrapperConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 
+@EnableEurekaClient
 @SpringBootApplication
-class MicroserviceApplication : WrapperConfiguration()
+class TemplateMicroserviceApplication
 
 fun main(args: Array<String>) {
-    runApplication<MicroserviceApplication>(*args)
+    runApplication<TemplateMicroserviceApplication>(*args)
 }
