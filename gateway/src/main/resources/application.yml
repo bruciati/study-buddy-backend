@@ -1,17 +1,46 @@
 # See any common application properties in
 # https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
-# server.error.whitelabel.enabled=false
+# ----------------------------------------------------------------------------------------------
+#                                       Server Configurations
+# ----------------------------------------------------------------------------------------------
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
 
+# ----------------------------------------------------------------------------------------------
+#                                       Spring Configurations
+# ----------------------------------------------------------------------------------------------
 spring:
   application:
-    name: gateway
+    name: "gateway"
+  # Gateway configurations
   cloud:
     gateway:
-      routes:
-        - id: auth-service
-          uri: http://localhost:8080/auth # TODO: Change Obviously
-          predicates:
-            - Path=/auth/**
       enabled: true
-server:
-  port: 8081
+      routes:
+        - id: "auth"
+          uri: "lb://auth"
+          predicates:
+            - "Path=/auth/**"
+        - id: "users"
+          uri: "lb://users"
+          predicates:
+            - "Path=/users/**"
+        - id: "groups"
+          uri: "lb://groups"
+          predicates:
+            - "Path=/groups/**"
+        - id: "template"
+          uri: "lb://template"
+          predicates:
+            - "Path=/template/**"
+
+# ----------------------------------------------------------------------------------------------
+#                                       Eureka Configurations
+# ----------------------------------------------------------------------------------------------
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
