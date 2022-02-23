@@ -51,7 +51,7 @@
         <!-- END/Eureka Client -->
 
         <!-- GraphQl -->
-        <!--
+        <!-- TODO uncomment to enable GraphQl
         <dependency>
             <groupId>org.springframework.graphql</groupId>
             <artifactId>spring-graphql</artifactId>

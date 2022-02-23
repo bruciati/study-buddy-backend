@@ -22,8 +22,8 @@ spring:
        enabled: true
   r2dbc:
     url: "r2dbc:postgres://postgres:pwd123@localhost/postgres"
-  # GraphQl configurations (needs dependency)
-  #graphql:
+  # GraphQl configurations
+  #graphql: # TODO needs dependency
   #  path: "/template" # TODO change
   #  cors:
   #    allowed-origins: "*"
