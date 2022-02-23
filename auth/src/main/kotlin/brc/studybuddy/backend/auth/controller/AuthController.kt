@@ -1,17 +1,13 @@
 package brc.studybuddy.backend.auth.controller
 
-import reactor.core.publisher.Mono
-import org.springframework.http.MediaType
 import brc.studybuddy.backend.auth.repository.UserRepository
-import brc.studybuddy.backend.wrapper.model.Response
-import brc.studybuddy.model.LoginType
-import brc.studybuddy.model.User
+import brc.studybuddy.database.model.User
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.Jwts
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 import java.security.Key
 import java.time.Instant
 import java.util.*
@@ -45,11 +41,12 @@ class AuthController {
 
     @PostMapping
     fun authenticate(@RequestBody user: User): Mono<Token> =
+        // TODO Rework authentication without lib
         Mono.just(user)
-            .filter { u -> u.loginType == LoginType.PASSWORD }
-            .switchIfEmpty(Mono.error(Response.Error(401, "Login type not allowed")))
-            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.loginValue) }
-            .switchIfEmpty(Mono.error(Response.Error(401, "Incorrect credentials")))
+        //    .filter { u -> u.loginType == User.LoginType.PASSWORD }
+        //    .switchIfEmpty(Mono.error(Response.Error(401, "Login type not allowed")))
+        //    .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.loginValue) }
+        //    .switchIfEmpty(Mono.error(Response.Error(401, "Incorrect credentials")))
             .map(this::generateToken)
 
 }
