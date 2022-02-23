@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.web.WebProperties
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.reactive.error.ErrorAttributes
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec
 
 @SpringBootApplication
 @Configuration
+@EnableEurekaClient
 class AuthenticationMicroserviceApplication {
 
     @Value("\${secret.key}")
