@@ -32,10 +32,10 @@ spring:
           uri: "lb://groups"
           predicates:
             - "Path=/groups/**"
-        - id: "template"
-          uri: "lb://template"
-          predicates:
-            - "Path=/template/**"
+        #- id: "template"
+        #  uri: "lb://template"
+        #  predicates:
+        #    - "Path=/template/**"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
