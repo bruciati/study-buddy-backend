@@ -1,0 +1,14 @@
+type Query{
+findMeetingsByGroupID(group_id: ID) : [Meeting]
+findMeetingsByHostId (host_id: ID) : [Meeting]
+findMeetingsByLocation(location: String) : [Meeting]
+findMeetingsByDateTime(dateTime: ID) : [Meeting]
+}
+
+type Meeting {
+    id: ID!
+    group_id: ID!
+    host_id: ID!
+    name: String!
+    datetime: ID!
+}
