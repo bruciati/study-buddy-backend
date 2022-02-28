@@ -20,7 +20,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.6.10</kotlin.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
-        <studybuddy-models.version>v0.2.1</studybuddy-models.version>
+        <studybuddy-models.version>v0.2.2</studybuddy-models.version>
     </properties>
 
     <dependencies>
