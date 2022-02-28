@@ -4,7 +4,7 @@ import brc.studybuddy.backend.auth.model.AuthError
 import brc.studybuddy.backend.auth.model.AuthResponse
 import brc.studybuddy.backend.auth.model.AuthSuccess
 import brc.studybuddy.backend.auth.repository.UserRepository
-import brc.studybuddy.database.model.User
+import brc.studybuddy.model.User
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.Jwts
 import org.springframework.beans.factory.annotation.Autowired
