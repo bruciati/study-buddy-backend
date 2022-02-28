@@ -20,7 +20,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.6.10</kotlin.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
-        <studybuddy-models.version>v0.1.5</studybuddy-models.version>
+        <studybuddy-models.version>v0.2.1</studybuddy-models.version>
     </properties>
 
     <dependencies>
@@ -83,6 +83,8 @@
             <groupId>com.github.bruciati</groupId>
             <artifactId>study-buddy-models</artifactId>
             <version>${studybuddy-models.version}</version>
+            <scope>system</scope>
+            <systemPath>/home/giuseppe/Workspace/TAAS/study-buddy-models/target/study-buddy-models-0.2.0.jar</systemPath>
         </dependency>
         <!-- END/StudyBuddy Models -->
 
