@@ -1,6 +1,6 @@
 package brc.studybuddy.backend.groups.repository
 
-import brc.studybuddy.database.model.Group
+import brc.studybuddy.model.Group
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono

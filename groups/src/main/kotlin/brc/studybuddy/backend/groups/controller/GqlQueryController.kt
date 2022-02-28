@@ -1,7 +1,7 @@
 package brc.studybuddy.backend.groups.controller
 
 import brc.studybuddy.backend.groups.repository.GroupsRepository
-import brc.studybuddy.database.model.Group
+import brc.studybuddy.model.Group
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
