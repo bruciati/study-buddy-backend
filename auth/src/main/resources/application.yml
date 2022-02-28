@@ -21,13 +21,14 @@ spring:
       repositories:
         enabled: true
   r2dbc:
-    url: "r2dbc:postgres://postgres:pwd123@localhost/postgres"
+    url: "r2dbc:postgres://postgres:pwd@localhost/studybuddy"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Custom Configurations
 # ----------------------------------------------------------------------------------------------
 secrets:
   key: "asdkfja82345n23489fdshnf894nfjanf094u3n34f9fnjanf09u43nf43jknf0a97sdhfshdflakjsdhf"
+  ttl: 300 # time to live in milliseconds for each token
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
