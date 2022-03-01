@@ -53,8 +53,11 @@ CREATE TABLE IF NOT EXISTS meetings (
 --
 -- Dumping data for table `meetings`
 --
---INSERT INTO meetings VALUES ()
-
+INSERT INTO meetings VALUES
+(1, 1, 'Ali', 11, 'PHYSICAL', 'Torino'),
+(2, 2, 'Paolo', 12, 'PHYSICAL', 'Torino'),
+(3, 2, 'Ulzio', 14, 'ONLINE', 'Torino'),
+(4, 3, 'Giovanni', 16, 'ONLINE', 'Torino');
 --
 -- Table structure for table `members`
 --
@@ -104,4 +107,14 @@ CREATE TABLE IF NOT EXISTS attendees (
 --
 -- Dumping data for table `attendees`
 --
---INSERT INTO members VALUELS ()
+INSERT INTO attendees VALUES
+    (1,1,'y'),
+    (2,1,'false'),
+    (3,1,'false'),
+    (1,2,'false'),
+    (2,2,'false'),
+    (3,2,'y'),
+    (1,3,'false'),
+    (2,3,'false'),
+    (3,3,'y');
+
