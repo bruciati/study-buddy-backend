@@ -54,16 +54,17 @@ CREATE TABLE IF NOT EXISTS meetings (
 -- Dumping data for table `meetings`
 --
 INSERT INTO meetings VALUES
-(1, 1, 'Ali', 11, 'PHYSICAL', 'Torino'),
-(2, 2, 'Paolo', 12, 'PHYSICAL', 'Torino'),
-(3, 2, 'Ulzio', 14, 'ONLINE', 'Torino'),
-(4, 3, 'Giovanni', 16, 'ONLINE', 'Torino');
+    (1, 1, 'Ali della libertà', 11, 'PHYSICAL', 'Torino'),
+    (2, 2, 'A scuola con Paolo', 12, 'PHYSICAL', 'Torino'),
+    (3, 2, 'Ulzio e le sue caprette', 14, 'ONLINE', 'Torino'),
+    (4, 3, 'Giovani autistici', 16, 'ONLINE', 'Torino');
+
 --
 -- Table structure for table `members`
 --
 CREATE TABLE IF NOT EXISTS members (
-    user_id SERIAL NOT NULL,
     group_id SERIAL NOT NULL,
+    user_id SERIAL NOT NULL,
     is_owner BOOLEAN DEFAULT false NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (group_id) REFERENCES groups(id),
@@ -74,30 +75,30 @@ CREATE TABLE IF NOT EXISTS members (
 -- Dumping data for table `members`
 --
 INSERT INTO members VALUES
-    (1, 4, true),
-    (1, 3, true),
-    (2, 5, true),
-    (2, 1, true),
-    (2, 6, true),
-    (3, 2, true),
+    (4, 1,  true),
+    (3, 1,  true),
+    (5, 2,  true),
+    (1, 2,  true),
+    (6, 2,  true),
+    (2, 3,  true),
     (1, 1, false),
-    (2, 3, false),
-    (3, 5, false),
-    (1, 2, false),
-    (2, 4, false),
+    (3, 2, false),
+    (5, 3, false),
+    (2, 1, false),
+    (4, 2, false),
     (3, 3, false),
-    (1, 6, false),
+    (6, 1, false),
     (2, 2, false),
-    (3, 6, false),
-    (1, 5, false),
-    (3, 4, false);
+    (6, 3, false),
+    (5, 1, false),
+    (4, 3, false);
 
 --
 -- Table structure for table `attendees`
 --
 CREATE TABLE IF NOT EXISTS attendees (
-    user_id SERIAL NOT NULL,
     meeting_id SERIAL NOT NULL,
+    user_id SERIAL NOT NULL,
     is_host BOOLEAN DEFAULT false NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (meeting_id) REFERENCES meetings(id),
@@ -108,13 +109,12 @@ CREATE TABLE IF NOT EXISTS attendees (
 -- Dumping data for table `attendees`
 --
 INSERT INTO attendees VALUES
-    (1,1,'y'),
-    (2,1,'false'),
-    (3,1,'false'),
-    (1,2,'false'),
-    (2,2,'false'),
-    (3,2,'y'),
-    (1,3,'false'),
-    (2,3,'false'),
-    (3,3,'y');
-
+    (1, 1,  true),
+    (1, 2, false),
+    (1, 3, false),
+    (2, 1, false),
+    (2, 2, false),
+    (2, 3,  true),
+    (3, 1, false),
+    (3, 2, false),
+    (3, 3,  true);
