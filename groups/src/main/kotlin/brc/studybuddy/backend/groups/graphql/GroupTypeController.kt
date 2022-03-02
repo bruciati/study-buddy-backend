@@ -1,6 +1,5 @@
 package brc.studybuddy.backend.groups.graphql
 
-import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.User
