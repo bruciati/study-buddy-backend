@@ -1,0 +1,18 @@
+package brc.studybuddy.backend.groups.repository
+
+import brc.studybuddy.model.GroupMember
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+
+sealed interface GroupMembersRepository : ReactiveCrudRepository<GroupMember, Long> {
+    // MONOs
+    fun findByGroupIdAndIsOwner(groupId: Long, isOwner: Boolean = true): Mono<GroupMember>
+
+    // FLUXes
+    fun findAllByGroupId(groupId: Long): Flux<GroupMember>
+
+    fun findAllByUserId(userId: Long): Flux<GroupMember>
+
+    fun findAllByUserIdAndIsOwner(userId: Long, isOwner: Boolean = true): Flux<GroupMember>
+}

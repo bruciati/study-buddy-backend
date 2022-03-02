@@ -1,13 +1,30 @@
 type Query {
-    groups: [Group]
-    groupById(id: ID): Group
-    groupByTitle(title: String): Group
+    # List of "Group" type
+    groups(ids: [ID!]): [Group!]
+    groupsByUserId(id: ID!): [Group!]
+    groupsByOwnerId(id: ID!): [Group!]
+
+    # Single "Group" type
+    groupById(id: ID!): Group
+    groupByTitle(title: String!): Group
+
+    # List of "User" type
+    membersByGroupId(id: ID): [User!]
+
+    # Single "User" type
+    ownerByGroupId(id: ID): User
 }
 
 type Group {
     id: ID!
-    owner_id: ID! # User!
+    owner: User
     title: String!
     description: String
-    #members: [User]
+    members: [User!]
+}
+
+type User {
+    id: ID!
+    email: String!
+    groups: [Group!]
 }

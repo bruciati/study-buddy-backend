@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
 @Repository
-interface GroupsRepository : ReactiveCrudRepository<Group, Long> {
+sealed interface GroupsRepository : ReactiveCrudRepository<Group, Long> {
+    // MONOs
     fun findByTitle(title: String): Mono<Group>
+
+    // FLUXes
+    // ...
 }
