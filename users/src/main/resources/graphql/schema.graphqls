@@ -1,13 +1,10 @@
 type Query {
-    users: [User]
-    userById(id: ID): User
-    userByEmail(email: String): User
-}
+    # List of "User" type
+    users(ids: [ID!]): [User]
 
-type User {
-    id: ID!
-    email: String!
-    groups: [Group]
+    # Single "User" type
+    userById(id: ID!): User
+    userByEmail(email: String!): User
 }
 
 type Group {
@@ -15,5 +12,11 @@ type Group {
     owner: User
     title: String!
     description: String
-    #members: [User]
+    members: [User]
+}
+
+type User {
+    id: ID!
+    email: String!
+    groups: [Group]
 }

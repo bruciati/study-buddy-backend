@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
 @Repository
-interface UsersRepository : ReactiveCrudRepository<User, Long> {
+sealed interface UsersRepository : ReactiveCrudRepository<User, Long> {
+    // MONOs
     fun findByEmail(email: String): Mono<User>
+
+    // FLUXes
+    //...
 }

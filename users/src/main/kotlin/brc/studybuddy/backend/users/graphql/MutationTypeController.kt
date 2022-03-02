@@ -1,11 +1,11 @@
-package brc.studybuddy.backend.users.controller
+package brc.studybuddy.backend.users.graphql
 
 import brc.studybuddy.backend.users.repository.UsersRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 
 @Controller
-class GqlMutationController {
+class MutationTypeController {
     @Autowired
     private lateinit var usersRepository: UsersRepository
     
