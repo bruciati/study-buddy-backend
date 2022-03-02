@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.Duration
 
 @Controller
 class QueryTypeController {
@@ -58,7 +57,6 @@ class QueryTypeController {
                 .graphQlQuery("users(ids: ${l}) { id email }")
                 .retrieve()
                 .graphQlToFlux(User::class.java)
-                .cache(Duration.ofMinutes(5))
         }
 
     @QueryMapping
@@ -68,6 +66,5 @@ class QueryTypeController {
                 .graphQlQuery("userById(id: ${m.userId}) { id email }")
                 .retrieve()
                 .graphQlToMono(User::class.java)
-                .cache(Duration.ofMinutes(5))
         }
 }
