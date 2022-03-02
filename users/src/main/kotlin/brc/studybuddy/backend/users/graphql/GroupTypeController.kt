@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.Duration
 
 @Controller
 @SchemaMapping(typeName = "Group")
@@ -29,7 +28,6 @@ class GroupTypeController {
         .graphQlQuery("ownerByGroupId(id: ${group.id}) { id email }")
         .retrieve()
         .graphQlToMono(User::class.java)
-        .cache(Duration.ofMinutes(5))
 
     //@SchemaMapping(field = "title")
     //fun getFieldTitle(group: Group): Mono<String> = Mono.just(group.title).doOnNext(::println)
@@ -42,5 +40,4 @@ class GroupTypeController {
         .graphQlQuery("membersByGroupId(id: ${group.id}) { id email }")
         .retrieve()
         .graphQlToFlux(User::class.java)
-        .cache(Duration.ofMinutes(5))
 }

@@ -12,11 +12,11 @@ type Group {
     owner: User
     title: String!
     description: String
-    members: [User]
+    members: [User!]
 }
 
 type User {
     id: ID!
     email: String!
-    groups: [Group]
+    groups: [Group!]
 }

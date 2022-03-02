@@ -9,7 +9,6 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
-import java.time.Duration
 
 @Controller
 @SchemaMapping(typeName = "User")
@@ -30,5 +29,4 @@ class UserTypeController {
         .graphQlQuery("groupsByUserId(id: ${user.id}) { id title description }")
         .retrieve()
         .graphQlToFlux(Group::class.java)
-        .cache(Duration.ofMinutes(5))
 }
