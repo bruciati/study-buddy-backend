@@ -1,0 +1,4 @@
+type Mutation {
+    addGroup(name: String!, description: String): Group
+    updateGroup(id: ID!): Group
+}

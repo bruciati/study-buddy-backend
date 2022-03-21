@@ -14,17 +14,3 @@ type Query {
     # Single "User" type
     ownerByGroupId(id: ID): User
 }
-
-type Group {
-    id: ID!
-    owner: User
-    title: String!
-    description: String
-    members: [User!]
-}
-
-type User {
-    id: ID!
-    email: String!
-    groups: [Group!]
-}
