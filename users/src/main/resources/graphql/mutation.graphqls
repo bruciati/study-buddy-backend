@@ -1,0 +1,9 @@
+type Mutation {
+    addUser(email: String!, loginType: LoginType!, loginValue: String!): User
+    updateUser(id: ID!, email: String, loginType: LoginType, loginValue: String): User
+}
+
+enum LoginType {
+    PASSWORD
+    FACEBOOK
+}

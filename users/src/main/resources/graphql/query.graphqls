@@ -1,0 +1,8 @@
+type Query {
+    # List of "User" type
+    users(ids: [ID!]): [User]
+
+    # Single "User" type
+    userById(id: ID!): User
+    userByEmail(email: String!): User
+}
