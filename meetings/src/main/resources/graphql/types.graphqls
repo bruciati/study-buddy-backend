@@ -1,0 +1,22 @@
+type Meeting {
+    id: ID!
+    group: Group!
+    name: String!
+    datetime: Int!
+    type: Int!
+    location: Int!
+}
+
+type User {
+    id: ID!
+    email: String!
+    groups: [Group!]
+}
+
+type Group {
+    id: ID!
+    owner: User
+    title: String!
+    description: String
+    members: [User!]
+}
