@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.groups.graphql
 
+import brc.studybuddy.backend.groups.model.GroupInput
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
@@ -25,14 +26,12 @@ class MutationTypeController {
 
     @MutationMapping
     fun addGroup(
-        @Argument name: String,
-        @Argument description: String?
+        @Argument input: GroupInput
     ): Mono<Group> = TODO()
 
     @MutationMapping
     fun updateGroup(
         @Argument id: Long,
-        @Argument name: String?,
-        @Argument description: String?
+        @Argument input: GroupInput
     ): Mono<Group> = TODO()
 }
