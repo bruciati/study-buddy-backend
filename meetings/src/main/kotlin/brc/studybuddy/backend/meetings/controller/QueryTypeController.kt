@@ -44,10 +44,7 @@ class QueryTypeController {
     fun attendeesByMeetingId(@Argument("meeting_id") meetingId: Long) = attendeesRepository.findAllByMeetingId(meetingId)
 
     @QueryMapping
-    fun attendeesByUserId(@Argument("user_id") userId: Long) = attendeesRepository.findAllByUserId(userId)
-
-    @QueryMapping
-    fun userInAttendsByMeetingID(@Argument("meeting_id") meetingId: Long) = attendeesRepository.findAllByMeetingId(meetingId)
+    fun userInAttendsByMeetingID(@Argument("id") meetingId: Long) = attendeesRepository.findAllByMeetingId(meetingId)
         .map {a -> a.userId}
         .collectList()
         .flatMapMany{ a -> usersWebClient.post()
@@ -57,12 +54,15 @@ class QueryTypeController {
         }
 
     @QueryMapping
-    fun hostAttendeesByMeetingID(@Argument("meeting_id") meetingId: Long) =  attendeesRepository.findAllByMeetingId(meetingId)
+    fun hostAttendeesByMeetingID(@Argument("id") meetingId: Long) =  attendeesRepository.findAllByMeetingId(meetingId)
         .filter{a -> a.isHost}
         .map{a -> a.userId}
         .flatMap{ a -> usersWebClient.post()
-            .graphQlQuery("userById(id: ${a}{id email}")
+            .graphQlQuery("userById(id: ${a}){id email}")
             .retrieve()
             .graphQlToMono(User::class.java)
+            .doOnNext(::println)
         }
+
+
 }

@@ -10,7 +10,7 @@ data class Attendees(
     @JsonProperty(value = "user_id", defaultValue = "-1")
     val userId: Long = -1,
 
-    @Column("group_id")
+    @Column("meeting_id")
     @JsonProperty(value = "meeting_id", defaultValue = "-1")
     val meetingId: Long = -1,
 

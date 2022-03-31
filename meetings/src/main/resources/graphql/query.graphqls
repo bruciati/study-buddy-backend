@@ -1,16 +1,15 @@
 type Query{
 # List of "Meeting" type
-meetingsByGroupId(group_id: ID) : [Meeting]
+meetingsByGroupId(group_id: ID!) : [Meeting]
 meetingsByUserId(user_id: ID!): [Meeting]
-meetingsByLocation(location: String) : [Meeting]
+meetingsByLocation(location: String!) : [Meeting]
 
 # List of "Attendees" type
-attendeesByMeetingId(id: ID!): [Attendees]
-attendeesByUserId(user_id: ID!): [Attendees]
+attendeesByMeetingId(id: ID!): [User]
 
 #List of "User" type
-userInAttendsByMeetingID(id: ID): [User]
+userInAttendsByMeetingID(id: ID!): [User]
 
 # Host for "Attendees" type
-hostAttendeesByMeetingID(id: ID): User
+hostAttendeesByMeetingID(id: ID!): User
 }
