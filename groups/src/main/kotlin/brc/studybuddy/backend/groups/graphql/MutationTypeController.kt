@@ -1,14 +1,17 @@
 package brc.studybuddy.backend.groups.graphql
 
 import brc.studybuddy.backend.groups.model.GroupInput
+import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
+import kotlinx.coroutines.reactive.collect
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 
 @Controller
@@ -19,19 +22,41 @@ class MutationTypeController {
     @Autowired
     private lateinit var groupMembersRepository: GroupMembersRepository
 
-    @Autowired
-    private lateinit var webClientBuilder: WebClient.Builder
-
-    private val usersWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://users/users").build() }
-
+    // NOTE it won't check if the user exists
+    @Transactional
     @MutationMapping
     fun addGroup(
         @Argument input: GroupInput
-    ): Mono<Group> = TODO()
+    ): Mono<Group> = Mono.just(Group(title = input.title!!, description = input.description))
+        .flatMap(groupsRepository::save)
+        .flatMap { g ->
+            val member = GroupMember(g.id, input.owner!!, true)
+            groupMembersRepository.save(member).thenReturn(g)
+        }
+        .onErrorMap { e ->
+            when (e) {
+                is NullPointerException -> Exception("All required parameters (\"owner\", \"title\") must be defined!")
+                is DataIntegrityViolationException -> Exception("A group with the given title already exists!")
+                else -> e
+            }
+        }
 
+    // NOTE owner change will not be implemented
     @MutationMapping
-    fun updateGroup(
-        @Argument id: Long,
-        @Argument input: GroupInput
-    ): Mono<Group> = TODO()
+    fun updateGroup(@Argument id: Long, @Argument input: GroupInput): Mono<Group> = groupsRepository.findById(id)
+        .map { g ->
+            Group(
+                g.id,
+                input.title ?: g.title,
+                input.description ?: g.description
+            )
+        }
+        .flatMap(groupsRepository::save)
+
+    // TODO delete meetings
+    @Transactional
+    @MutationMapping
+    fun deleteGroup(@Argument id: Long): Mono<Boolean> = groupMembersRepository.deleteAllByGroupId(id)
+        .then(groupsRepository.deleteById(id))
+        .thenReturn(true) // Can not be 'false'
 }

@@ -1,5 +1,5 @@
 input GroupInput {
-    owner: ID!
-    title: String!
+    owner: ID
+    title: String
     description: String
 }

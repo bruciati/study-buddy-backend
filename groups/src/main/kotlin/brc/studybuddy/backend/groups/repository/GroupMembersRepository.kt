@@ -11,6 +11,8 @@ sealed interface GroupMembersRepository : ReactiveCrudRepository<GroupMember, Lo
     // MONOs
     fun findByGroupIdAndIsOwner(groupId: Long, isOwner: Boolean = true): Mono<GroupMember>
 
+    fun deleteAllByGroupId(groupId: Long): Mono<Void>
+
     // FLUXes
     fun findAllByGroupId(groupId: Long): Flux<GroupMember>
 
