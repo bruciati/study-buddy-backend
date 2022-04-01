@@ -26,5 +26,7 @@ class UserTypeController {
 
     @SchemaMapping(field = "groups")
     fun getFieldGroups(user: User): Flux<Group> = groupMembersRepository.findAllByUserId(user.id)
-        .flatMap { m -> groupsRepository.findById(m.groupId) }
+        .map { m -> m.groupId }
+        .collectList()
+        .flatMapMany(groupsRepository::findAllById)
 }

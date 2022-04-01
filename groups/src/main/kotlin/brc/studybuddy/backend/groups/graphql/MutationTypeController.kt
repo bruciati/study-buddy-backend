@@ -5,7 +5,6 @@ import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
-import kotlinx.coroutines.reactive.collect
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.graphql.data.method.annotation.Argument

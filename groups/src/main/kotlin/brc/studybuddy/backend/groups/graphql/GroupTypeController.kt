@@ -44,7 +44,7 @@ class GroupTypeController {
 
     @SchemaMapping(field = "members")
     fun getFieldMembers(group: Group): Flux<User> = groupMembersRepository.findAllByGroupId(group.id)
-        .filter { m -> !(m.isOwner) }
+        //.filter { m -> !m.isOwner }
         .map { m -> m.userId }
         .collectList()
         .flatMapMany { l ->
