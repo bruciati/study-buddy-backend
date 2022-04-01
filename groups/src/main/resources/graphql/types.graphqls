@@ -1,6 +1,6 @@
 type Group {
     id: ID!
-    owner: User
+    owner: User!
     title: String!
     description: String
     members: [User!]
