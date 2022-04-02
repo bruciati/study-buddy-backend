@@ -26,10 +26,10 @@ class MutationTypeController {
     @MutationMapping
     fun addGroup(
         @Argument input: GroupInput
-    ): Mono<Group> = Mono.just(Group(title = input.title!!, description = input.description))
+    ): Mono<Group> = Mono.just(input.toGroup())
         .flatMap(groupsRepository::save)
         .flatMap { g ->
-            val member = GroupMember(g.id, input.owner!!, true)
+            val member = input.toGroupMember(g.id, true)
             groupMembersRepository.save(member).thenReturn(g)
         }
         .onErrorMap { e ->
@@ -43,13 +43,7 @@ class MutationTypeController {
     // NOTE owner change will not be implemented
     @MutationMapping
     fun updateGroup(@Argument id: Long, @Argument input: GroupInput): Mono<Group> = groupsRepository.findById(id)
-        .map { g ->
-            Group(
-                g.id,
-                input.title ?: g.title,
-                input.description ?: g.description
-            )
-        }
+        .map(input::updateGroup)
         .flatMap(groupsRepository::save)
 
     // TODO delete meetings

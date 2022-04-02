@@ -49,7 +49,7 @@ class QueryTypeController {
 
     @QueryMapping
     fun membersByGroupId(@Argument id: Long): Flux<User> = groupMembersRepository.findAllByGroupId(id)
-        .filter { m -> !(m.isOwner) }
+        //.filter { m -> !m.isOwner }
         .map { m -> m.userId }
         .collectList()
         .flatMapMany { l ->
