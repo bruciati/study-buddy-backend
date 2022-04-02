@@ -15,7 +15,7 @@ class QueryTypeController {
     private lateinit var usersRepository: UsersRepository
 
     @QueryMapping
-    fun users(@Argument ids: MutableCollection<Long>?): Flux<User> = Mono.justOrEmpty(ids)
+    fun users(@Argument ids: List<Long>?): Flux<User> = Mono.justOrEmpty(ids)
         .flatMapMany(usersRepository::findAllById)
         .switchIfEmpty(usersRepository.findAll())
 
