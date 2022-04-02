@@ -21,7 +21,7 @@ class GroupTypeController {
     private val groupsWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://groups/groups").build() }
 
     //@SchemaMapping(field = "id")
-    //fun getFieldId(group: Group): Mono<Long> = Mono.just(group.id).doOnNext(::println)
+    //fun getFieldId(group: Group): Mono<Long> = Mono.just(group.id)
 
     @SchemaMapping(field = "owner")
     fun getFieldOwner(group: Group): Mono<User> = groupsWebClient.post()
@@ -30,10 +30,10 @@ class GroupTypeController {
         .graphQlToMono(User::class.java)
 
     //@SchemaMapping(field = "title")
-    //fun getFieldTitle(group: Group): Mono<String> = Mono.just(group.title).doOnNext(::println)
+    //fun getFieldTitle(group: Group): Mono<String> = Mono.just(group.title)
 
     //@SchemaMapping(field = "description")
-    //fun getFieldDescription(group: Group): Mono<String> = Mono.just(group.description).doOnNext(::println)
+    //fun getFieldDescription(group: Group): Mono<String> = Mono.just(group.description)
 
     @SchemaMapping(field = "members")
     fun getFieldMembers(group: Group): Flux<User> = groupsWebClient.post()
