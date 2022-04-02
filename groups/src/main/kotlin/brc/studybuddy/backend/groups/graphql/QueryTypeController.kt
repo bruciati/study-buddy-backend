@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.groups.graphql
 
+import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
@@ -35,13 +36,13 @@ class QueryTypeController {
 
     @QueryMapping
     fun groupsByOwnerId(@Argument id: Long): Flux<Group> = groupMembersRepository.findAllByUserIdAndIsOwner(id)
-        .map { m -> m.groupId }
+        .map(GroupMember::groupId)
         .collectList()
         .flatMapMany(groupsRepository::findAllById)
 
     @QueryMapping
     fun groupsByUserId(@Argument id: Long): Flux<Group> = groupMembersRepository.findAllByUserId(id)
-        .map { m -> m.groupId }
+        .map(GroupMember::groupId)
         .collectList()
         .flatMapMany(groupsRepository::findAllById)
 
@@ -54,7 +55,7 @@ class QueryTypeController {
     @QueryMapping
     fun membersByGroupId(@Argument id: Long): Flux<User> = groupMembersRepository.findAllByGroupId(id)
         //.filter { m -> !m.isOwner }
-        .map { m -> m.userId }
+        .map(GroupMember::userId)
         .collectList()
         .flatMapMany { l ->
             usersWebClient.post()

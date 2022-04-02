@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.groups.graphql
 
+import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
@@ -26,7 +27,7 @@ class UserTypeController {
 
     @SchemaMapping(field = "groups")
     fun getFieldGroups(user: User): Flux<Group> = groupMembersRepository.findAllByUserId(user.id)
-        .map { m -> m.groupId }
+        .map(GroupMember::groupId)
         .collectList()
         .flatMapMany(groupsRepository::findAllById)
 }

@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.groups.graphql
 
+import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.User
@@ -25,7 +26,7 @@ class GroupTypeController {
     private val usersWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://users/users").build() }
 
     //@SchemaMapping(field = "id")
-    //fun getFieldId(group: Group): Mono<Long> = Mono.just(group.id).doOnNext(::println)
+    //fun getFieldId(group: Group): Mono<Long> = Mono.just(group.id)
 
     @SchemaMapping(field = "owner")
     fun getFieldOwner(group: Group): Mono<User> = groupMembersRepository.findByGroupIdAndIsOwner(group.id)
@@ -37,15 +38,15 @@ class GroupTypeController {
         }
 
     //@SchemaMapping(field = "title")
-    //fun getFieldTitle(group: Group): Mono<String> = Mono.just(group.title).doOnNext(::println)
+    //fun getFieldTitle(group: Group): Mono<String> = Mono.just(group.title)
 
     //@SchemaMapping(field = "description")
-    //fun getFieldDescription(group: Group): Mono<String> = Mono.just(group.description).doOnNext(::println)
+    //fun getFieldDescription(group: Group): Mono<String> = Mono.just(group.description)
 
     @SchemaMapping(field = "members")
     fun getFieldMembers(group: Group): Flux<User> = groupMembersRepository.findAllByGroupId(group.id)
         //.filter { m -> !m.isOwner }
-        .map { m -> m.userId }
+        .map(GroupMember::groupId)
         .collectList()
         .flatMapMany { l ->
             usersWebClient.post()

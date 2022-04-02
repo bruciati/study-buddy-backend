@@ -11,6 +11,7 @@ import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Controller
@@ -20,6 +21,11 @@ class MutationTypeController {
 
     @Autowired
     private lateinit var groupMembersRepository: GroupMembersRepository
+
+    @Autowired
+    private lateinit var webClientBuilder: WebClient.Builder
+
+    private val meetingsWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://meetings/meetings").build() }
 
     // NOTE it won't check if the user exists
     @Transactional
@@ -51,5 +57,6 @@ class MutationTypeController {
     @MutationMapping
     fun deleteGroup(@Argument id: Long): Mono<Boolean> = groupMembersRepository.deleteAllByGroupId(id)
         .then(groupsRepository.deleteById(id))
+        .thenEmpty {  }
         .thenReturn(true) // Can not be 'false'
 }
