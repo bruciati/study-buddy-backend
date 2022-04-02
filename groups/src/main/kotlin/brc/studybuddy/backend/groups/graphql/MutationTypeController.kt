@@ -57,6 +57,5 @@ class MutationTypeController {
     @MutationMapping
     fun deleteGroup(@Argument id: Long): Mono<Boolean> = groupMembersRepository.deleteAllByGroupId(id)
         .then(groupsRepository.deleteById(id))
-        .thenEmpty {  }
         .thenReturn(true) // Can not be 'false'
 }
