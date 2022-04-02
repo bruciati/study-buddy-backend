@@ -34,6 +34,10 @@ spring:
           uri: "lb://groups"
           predicates:
             - "Path=/groups/**"
+        - id: "meetings"
+          uri: "lb://meetings"
+          predicates:
+            - "Path=/meetings/**"
         #- id: "template"
         #  uri: "lb://template"
         #  predicates:
