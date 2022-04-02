@@ -35,11 +35,15 @@ class QueryTypeController {
 
     @QueryMapping
     fun groupsByOwnerId(@Argument id: Long): Flux<Group> = groupMembersRepository.findAllByUserIdAndIsOwner(id)
-        .flatMap { m -> groupsRepository.findById(m.groupId) }
+        .map { m -> m.groupId }
+        .collectList()
+        .flatMapMany(groupsRepository::findAllById)
 
     @QueryMapping
     fun groupsByUserId(@Argument id: Long): Flux<Group> = groupMembersRepository.findAllByUserId(id)
-        .flatMap { m -> groupsRepository.findById(m.groupId) }
+        .map { m -> m.groupId }
+        .collectList()
+        .flatMapMany(groupsRepository::findAllById)
 
     @QueryMapping
     fun groupById(@Argument id: Long): Mono<Group> = groupsRepository.findById(id)
