@@ -29,7 +29,7 @@ class QueryTypeController {
     private val usersWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://users/users").build() }
 
     @QueryMapping
-    fun groups(@Argument ids: MutableCollection<Long>?): Flux<Group> = Mono.justOrEmpty(ids)
+    fun groups(@Argument ids: List<Long>?): Flux<Group> = Mono.justOrEmpty(ids)
         .flatMapMany(groupsRepository::findAllById)
         .switchIfEmpty(groupsRepository.findAll())
 
