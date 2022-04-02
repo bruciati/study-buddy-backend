@@ -4,10 +4,6 @@ import brc.studybuddy.backend.groups.model.GroupMember
 import brc.studybuddy.backend.groups.repository.GroupMembersRepository
 import brc.studybuddy.backend.groups.repository.GroupsRepository
 import brc.studybuddy.model.Group
-import brc.studybuddy.model.User
-import brc.studybuddy.webclient.extension.graphQlQuery
-import brc.studybuddy.webclient.extension.graphQlToFlux
-import brc.studybuddy.webclient.extension.graphQlToMono
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -51,25 +47,4 @@ class QueryTypeController {
 
     @QueryMapping
     fun groupByTitle(@Argument title: String): Mono<Group> = groupsRepository.findByTitle(title)
-
-    @QueryMapping
-    fun membersByGroupId(@Argument id: Long): Flux<User> = groupMembersRepository.findAllByGroupId(id)
-        //.filter { m -> !m.isOwner }
-        .map(GroupMember::userId)
-        .collectList()
-        .flatMapMany { l ->
-            usersWebClient.post()
-                .graphQlQuery("users(ids: ${l}) { id email }")
-                .retrieve()
-                .graphQlToFlux(User::class.java)
-        }
-
-    @QueryMapping
-    fun ownerByGroupId(@Argument id: Long): Mono<User> = groupMembersRepository.findByGroupIdAndIsOwner(id)
-        .flatMap { m ->
-            usersWebClient.post()
-                .graphQlQuery("userById(id: ${m.userId}) { id email }")
-                .retrieve()
-                .graphQlToMono(User::class.java)
-        }
 }

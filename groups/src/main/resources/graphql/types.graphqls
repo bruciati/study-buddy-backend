@@ -4,10 +4,25 @@ type Group {
     title: String!
     description: String
     members: [User!]
+    meetings: [Meeting!]
 }
 
 type User {
     id: ID!
     email: String!
     groups: [Group!]
+}
+
+type Meeting {
+    id: ID!
+    name: String!
+    group: Group!
+    datetime: Int!
+    type: MeetingType!
+    location: String!
+}
+
+enum MeetingType {
+    PHYSICAL
+    ONLINE
 }

@@ -7,10 +7,4 @@ type Query {
     # Single "Group" type
     groupById(id: ID!): Group
     groupByTitle(title: String!): Group
-
-    # List of "User" type
-    membersByGroupId(id: ID): [User!]
-
-    # Single "User" type
-    ownerByGroupId(id: ID): User
 }
