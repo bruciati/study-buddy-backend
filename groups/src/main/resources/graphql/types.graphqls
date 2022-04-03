@@ -16,7 +16,6 @@ type User {
 type Meeting {
     id: ID!
     name: String!
-    group: Group!
     datetime: Int!
     type: MeetingType!
     location: String!
