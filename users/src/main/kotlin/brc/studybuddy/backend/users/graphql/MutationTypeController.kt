@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
-import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Controller
@@ -29,6 +28,7 @@ class MutationTypeController {
         .map(input::updateUser)
         .flatMap(usersRepository::save)
 
+    // TODO delete data from other services
     @MutationMapping
     fun deleteUser(
         @Argument id: Long
