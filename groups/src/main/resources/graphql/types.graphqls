@@ -3,14 +3,14 @@ type Group {
     owner: User!
     title: String!
     description: String
-    members: [User!]
-    meetings: [Meeting!]
+    members: [User!]!
+    meetings: [Meeting!]!
 }
 
 type User {
     id: ID!
     email: String!
-    groups: [Group!]
+    groups: [Group!]!
 }
 
 type Meeting {

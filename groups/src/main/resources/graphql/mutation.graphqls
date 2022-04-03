@@ -1,5 +1,5 @@
 type Mutation {
-    addGroup(input: GroupInput): Group
-    updateGroup(id: ID, input: GroupInput): Group
-    deleteGroup(id: ID): Boolean
+    addGroup(input: GroupInput!): Group
+    updateGroup(id: ID!, input: GroupInput!): Group
+    deleteGroup(id: ID!): Boolean
 }
