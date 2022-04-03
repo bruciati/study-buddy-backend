@@ -1,13 +1,27 @@
+type User {
+    id: ID!
+    email: String!
+    groups: [Group!]!
+}
+
 type Group {
     id: ID!
     owner: User!
     title: String!
     description: String
-    members: [User!]
+    members: [User!]!
+    meetings: [Meeting!]!
 }
 
-type User {
+type Meeting {
     id: ID!
-    email: String!
-    groups: [Group!]
+    name: String!
+    datetime: Int!
+    type: MeetingType!
+    location: String!
+}
+
+enum MeetingType {
+    PHYSICAL
+    ONLINE
 }

@@ -1,0 +1,9 @@
+input UserInput {
+    email: String
+    loginType: LoginType
+}
+
+enum LoginType {
+    PASSWORD
+    FACEBOOK
+}
