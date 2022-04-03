@@ -1,6 +1,7 @@
 package brc.studybuddy.backend.users.graphql
 
 import brc.studybuddy.model.Group
+import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
 import brc.studybuddy.webclient.extension.graphQlQuery
 import brc.studybuddy.webclient.extension.graphQlToFlux
@@ -19,6 +20,8 @@ class GroupTypeController {
     private lateinit var webClientBuilder: WebClient.Builder
 
     private val groupsWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://groups/groups").build() }
+
+    private val meetingsWebClient: WebClient by lazy { webClientBuilder.baseUrl("lb://meetings/meetings").build() }
 
     //@SchemaMapping(field = "id")
     //fun getFieldId(group: Group): Mono<Long> = Mono.just(group.id)
@@ -40,4 +43,10 @@ class GroupTypeController {
         .graphQlQuery("membersByGroupId(id: ${group.id}) { id email }")
         .retrieve()
         .graphQlToFlux(User::class.java)
+
+    @SchemaMapping(field = "meetings")
+    fun getFieldMeetings(group: Group): Flux<Meeting> = meetingsWebClient.post()
+        .graphQlQuery("meetingsByGroupId(id: ${group.id}) { id name datetime type location }")
+        .retrieve()
+        .graphQlToFlux(Meeting::class.java)
 }
