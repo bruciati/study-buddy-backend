@@ -66,8 +66,12 @@ CREATE TABLE IF NOT EXISTS members (
     group_id SERIAL NOT NULL,
     user_id SERIAL NOT NULL,
     is_owner BOOLEAN DEFAULT false NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (group_id) REFERENCES groups(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES groups(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
     PRIMARY KEY (user_id, group_id)
 );
 
@@ -100,8 +104,12 @@ CREATE TABLE IF NOT EXISTS attendees (
     meeting_id SERIAL NOT NULL,
     user_id SERIAL NOT NULL,
     is_host BOOLEAN DEFAULT false NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (meeting_id) REFERENCES meetings(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (meeting_id) REFERENCES meetings(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
     PRIMARY KEY (user_id, meeting_id)
 );
 
