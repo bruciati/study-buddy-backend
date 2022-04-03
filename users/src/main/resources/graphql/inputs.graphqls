@@ -1,6 +1,7 @@
 input UserInput {
     email: String
     loginType: LoginType
+    loginValue: String
 }
 
 enum LoginType {
