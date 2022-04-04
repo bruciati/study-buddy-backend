@@ -7,9 +7,7 @@ import reactor.core.publisher.Mono
 
 @Repository
 sealed interface UsersRepository : ReactiveCrudRepository<User, Long> {
-    // MONOs
+
     fun findByEmail(email: String): Mono<User>
 
-    // FLUXes
-    //...
 }

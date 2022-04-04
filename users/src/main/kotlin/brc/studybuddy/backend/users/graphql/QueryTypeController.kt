@@ -1,5 +1,7 @@
 package brc.studybuddy.backend.users.graphql
 
+import brc.studybuddy.backend.users.repository.AttendeesRepository
+import brc.studybuddy.backend.users.repository.MembersRepository
 import brc.studybuddy.backend.users.repository.UsersRepository
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +15,12 @@ import reactor.core.publisher.Mono
 class QueryTypeController {
     @Autowired
     private lateinit var usersRepository: UsersRepository
+
+    @Autowired
+    private lateinit var membersRepository: MembersRepository
+
+    @Autowired
+    private lateinit var attendeesRepository: AttendeesRepository
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = Mono.justOrEmpty(ids)
