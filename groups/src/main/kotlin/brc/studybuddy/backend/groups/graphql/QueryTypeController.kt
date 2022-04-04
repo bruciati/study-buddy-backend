@@ -14,10 +14,16 @@ class QueryTypeController {
     @Autowired
     private lateinit var groupsRepository: GroupsRepository
 
+
     @QueryMapping
     fun groups(@Argument ids: List<Long>?): Flux<Group> = Mono.justOrEmpty(ids)
         .flatMapMany(groupsRepository::findAllById)
         .switchIfEmpty(groupsRepository.findAll())
+
+    // TODO Fetch group ids from "Users" service
+    @QueryMapping
+    fun groupsByUserId(@Argument id: Long): Flux<Group> = TODO()
+
 
     @QueryMapping
     fun groupById(@Argument id: Long): Mono<Group> = groupsRepository.findById(id)
