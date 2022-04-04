@@ -1,24 +1,25 @@
 type User {
     id: ID!
     email: String!
-    groups: [Group!]!
+    groups: [Group!]
 }
 
 type Group {
     id: ID!
-    owner: User!
+    owner: User
     title: String!
     description: String
-    members: [User!]!
-    meetings: [Meeting!]!
+    members: [User!]
+    meetings: [Meeting!]
 }
 
 type Meeting {
     id: ID!
     name: String!
-    host: User!
-    group: Group!
+    host: User
+    group: Group
     dateTime: Int!
+    attendees: [User!]
     type: MeetingType!
     location: String!
 }
