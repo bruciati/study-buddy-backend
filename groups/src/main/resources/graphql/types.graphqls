@@ -1,27 +1,5 @@
-type User {
-    id: ID!
-    email: String!
-    groups: [Group!]!
-}
-
 type Group {
     id: ID!
-    owner: User!
     title: String!
     description: String
-    members: [User!]!
-    meetings: [Meeting!]!
-}
-
-type Meeting {
-    id: ID!
-    name: String!
-    datetime: Int!
-    type: MeetingType!
-    location: String!
-}
-
-enum MeetingType {
-    PHYSICAL
-    ONLINE
 }

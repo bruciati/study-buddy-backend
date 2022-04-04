@@ -1,10 +1,6 @@
 type Query {
-    # List of "Group" type
-    groups(ids: [ID!]): [Group!]
-    groupsByUserId(id: ID!): [Group!]
-    groupsByOwnerId(id: ID!): [Group!]
-
-    # Single "Group" type
     groupById(id: ID!): Group
     groupByTitle(title: String!): Group
+
+    groups(ids: [ID!]): [Group!]
 }
