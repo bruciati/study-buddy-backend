@@ -2,7 +2,13 @@ type Query {
     # List of "User" type
     users(ids: [ID!]): [User!]
 
+    usersByGroupId(id: ID!): [User!]
+    usersByMeetingId(id: ID!): [User!]
+
     # Single "User" type
     userById(id: ID!): User
     userByEmail(email: String!): User
+
+    ownerByGroupId(id: ID!): User
+    hostByMeetingId(id: ID!): User
 }
