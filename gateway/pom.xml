@@ -21,15 +21,42 @@
         <kotlin.version>1.6.10</kotlin.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
         <jsonwebtoken.version>0.11.2</jsonwebtoken.version>
+        <studybuddy-models.version>v0.3.4</studybuddy-models.version>
     </properties>
 
     <dependencies>
-         <!-- Gateway -->
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <exclusions>
+                <!-- Exclude the Tomcat dependency -->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- END/Spring -->
+
+        <!-- Eureka Client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <!-- END/Gateway -->
+        <!-- END/Eureka Client -->
+
+        <!-- GraphQl -->
+        <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql</artifactId>
+        </dependency>
+        <!-- END/GraphQl -->
 
         <!-- JWT -->
         <dependency>
@@ -51,14 +78,25 @@
         </dependency>
         <!-- END/JWT -->
 
-        <!-- Eureka Client -->
+        <!-- StudyBuddy Models -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <groupId>com.github.bruciati</groupId>
+            <artifactId>study-buddy-models</artifactId>
+            <version>${studybuddy-models.version}</version>
+            <scope>system</scope>
+            <systemPath>/home/giuseppe/Workspace/study-buddy-models/target/study-buddy-models-0.3.3.jar</systemPath>
         </dependency>
-        <!-- END/Eureka Client -->
+        <!-- END/StudyBuddy Models -->
 
         <!-- Kotlin Addons -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.kotlin</groupId>
+            <artifactId>reactor-kotlin-extensions</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
@@ -67,12 +105,21 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
+        </dependency>
         <!-- END/Kotlin Addons -->
 
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- END/Test -->
@@ -128,6 +175,10 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
