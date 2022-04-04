@@ -1,36 +1,22 @@
 type Meeting {
     id: ID!
-    group: Group!
     name: String!
-    datetime: Int!
-    type: Int!
-    location: Int!
+    groupId: Int!
+    dateTime: Int!
+    type: MeetingType!
+    location: String!
 }
 
-type User {
-    id: ID!
-    email: String!
-    groups: [Group!]
-}
-
-type Group {
-    id: ID!
-    owner: User
-    title: String!
-    description: String
-    members: [User!]
-}
-
-type Attendees{
-    user_id: ID!
-    meeting_id: ID!
-
-}
 
 input MeetingInput{
     group: ID!
     name: String!
-    datetime: Int
-    type: Int
-    location: Int
+    dateTime: Int
+    type: MeetingType!
+    location: String
+}
+
+enum MeetingType{
+    PHYSICAL
+    ONLINE
 }

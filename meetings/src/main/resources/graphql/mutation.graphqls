@@ -4,9 +4,5 @@ type Mutation {
     addMeeting(input: MeetingInput): Meeting
     updateMeeting(id: ID!, input: MeetingInput): Meeting
     removeMeeting(id: ID!): Meeting
-
-    #User
-    addUserToMeeting(user: ID!, meeting_id: ID!): Attendees
-
 }
 
