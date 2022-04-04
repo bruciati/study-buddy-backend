@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 class QueryTypeController {
     @Autowired
     lateinit var meetingsRepository: MeetingsRepository
-    
+
 
     @QueryMapping
     fun meetingById(@Argument("id") meetingId: Long): Mono<Meeting> = meetingsRepository.findById(meetingId)
