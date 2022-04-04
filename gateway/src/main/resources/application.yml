@@ -15,33 +15,13 @@ server:
 spring:
   application:
     name: "gateway"
-  # Gateway configurations
-  cloud:
-    gateway:
-      enabled: true
-      routes:
-        - id: "auth"
-          uri: "lb://auth"
-          predicates:
-            - "Path=/auth/**"
-          filters:
-            - name: Auth
-        - id: "users"
-          uri: "lb://users"
-          predicates:
-            - "Path=/users/**"
-        - id: "groups"
-          uri: "lb://groups"
-          predicates:
-            - "Path=/groups/**"
-        - id: "meetings"
-          uri: "lb://meetings"
-          predicates:
-            - "Path=/meetings/**"
-        #- id: "template"
-        #  uri: "lb://template"
-        #  predicates:
-        #    - "Path=/template/**"
+  # GraphQl configurations
+  graphql:
+    path: "/graphql"
+    cors:
+      allowed-origins: "*"
+      allowed-methods: "GET,POST"
+      max-age: "1800s"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations

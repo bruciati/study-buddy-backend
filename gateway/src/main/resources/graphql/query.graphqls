@@ -1,0 +1,13 @@
+type Query {
+    # Users
+    userById(id: ID!): User
+    users(ids: [ID!]): [User!]!
+
+    # Groups
+    groupById(id: ID!): Group
+    groups(ids: [ID!]): [Group!]!
+
+    # Meetings
+    meetingById(id: ID!): Meeting
+    meetings(ids: [ID!]): [Meeting!]!
+}
