@@ -2,7 +2,6 @@ package brc.studybuddy.backend.users.service
 
 import brc.studybuddy.input.MeetingAttendeeInput
 import brc.studybuddy.input.MeetingInput
-import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.MeetingAttendee
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,26 +29,26 @@ class MeetingsClientService {
         .bodyToMono(MeetingAttendee::class.java)
 
 
-    fun updateMeeting(meetingId: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
-        .uri("/meetings/$meetingId")
+    fun updateMeeting(id: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
+        .uri("/meetings/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Meeting::class.java)
 
-    fun updateMeetingAttendee(userId: Long, input: MeetingAttendeeInput): Mono<MeetingAttendee> = webClient.put()
-        .uri("/attendees/$userId")
+    fun updateMeetingAttendee(id: Long, input: MeetingAttendeeInput): Mono<MeetingAttendee> = webClient.put()
+        .uri("/attendees/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(MeetingAttendee::class.java)
 
 
-    fun deleteMeeting(meetingId: Long): Mono<Void> = webClient.delete()
-        .uri("/meetings/$meetingId")
+    fun deleteMeeting(id: Long): Mono<Void> = webClient.delete()
+        .uri("/meetings/$id")
         .retrieve()
         .bodyToMono(Void::class.java)
 
-    fun deleteMeetingAttendee(userId: Long): Mono<Void> = webClient.delete()
-        .uri("/attendees/$userId")
+    fun deleteMeetingAttendee(id: Long): Mono<Void> = webClient.delete()
+        .uri("/attendees/$id")
         .retrieve()
         .bodyToMono(Void::class.java)
 }

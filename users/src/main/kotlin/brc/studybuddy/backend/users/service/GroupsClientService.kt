@@ -29,26 +29,26 @@ class GroupsClientService {
         .bodyToMono(GroupMember::class.java)
 
 
-    fun updateGroup(groupId: Long, input: GroupInput): Mono<Group> = webClient.put()
-        .uri("/groups/${groupId}")
+    fun updateGroup(id: Long, input: GroupInput): Mono<Group> = webClient.put()
+        .uri("/groups/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Group::class.java)
 
-    fun updateGroupMember(userId: Long, input: GroupMemberInput): Mono<GroupMember> = webClient.put()
-        .uri("/members/${userId}")
+    fun updateGroupMember(id: Long, input: GroupMemberInput): Mono<GroupMember> = webClient.put()
+        .uri("/members/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(GroupMember::class.java)
 
 
-    fun deleteGroup(groupId: Long): Mono<Void> = webClient.delete()
-        .uri("/groups/$groupId")
+    fun deleteGroup(id: Long): Mono<Void> = webClient.delete()
+        .uri("/groups/$id")
         .retrieve()
         .bodyToMono(Void::class.java)
 
-    fun deleteGroupMember(userId: Long): Mono<Void> = webClient.delete()
-        .uri("/members/$userId")
+    fun deleteGroupMember(id: Long): Mono<Void> = webClient.delete()
+        .uri("/members/$id")
         .retrieve()
         .bodyToMono(Void::class.java)
 }
