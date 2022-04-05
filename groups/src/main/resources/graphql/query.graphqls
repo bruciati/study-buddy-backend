@@ -1,6 +1,0 @@
-type Query {
-    groupById(id: ID!): Group
-    groupByTitle(title: String!): Group
-
-    groups(ids: [ID!]): [Group!]
-}

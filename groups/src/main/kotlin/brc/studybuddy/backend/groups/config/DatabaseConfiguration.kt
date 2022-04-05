@@ -1,17 +1,14 @@
-package brc.studybuddy.backend.groups
+package brc.studybuddy.backend.groups.config
 
 import io.r2dbc.spi.ConnectionFactory
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator
 
-@EnableEurekaClient
-@SpringBootApplication
-class GroupsMicroserviceApplication {
+@Configuration
+class DatabaseConfiguration {
 
     @Bean
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -22,8 +19,4 @@ class GroupsMicroserviceApplication {
             return this
         }
 
-}
-
-fun main(args: Array<String>) {
-    runApplication<GroupsMicroserviceApplication>(*args)
 }

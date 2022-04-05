@@ -1,5 +1,0 @@
-type Group {
-    id: ID!
-    title: String!
-    description: String
-}

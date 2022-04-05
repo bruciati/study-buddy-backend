@@ -21,14 +21,7 @@ spring:
       repositories:
         enabled: true
   r2dbc:
-    url: "r2dbc:postgres://postgres:pwd123@localhost/postgres"
-  # GraphQl configurations
-  graphql:
-    path: "/groups"
-    cors:
-      allowed-origins: "*"
-      allowed-methods: "GET,POST"
-      max-age: "1800s"
+    url: "r2dbc:postgres://postgres:pwd123@localhost/groups"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
