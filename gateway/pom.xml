@@ -21,7 +21,7 @@
         <kotlin.version>1.6.10</kotlin.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
         <jsonwebtoken.version>0.11.2</jsonwebtoken.version>
-        <studybuddy-models.version>v0.6.0</studybuddy-models.version>
+        <studybuddy-models.version>v0.6.1</studybuddy-models.version>
     </properties>
 
     <dependencies>
