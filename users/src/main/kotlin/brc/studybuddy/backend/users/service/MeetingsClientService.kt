@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 class MeetingsClientService {
     @Autowired
     private lateinit var webClientBuilder: WebClient.Builder
-    private val webClient: WebClient by lazy(webClientBuilder.baseUrl("lb://meetings/meetings")::build)
+    private val webClient: WebClient by lazy(webClientBuilder.baseUrl("lb://meetings")::build)
 
 
     fun addMeeting(input: MeetingInput): Mono<Meeting> = webClient.post()
