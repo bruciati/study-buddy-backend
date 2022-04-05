@@ -39,17 +39,17 @@ INSERT INTO members VALUES
     (1, 2,  true),
     (6, 2,  true),
     (2, 3,  true),
-    (1, 1),
-    (3, 2),
-    (5, 3),
-    (2, 1),
-    (4, 2),
-    (3, 3),
-    (6, 1),
-    (2, 2),
-    (6, 3),
-    (5, 1),
-    (4, 3);
+    (1, 1,  false),
+    (3, 2,  false),
+    (5, 3,  false),
+    (2, 1,  false),
+    (4, 2,  false),
+    (3, 3,  false),
+    (6, 1,  false),
+    (2, 2,  false),
+    (6, 3,  false),
+    (5, 1,  false),
+    (4, 3,  false);
 
 --
 -- Table structure for table `attendees`
@@ -71,10 +71,9 @@ INSERT INTO attendees VALUES
     (1, 1,  true),
     (2, 3,  true),
     (3, 2,  true),
-    (1, 2),
-    (1, 3),
-    (2, 1),
-    (2, 2),
-    (3, 1),
-    (3, 2);
-
+    (1, 2,  false),
+    (1, 3,  false),
+    (2, 1,  false),
+    (2, 2,  false),
+    (3, 1,  false),
+    (3, 2,  false);

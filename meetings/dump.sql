@@ -39,10 +39,10 @@ INSERT INTO attendees VALUES
     (1, 1,  true),
     (2, 3,  true),
     (3, 2,  true),
-    (1, 2),
-    (1, 3),
-    (2, 1),
-    (2, 2),
-    (3, 1),
-    (3, 2);
+    (1, 2,  false),
+    (1, 3,  false),
+    (2, 1,  false),
+    (2, 2,  false),
+    (3, 1,  false),
+    (3, 2,  false);
 
