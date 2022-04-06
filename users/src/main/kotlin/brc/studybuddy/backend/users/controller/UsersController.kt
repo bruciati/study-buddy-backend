@@ -18,13 +18,13 @@ import java.util.*
 @RequestMapping(value = ["users"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsersController {
     @Autowired
-    lateinit var usersRepository: UsersRepository
+    private lateinit var usersRepository: UsersRepository
 
     @Autowired
-    lateinit var membersRepository: MembersRepository
+    private lateinit var membersRepository: MembersRepository
 
     @Autowired
-    lateinit var attendeesRepository: AttendeesRepository
+    private lateinit var attendeesRepository: AttendeesRepository
 
 
     @PostMapping

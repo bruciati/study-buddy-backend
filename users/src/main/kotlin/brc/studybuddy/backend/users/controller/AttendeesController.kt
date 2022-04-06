@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono
 @RequestMapping(value = ["attendees"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class AttendeesController {
     @Autowired
-    lateinit var attendeesRepository: AttendeesRepository
+    private lateinit var attendeesRepository: AttendeesRepository
 
 
     @PostMapping
