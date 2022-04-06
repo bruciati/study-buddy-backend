@@ -1,8 +1,0 @@
-type Query{
-# List of "Meeting" type
-
-meetingById(id: ID!) : Meeting
-meetings(ids: [ID!]): [Meeting]
-meetingsByGroupId(id: ID!) : [Meeting]
-meetingsByLocation(location: String!) : [Meeting]
-}
