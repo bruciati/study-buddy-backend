@@ -8,10 +8,10 @@ import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator
 
 @Configuration
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 class DatabaseConfiguration {
 
     @Bean
-    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     fun dbConnInitializer(connectionFactory: ConnectionFactory): ConnectionFactoryInitializer =
         with(ConnectionFactoryInitializer()) {
             this.setConnectionFactory(connectionFactory)
