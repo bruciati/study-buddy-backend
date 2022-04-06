@@ -16,10 +16,10 @@ import java.util.*
 @RequestMapping(value = ["groups"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class GroupsController {
     @Autowired
-    lateinit var groupsRepository: GroupsRepository
+    private lateinit var groupsRepository: GroupsRepository
 
     @Autowired
-    lateinit var membersRepository: MembersRepository
+    private lateinit var membersRepository: MembersRepository
 
 
     @PostMapping
