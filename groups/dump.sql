@@ -1,7 +1,7 @@
 --
 -- Table structure for table `groups`
 --
-CREATE TABLE IF NOT EXISTS `groups`
+CREATE TABLE IF NOT EXISTS groups
 (
     id          SERIAL PRIMARY KEY,
     title       VARCHAR(128) UNIQUE NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `groups`
 --
 -- Dumping data for table `groups`
 --
-INSERT INTO `groups`
+INSERT INTO groups
 VALUES (1, 'Tornado Racers',
         'These Tornado Racers are a new twist on the classic game of capture the cheese. You must capture all the cheese before your opponent does.'),
        (2, 'Electric Eels', 'Electric Eels are a small,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS members
     user_id  INTEGER               NOT NULL,
     is_owner BOOLEAN DEFAULT false NOT NULL,
     PRIMARY KEY (user_id, group_id),
-    FOREIGN KEY (group_id) REFERENCES `groups` (id)
+    FOREIGN KEY (group_id) REFERENCES groups (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
