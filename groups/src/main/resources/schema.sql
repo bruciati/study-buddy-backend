@@ -13,11 +13,11 @@ CREATE TABLE IF NOT EXISTS groups
 --
 CREATE TABLE IF NOT EXISTS members
 (
-    group_id SERIAL                NOT NULL,
-    user_id  SERIAL                NOT NULL,
+    group_id INTEGER               NOT NULL,
+    user_id  INTEGER               NOT NULL,
     is_owner BOOLEAN DEFAULT false NOT NULL,
+    PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (group_id) REFERENCES groups (id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    PRIMARY KEY (user_id, group_id)
+        ON UPDATE CASCADE
 );
