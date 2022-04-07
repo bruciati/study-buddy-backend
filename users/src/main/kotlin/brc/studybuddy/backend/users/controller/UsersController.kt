@@ -28,7 +28,7 @@ class UsersController {
 
 
     @PostMapping
-    fun save(input: UserInput): Mono<User> = Mono.just(input)
+    fun save(@RequestBody input: UserInput): Mono<User> = Mono.just(input)
         .map(UserInput::toModel)
         .flatMap(usersRepository::save)
 

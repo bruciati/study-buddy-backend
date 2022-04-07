@@ -1,7 +1,6 @@
 package brc.studybuddy.backend.users.controller
 
 import brc.studybuddy.backend.users.repository.AttendeesRepository
-import brc.studybuddy.input.GroupMemberInput
 import brc.studybuddy.input.MeetingAttendeeInput
 import brc.studybuddy.model.MeetingAttendee
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,13 +16,13 @@ class AttendeesController {
 
 
     @PostMapping
-    fun save(input: MeetingAttendeeInput): Mono<MeetingAttendee> = Mono.just(input)
+    fun save(@RequestBody input: MeetingAttendeeInput): Mono<MeetingAttendee> = Mono.just(input)
         .map(MeetingAttendeeInput::toModel)
         .flatMap(attendeesRepository::save)
 
 
     @DeleteMapping("/meeting/{id}")
-    fun deleteAllByGroupId(@PathVariable id: Long): Mono<Boolean> =
+    fun deleteAllByMeetingId(@PathVariable id: Long): Mono<Boolean> =
         attendeesRepository.deleteAllByMeetingId(id)
             .thenReturn(true)
             .onErrorReturn(false)
@@ -35,7 +34,7 @@ class AttendeesController {
             .onErrorReturn(false)
 
     @DeleteMapping(path = ["/meeting/{meetingId}/user/{userId}", "/user/{userId}/meeting/{meetingId}"])
-    fun deleteByGroupIdAndUserId(@PathVariable meetingId: Long, @PathVariable userId: Long): Mono<Boolean> =
+    fun deleteByMeetingIdAndUserId(@PathVariable meetingId: Long, @PathVariable userId: Long): Mono<Boolean> =
         attendeesRepository.deleteByMeetingIdAndUserId(meetingId, userId)
             .thenReturn(true)
             .onErrorReturn(false)
