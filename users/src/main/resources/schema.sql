@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS users
 --
 CREATE TABLE IF NOT EXISTS members
 (
-    group_id SERIAL                NOT NULL,
-    user_id  SERIAL                NOT NULL,
+    group_id INTEGER               NOT NULL,
+    user_id  INTEGER               NOT NULL,
     is_owner BOOLEAN DEFAULT false NOT NULL,
+    PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    PRIMARY KEY (user_id, group_id)
+        ON UPDATE CASCADE
 );
 
 --
@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS members
 --
 CREATE TABLE IF NOT EXISTS attendees
 (
-    meeting_id SERIAL                NOT NULL,
-    user_id    SERIAL                NOT NULL,
+    meeting_id INTEGER               NOT NULL,
+    user_id    INTEGER               NOT NULL,
     is_host    BOOLEAN DEFAULT false NOT NULL,
+    PRIMARY KEY (user_id, meeting_id),
     FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    PRIMARY KEY (user_id, meeting_id)
+        ON UPDATE CASCADE
 );
