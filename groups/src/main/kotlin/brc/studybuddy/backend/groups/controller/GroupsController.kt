@@ -45,8 +45,7 @@ class GroupsController {
             .flatMapMany { b -> membersRepository.findAllByUserIdAndIsOwner(id, b) }
             .switchIfEmpty(membersRepository.findAllByUserId(id))
             .map(GroupMember::groupId)
-            .collectList()
-            .flatMapMany(groupsRepository::findAllById)
+            .flatMap(groupsRepository::findById)
 
 
     @PutMapping("/{id}")
@@ -76,8 +75,7 @@ class GroupsController {
     fun deleteAllByUserIdAndIsOwnerTrue(@PathVariable id: Long): Mono<Boolean> =
         membersRepository.findAllByUserIdAndIsOwner(id)
             .map(GroupMember::groupId)
-            .collectList()
-            .flatMap(groupsRepository::deleteAllById)
-            .thenReturn(true)
+            .flatMap(groupsRepository::deleteById)
+            .then(Mono.just(true))
             .onErrorReturn(false)
 }
