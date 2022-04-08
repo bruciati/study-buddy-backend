@@ -31,7 +31,7 @@ class QueryController {
     // ------------------------------------------------------
 
     @QueryMapping
-    fun users(@Argument ids: Optional<List<Long>>): Flux<User> = usersWebClient.getUsers(ids)
+    fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))
 
     @QueryMapping
     fun userById(@Argument id: Long): Mono<User> = usersWebClient.getUser(id)
@@ -45,7 +45,7 @@ class QueryController {
     // ------------------------------------------------------
 
     @QueryMapping
-    fun groups(@Argument ids: Optional<List<Long>>): Flux<Group> = groupsWebClient.getGroups(ids)
+    fun groups(@Argument ids: List<Long>?): Flux<Group> = groupsWebClient.getGroups(Optional.ofNullable(ids))
 
     @QueryMapping
     fun groupById(@Argument id: Long): Mono<Group> = groupsWebClient.getGroup(id)
