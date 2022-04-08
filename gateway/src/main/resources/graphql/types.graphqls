@@ -2,6 +2,7 @@ type User {
     id: ID!
     email: String!
     groups: [Group!]
+    meetings: [Meeting!]
 }
 
 type Group {

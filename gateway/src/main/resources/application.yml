@@ -17,10 +17,8 @@ spring:
     name: "gateway"
   # GraphQl configurations
   graphql:
-    path: "/graphql"
     cors:
       allowed-origins: "*"
-      allowed-methods: "GET,POST"
       max-age: "1800s"
 
 # ----------------------------------------------------------------------------------------------

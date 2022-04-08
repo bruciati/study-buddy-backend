@@ -6,7 +6,7 @@ import brc.studybuddy.backend.gateway.service.UsersWebClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 
-@Controller
+//@Controller
 class MutationController {
     @Autowired
     private lateinit var usersWebClient: UsersWebClient
