@@ -29,9 +29,10 @@ class GroupsController {
 
 
     @GetMapping // /groups?id=1&id=2...
-    fun findAll(@RequestParam id: Optional<List<Long>>): Flux<Group> = Mono.justOrEmpty(id)
-        .flatMapMany(groupsRepository::findAllById)
-        .switchIfEmpty(groupsRepository.findAll())
+    fun findAll(@RequestParam id: Optional<List<Long>>): Flux<Group> = when (id.isPresent) {
+        true -> groupsRepository.findAllById(id.get())
+        false -> groupsRepository.findAll()
+    }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): Mono<Group> = groupsRepository.findById(id)
@@ -41,9 +42,10 @@ class GroupsController {
 
     @GetMapping("/user/{id}")
     fun findAllByUserId(@PathVariable id: Long, @RequestParam("is_owner") isOwner: Optional<Boolean>): Flux<Group> =
-        Mono.justOrEmpty(isOwner)
-            .flatMapMany { b -> membersRepository.findAllByUserIdAndIsOwner(id, b) }
-            .switchIfEmpty(membersRepository.findAllByUserId(id))
+        when (isOwner.isPresent) {
+            true -> membersRepository.findAllByUserIdAndIsOwner(id, isOwner.get())
+            false -> membersRepository.findAllByUserId(id)
+        }
             .map(GroupMember::groupId)
             .flatMap(groupsRepository::findById)
 
