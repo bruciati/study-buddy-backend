@@ -16,18 +16,17 @@ import java.util.*
 @RequestMapping(value = ["meetings"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class MeetingsController {
     @Autowired
-    lateinit var attendeesRepository: MeetingAttendeesRepository
-
-    @Autowired
     lateinit var meetingsRepository: MeetingsRepository
 
-    @GetMapping("/{id}")
-    fun getMeetingById(@PathVariable("id") id: Long) = meetingsRepository.findById(id)
+    @Autowired
+    lateinit var attendeesRepository: MeetingAttendeesRepository
+
 
     @GetMapping
-    fun getAllMeetingsByOptionalIds(@RequestParam id: Optional<List<Long>>): Flux<Meeting> =
-        Mono.justOrEmpty(id).flatMapMany(meetingsRepository::findAllById)
-            .switchIfEmpty(meetingsRepository.findAll())
+    fun getMeetings(@RequestParam id: Optional<List<Long>>): Flux<Meeting> = when (id.isPresent) {
+        true -> meetingsRepository.findAllById(id.get())
+        false -> meetingsRepository.findAll()
+    }
 
     @GetMapping("/location/{location}")
     fun getMeetingByLocation(@PathVariable("location") location: String) =
@@ -35,9 +34,10 @@ class MeetingsController {
 
     @GetMapping("/user/{id}")
     fun getMeetingsByUserId(@PathVariable id: Long, @RequestParam("is_host") isHost: Optional<Boolean>): Flux<Meeting> =
-        Mono.justOrEmpty(isHost)
-            .flatMapMany { b -> attendeesRepository.findAllByUserIdAndIsHost(id, b) }
-            .switchIfEmpty(attendeesRepository.findAllByUserId(id))
+        when (isHost.isPresent) {
+            true -> attendeesRepository.findAllByUserIdAndIsHost(id, isHost.get())
+            false -> attendeesRepository.findAllByUserId(id)
+        }
             .map(MeetingAttendee::meetingId)
             .flatMap(meetingsRepository::findById)
 
