@@ -9,12 +9,14 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator
 
 @Configuration
 class DatabaseConfiguration {
+
     @Bean
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-   fun dbConnInitializer(connectionFactory: ConnectionFactory): ConnectionFactoryInitializer = with(ConnectionFactoryInitializer()){
-        this.setConnectionFactory(connectionFactory)
-        this.setDatabasePopulator(ResourceDatabasePopulator(ClassPathResource("schema.sql")))
-        return this
-    }
-    
+    fun dbConnInitializer(connectionFactory: ConnectionFactory): ConnectionFactoryInitializer =
+        with(ConnectionFactoryInitializer()) {
+            this.setConnectionFactory(connectionFactory)
+            this.setDatabasePopulator(ResourceDatabasePopulator(ClassPathResource("schema.sql")))
+            return this
+        }
+
 }
