@@ -2,11 +2,11 @@ package brc.studybuddy.backend.gateway.graphql.type
 
 import brc.studybuddy.backend.gateway.service.GroupsWebClient
 import brc.studybuddy.backend.gateway.service.MeetingsWebClient
-import brc.studybuddy.backend.gateway.service.UsersWebClient
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import reactor.core.publisher.Flux
@@ -23,10 +23,10 @@ class UserTypeController {
 
 
     @SchemaMapping(field = "groups")
-    fun getFieldGroups(user: User): Flux<Group> =
-        groupsWebClient.getGroupsByUserId(user.id, Optional.empty())
+    fun getFieldGroups(user: User, @Argument ownedBy: Optional<Boolean>): Flux<Group> =
+        groupsWebClient.getGroupsByUserId(user.id, ownedBy)
 
     @SchemaMapping(field = "meetings")
-    fun getFieldMeetings(user: User): Flux<Meeting> =
-        meetingsWebClient.getMeetingsByUserId(user.id, Optional.empty())
+    fun getFieldMeetings(user: User, @Argument hostedBy: Optional<Boolean>): Flux<Meeting> =
+        meetingsWebClient.getMeetingsByUserId(user.id, hostedBy)
 }

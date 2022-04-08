@@ -1,8 +1,8 @@
 type User {
     id: ID!
     email: String!
-    groups: [Group!]
-    meetings: [Meeting!]
+    groups(ownedBy: Boolean): [Group!]
+    meetings(hostedBy: Boolean): [Meeting!]
 }
 
 type Group {
