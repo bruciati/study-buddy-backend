@@ -45,7 +45,7 @@ class AuthController {
     /*
      * Generate a new access token for the given user, with the given time to live (expressed in seconds)
      */
-    fun generateToken(user: User): String {
+    fun generateToken(user: User): Token {
         val now = Instant.now()
         val expire = now.plusSeconds(ttl)
         return signer.setSubject(user.id.toString())
@@ -57,9 +57,9 @@ class AuthController {
     @PostMapping
     fun authenticate(@RequestBody user: User): Mono<AuthResponse> =
         Mono.just(user)
-            .filter { u -> u.loginType == User.Type.PASSWORD }
+            .filter { u -> u.authType == User.AuthType.PASSWORD }
             .switchIfEmpty(Mono.error(AuthError(401, "Login type not allowed")))
-            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.loginValue) }
+            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.authValue) }
             .switchIfEmpty(Mono.error(AuthError(401, "Incorrect credentials")))
             .map { AuthSuccess(generateToken(user)) }
 
