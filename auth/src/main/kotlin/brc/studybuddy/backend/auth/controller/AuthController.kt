@@ -25,6 +25,7 @@ class AuthController {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
     @Autowired
     lateinit var key: Key
     lateinit var signer: JwtBuilder
@@ -54,13 +55,35 @@ class AuthController {
             .compact()
     }
 
+    fun validateTokenExpiry(token: Token): Boolean = true
+
     @PostMapping
     fun authenticate(@RequestBody user: User): Mono<AuthResponse> =
         Mono.just(user)
-            .filter { u -> u.authType == User.AuthType.PASSWORD }
-            .switchIfEmpty(Mono.error(AuthError(401, "Login type not allowed")))
+            .flatMap {
+                when (it.authType) {
+                    User.AuthType.FACEBOOK -> facebookAuthentication(it)
+                    User.AuthType.PASSWORD -> emailAuthentication(it)
+                    else -> Mono.error(AuthError(401, "Login type not allowed"))
+                }
+            }
+            .map { AuthSuccess(generateToken(user)) }
+
+
+    fun emailAuthentication(user: User): Mono<User> =
+        Mono.just(user)
             .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.authValue) }
             .switchIfEmpty(Mono.error(AuthError(401, "Incorrect credentials")))
-            .map { AuthSuccess(generateToken(user)) }
+
+    fun facebookAuthentication(user: User): Mono<User> =
+        Mono.just(user)
+            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.authValue) }
+            .filter { it.authValue == user.authValue && validateTokenExpiry(it.authValue) }
+            .switchIfEmpty(checkFacebookToken(user))
+
+    /*
+     * Check the facebook token, if valid, save it into the repository
+     */
+    fun checkFacebookToken(user: User): Mono<User> = Mono.just(user)
 
 }
