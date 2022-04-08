@@ -14,5 +14,4 @@ sealed interface MeetingAttendeesRepository: ReactiveCrudRepository<MeetingAtten
     fun deleteAllByMeetingId(meetingId: Long) : Mono<Void>
     fun findAllByUserId(id: Long) : Flux<MeetingAttendee>
     fun findAllByUserIdAndIsHost(id:Long, isHost : Boolean = true): Flux<MeetingAttendee>
-
 }

@@ -40,13 +40,17 @@ class MeetingsController {
     @GetMapping("/location/{location}")
     fun getMeetingByLocation(@PathVariable("location") location: String) =
         meetingsRepository.findMeetingsByLocation(location)
-
+    
     @GetMapping("/user/{id}")
-    fun getMeetingsByUserId(@PathVariable id: Long): Flux<Meeting> =
-        attendeesRepository.findAllByUserId(id).map(MeetingAttendee::meetingId).flatMap(meetingsRepository::findById)
+    fun getMeetingsByUserId(@PathVariable id: Long, @RequestParam isHost: Optional<Boolean>): Flux<Meeting> =
+        Mono.justOrEmpty(isHost).flatMapMany { b -> attendeesRepository.findAllByUserIdAndIsHost(id, b)}
+            .switchIfEmpty(attendeesRepository.findAllByUserId(id)).map(MeetingAttendee::meetingId).flatMap(meetingsRepository::findById)
+
+    @GetMapping("/group/{id}")
+    fun getMeetingsByGroupId(@PathVariable id: Long): Flux<Meeting> = meetingsRepository.findMeetingByGroupId(id)
 
     @DeleteMapping("/user/{id}")
-    fun deleteMeetingByUserIdAndIsHostTrue(@PathVariable id: Long): Flux<Void> =
+    fun deleteMeetingByUserIdAndIsHost(@PathVariable id: Long): Flux<Void> =
         attendeesRepository.findAllByUserIdAndIsHost(id).map(MeetingAttendee::meetingId)
             .flatMap(meetingsRepository::deleteById)
 
