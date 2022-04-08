@@ -45,10 +45,12 @@ class MeetingsController {
     fun getMeetingsByGroupId(@PathVariable id: Long): Flux<Meeting> = meetingsRepository.findByGroupId(id)
 
     @DeleteMapping("/user/{id}")
-    fun deleteMeetingByUserIdAndIsHost(@PathVariable id: Long): Flux<Void> =
+    fun deleteMeetingByUserIdAndIsHost(@PathVariable id: Long): Mono<Boolean> =
         attendeesRepository.findAllByUserIdAndIsHost(id)
             .map(MeetingAttendee::meetingId)
             .flatMap(meetingsRepository::deleteById)
+            .then(Mono.just(true))
+            .onErrorReturn(false)
 
     @PostMapping
     fun addMeeting(@RequestBody input: MeetingInput): Mono<Meeting> = Mono.just(input)
@@ -62,5 +64,7 @@ class MeetingsController {
             .flatMap(meetingsRepository::save)
 
     @DeleteMapping("/{id}")
-    fun deleteMeetingById(@PathVariable id: Long): Mono<Void> = meetingsRepository.deleteById(id)
+    fun deleteMeetingById(@PathVariable id: Long): Mono<Boolean> = meetingsRepository.deleteById(id)
+        .thenReturn(true)
+        .onErrorReturn(false)
 }
