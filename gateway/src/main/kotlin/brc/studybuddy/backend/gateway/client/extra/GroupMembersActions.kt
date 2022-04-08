@@ -16,18 +16,18 @@ internal interface GroupMembersActions {
         .bodyToMono(GroupMember::class.java)
 
 
-    fun deleteGroupMembersByUserId(id: Long): Mono<Void> = webClient.delete()
+    fun deleteGroupMembersByUserId(id: Long): Mono<Boolean> = webClient.delete()
         .uri("/members/user/$id")
         .retrieve()
-        .bodyToMono(Void::class.java)
+        .bodyToMono(Boolean::class.java)
 
-    fun deleteGroupMembersByGroupId(id: Long): Mono<Void> = webClient.delete()
+    fun deleteGroupMembersByGroupId(id: Long): Mono<Boolean> = webClient.delete()
         .uri("/members/group/$id")
         .retrieve()
-        .bodyToMono(Void::class.java)
+        .bodyToMono(Boolean::class.java)
 
-    fun deleteGroupMemberByGroupIdAndUserId(groupId: Long, userId: Long): Mono<Void> = webClient.delete()
+    fun deleteGroupMemberByGroupIdAndUserId(groupId: Long, userId: Long): Mono<Boolean> = webClient.delete()
         .uri("/members/group/$groupId/user/$userId")
         .retrieve()
-        .bodyToMono(Void::class.java)
+        .bodyToMono(Boolean::class.java)
 }
