@@ -23,10 +23,10 @@ class UserTypeController {
 
 
     @SchemaMapping(field = "groups")
-    fun getFieldGroups(user: User, @Argument ownedBy: Optional<Boolean>): Flux<Group> =
-        groupsWebClient.getGroupsByUserId(user.id, ownedBy)
+    fun getFieldGroups(user: User, @Argument owned: Optional<Boolean>): Flux<Group> =
+        groupsWebClient.getGroupsByUserId(user.id, owned)
 
     @SchemaMapping(field = "meetings")
-    fun getFieldMeetings(user: User, @Argument hostedBy: Optional<Boolean>): Flux<Meeting> =
-        meetingsWebClient.getMeetingsByUserId(user.id, hostedBy)
+    fun getFieldMeetings(user: User, @Argument hosted: Optional<Boolean>): Flux<Meeting> =
+        meetingsWebClient.getMeetingsByUserId(user.id, hosted)
 }
