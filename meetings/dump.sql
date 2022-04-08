@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS meetings
     datetime BIGINT       NOT NULL,
     type     VARCHAR(8)   NOT NULL,
     location VARCHAR(64)  NOT NULL,
-    UNIQUE KEY (group_id, name)
+    UNIQUE (group_id, name)
 );
 
 --
