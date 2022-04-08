@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS meetings
     datetime BIGINT       NOT NULL,
     type     VARCHAR(8)   NOT NULL,
     location VARCHAR(64)  NOT NULL,
-    UNIQUE KEY (group_id, name)
-    );
+    UNIQUE (group_id, name)
+);
 
 --
 -- Table structure for table `attendees`
@@ -22,8 +22,6 @@ CREATE TABLE IF NOT EXISTS attendees
     is_host    BOOLEAN DEFAULT false NOT NULL,
     PRIMARY KEY (user_id, meeting_id),
     FOREIGN KEY (meeting_id) REFERENCES meetings (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-    );
-
-
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
