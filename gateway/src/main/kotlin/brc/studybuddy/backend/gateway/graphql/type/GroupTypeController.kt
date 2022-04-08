@@ -1,7 +1,7 @@
 package brc.studybuddy.backend.gateway.graphql.type
 
-import brc.studybuddy.backend.gateway.service.MeetingsWebClient
-import brc.studybuddy.backend.gateway.service.UsersWebClient
+import brc.studybuddy.backend.gateway.client.MeetingsWebClient
+import brc.studybuddy.backend.gateway.client.UsersWebClient
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User

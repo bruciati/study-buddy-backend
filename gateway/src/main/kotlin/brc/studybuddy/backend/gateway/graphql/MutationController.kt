@@ -1,10 +1,9 @@
 package brc.studybuddy.backend.gateway.graphql
 
-import brc.studybuddy.backend.gateway.service.GroupsWebClient
-import brc.studybuddy.backend.gateway.service.MeetingsWebClient
-import brc.studybuddy.backend.gateway.service.UsersWebClient
+import brc.studybuddy.backend.gateway.client.GroupsWebClient
+import brc.studybuddy.backend.gateway.client.MeetingsWebClient
+import brc.studybuddy.backend.gateway.client.UsersWebClient
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Controller
 
 //@Controller
 class MutationController {

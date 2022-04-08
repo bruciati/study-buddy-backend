@@ -1,4 +1,4 @@
-package brc.studybuddy.backend.gateway.service.extra
+package brc.studybuddy.backend.gateway.client.extra
 
 import brc.studybuddy.input.MeetingAttendeeInput
 import brc.studybuddy.model.MeetingAttendee
