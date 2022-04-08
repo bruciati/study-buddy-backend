@@ -53,6 +53,7 @@ class QueryController {
     @QueryMapping
     fun groupByTitle(@Argument title: String): Mono<Group> = groupsWebClient.getGroupByTitle(title)
 
+
     // ------------------------------------------------------
     // -------------------- Meeting Class -------------------
     // ------------------------------------------------------
