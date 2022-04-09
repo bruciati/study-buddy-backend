@@ -31,12 +31,12 @@ class WebRequestFilter : WebFilter {
         return when (reqPath.startsWith("/auth") || isClientAuthorized(exchange)) {
             true -> chain.filter(exchange)
             false -> with(exchange.response) {
-                this.statusCode = HttpStatus.UNAUTHORIZED
-                this.headers.add(
+                statusCode = HttpStatus.UNAUTHORIZED
+                headers.add(
                     "WWW-Authenticate",
                     "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
                 )
-                this.setComplete()
+                setComplete()
             }
         }
     }
