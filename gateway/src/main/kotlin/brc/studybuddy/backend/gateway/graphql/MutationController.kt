@@ -9,6 +9,7 @@ import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
+import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
 import reactor.core.publisher.Mono
 
@@ -28,23 +29,38 @@ class MutationController {
     // --------------------- Group Class --------------------
     // ------------------------------------------------------
 
+    @MutationMapping
     fun saveGroup(@Argument input: GroupInput): Mono<Group> = TODO()
 
+    @MutationMapping
     fun updateGroup(@Argument input: GroupInput): Mono<Group> = TODO()
 
+    @MutationMapping
     fun deleteGroup(@Argument id: Long): Mono<Boolean> = TODO()
 
+    @MutationMapping
     fun addGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
+
+    @MutationMapping
+    fun removeGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
+
 
     // ------------------------------------------------------
     // -------------------- Meeting Class -------------------
     // ------------------------------------------------------
 
+    @MutationMapping
     fun saveMeeting(@Argument input: MeetingInput): Mono<Meeting> = TODO()
 
+    @MutationMapping
     fun updateMeeting(@Argument input: MeetingInput): Mono<Meeting> = TODO()
 
+    @MutationMapping
     fun deleteMeeting(@Argument id: Long): Mono<Boolean> = TODO()
 
+    @MutationMapping
     fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
+
+    @MutationMapping
+    fun removeMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
 }

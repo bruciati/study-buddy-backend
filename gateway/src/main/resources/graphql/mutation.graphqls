@@ -4,6 +4,7 @@ type Mutation {
     deleteGroup(id: ID!): Boolean
 
     addGroupMember(groupId: ID!, userId: ID!): Boolean
+    removeGroupMember(groupId: ID!, userId: ID!): Boolean
 
 
     saveMeeting(input: MeetingInput!): Meeting
@@ -11,4 +12,5 @@ type Mutation {
     deleteMeeting(id: ID!): Boolean
 
     addMeetingAttendee(meetingId: ID!, userId: ID!): Boolean
+    removeMeetingAttendee(meetingId: ID!, userId: ID!): Boolean
 }
