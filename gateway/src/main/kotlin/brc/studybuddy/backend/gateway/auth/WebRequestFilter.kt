@@ -30,9 +30,13 @@ class WebRequestFilter : WebFilter {
         val reqPath = exchange.request.path.value()
         return when (reqPath.startsWith("/auth") || isClientAuthorized(exchange)) {
             true -> chain.filter(exchange)
-            false -> {
-                exchange.response.statusCode = HttpStatus.UNAUTHORIZED
-                exchange.response.setComplete()
+            false -> with(exchange.response) {
+                this.statusCode = HttpStatus.UNAUTHORIZED
+                this.headers.add(
+                    "WWW-Authenticate",
+                    "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
+                )
+                this.setComplete()
             }
         }
     }
