@@ -10,50 +10,48 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
-private const val ENDPOINT = "/groups"
-
 @Service
 class GroupsWebClient : GroupMembersActions {
     @Autowired
     private lateinit var webClientBuilder: WebClient.Builder
-    override val webClient by lazy { webClientBuilder.baseUrl("lb://groups").build() }
+    override val webClient by lazy { webClientBuilder.baseUrl(GROUPS_BASEURL).build() }
 
 
     fun saveGroup(input: GroupInput): Mono<Group> = webClient.post()
-        .uri(ENDPOINT)
+        .uri(GROUPS_ENDPOINT)
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Group::class.java)
 
     fun updateGroup(id: Long, input: GroupInput): Mono<Group> = webClient.put()
-        .uri("$ENDPOINT/$id")
+        .uri("$GROUPS_ENDPOINT/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Group::class.java)
 
     fun deleteGroup(id: Long): Mono<Boolean> = webClient.delete()
-        .uri("$ENDPOINT/$id")
+        .uri("$GROUPS_ENDPOINT/$id")
         .retrieve()
         .bodyToMono(Boolean::class.java)
 
 
     fun getGroups(ids: Optional<List<Long>>): Flux<Group> = webClient.get()
-        .uri { b -> b.path(ENDPOINT).queryParamIfPresent("id", ids).build() }
+        .uri { b -> b.path(GROUPS_ENDPOINT).queryParamIfPresent("id", ids).build() }
         .retrieve()
         .bodyToFlux(Group::class.java)
 
     fun getGroupsByUserId(id: Long, isOwner: Optional<Boolean>): Flux<Group> = webClient.get()
-        .uri { b -> b.path("$ENDPOINT/user/$id").queryParamIfPresent("is_owner", isOwner).build() }
+        .uri { b -> b.path("$GROUPS_ENDPOINT/user/$id").queryParamIfPresent("is_owner", isOwner).build() }
         .retrieve()
         .bodyToFlux(Group::class.java)
 
     fun getGroup(id: Long): Mono<Group> = webClient.get()
-        .uri("$ENDPOINT/$id")
+        .uri("$GROUPS_ENDPOINT/$id")
         .retrieve()
         .bodyToMono(Group::class.java)
 
     fun getGroupByTitle(title: String): Mono<Group> = webClient.get()
-        .uri("$ENDPOINT/title/$title")
+        .uri("$GROUPS_ENDPOINT/title/$title")
         .retrieve()
         .bodyToMono(Group::class.java)
 }

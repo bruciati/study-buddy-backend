@@ -11,44 +11,42 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
-private const val ENDPOINT = "/users"
-
 @Service
 class UsersWebClient : GroupMembersActions, MeetingAttendeesActions {
     @Autowired
     private lateinit var webClientBuilder: WebClient.Builder
-    override val webClient by lazy { webClientBuilder.baseUrl("lb://users").build() }
+    override val webClient by lazy { webClientBuilder.baseUrl(USERS_BASEURL).build() }
 
 
     fun saveUser(input: UserInput): Mono<User> = webClient.post()
-        .uri(ENDPOINT)
+        .uri(USERS_ENDPOINT)
         .bodyValue(input)
         .retrieve()
         .bodyToMono(User::class.java)
 
 
     fun getUsers(ids: Optional<List<Long>>): Flux<User> = webClient.get()
-        .uri { b -> b.path(ENDPOINT).queryParamIfPresent("id", ids).build() }
+        .uri { b -> b.path(USERS_ENDPOINT).queryParamIfPresent("id", ids).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUsersByGroupId(id: Long, isOwner: Optional<Boolean>): Flux<User> = webClient.get()
-        .uri { b -> b.path("$ENDPOINT/group/$id").queryParamIfPresent("is_owner", isOwner).build() }
+        .uri { b -> b.path("$USERS_ENDPOINT/group/$id").queryParamIfPresent("is_owner", isOwner).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUsersByMeetingId(id: Long, isHost: Optional<Boolean>): Flux<User> = webClient.get()
-        .uri { b -> b.path("$ENDPOINT/meeting/$id").queryParamIfPresent("is_host", isHost).build() }
+        .uri { b -> b.path("$USERS_ENDPOINT/meeting/$id").queryParamIfPresent("is_host", isHost).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUser(id: Long): Mono<User> = webClient.get()
-        .uri("$ENDPOINT/$id")
+        .uri("$USERS_ENDPOINT/$id")
         .retrieve()
         .bodyToMono(User::class.java)
 
     fun getUserByEmail(email: String): Mono<User> = webClient.get()
-        .uri("$ENDPOINT/email/$email")
+        .uri("$USERS_ENDPOINT/email/$email")
         .retrieve()
         .bodyToMono(User::class.java)
 }
