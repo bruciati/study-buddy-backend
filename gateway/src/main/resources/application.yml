@@ -20,6 +20,14 @@ spring:
     cors:
       allowed-origins: "*"
       max-age: "1800s"
+  # Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: "auth"
+          uri: "lb://auth"
+          predicates:
+            - "Path=/auth/**"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
