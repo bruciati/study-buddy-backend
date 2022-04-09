@@ -19,9 +19,20 @@ class GroupsWebClient : GroupMembersActions {
 
     fun saveGroup(input: GroupInput): Mono<Group> = webClient.post()
         .uri("/groups")
-        .bodyValue(input::toModel)
+        .bodyValue(input)
         .retrieve()
         .bodyToMono(Group::class.java)
+
+    fun updateGroup(id: Long, input: GroupInput): Mono<Group> = webClient.put()
+        .uri("/groups/$id")
+        .bodyValue(input)
+        .retrieve()
+        .bodyToMono(Group::class.java)
+
+    fun deleteGroup(id: Long): Mono<Boolean> = webClient.delete()
+        .uri("/groups/$id")
+        .retrieve()
+        .bodyToMono(Boolean::class.java)
 
 
     fun getGroups(ids: Optional<List<Long>>): Flux<Group> = webClient.get()

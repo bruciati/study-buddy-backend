@@ -11,7 +11,7 @@ internal interface MeetingAttendeesActions {
 
     fun saveMeetingAttendee(input: MeetingAttendeeInput): Mono<MeetingAttendee> = webClient.post()
         .uri("/attendees")
-        .bodyValue(input::toModel)
+        .bodyValue(input)
         .retrieve()
         .bodyToMono(MeetingAttendee::class.java)
 

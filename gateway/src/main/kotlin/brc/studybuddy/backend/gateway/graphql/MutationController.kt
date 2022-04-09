@@ -30,13 +30,14 @@ class MutationController {
     // ------------------------------------------------------
 
     @MutationMapping
-    fun saveGroup(@Argument input: GroupInput): Mono<Group> = TODO()
+    fun saveGroup(@Argument input: GroupInput): Mono<Group> = groupsWebClient.saveGroup(input)
 
     @MutationMapping
-    fun updateGroup(@Argument input: GroupInput): Mono<Group> = TODO()
+    fun updateGroup(@Argument id: Long, @Argument input: GroupInput): Mono<Group> =
+        groupsWebClient.updateGroup(id, input)
 
     @MutationMapping
-    fun deleteGroup(@Argument id: Long): Mono<Boolean> = TODO()
+    fun deleteGroup(@Argument id: Long): Mono<Boolean> = groupsWebClient.deleteGroup(id)
 
     @MutationMapping
     fun addGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
@@ -50,13 +51,14 @@ class MutationController {
     // ------------------------------------------------------
 
     @MutationMapping
-    fun saveMeeting(@Argument input: MeetingInput): Mono<Meeting> = TODO()
+    fun saveMeeting(@Argument input: MeetingInput): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
 
     @MutationMapping
-    fun updateMeeting(@Argument input: MeetingInput): Mono<Meeting> = TODO()
+    fun updateMeeting(@Argument id: Long, @Argument input: MeetingInput): Mono<Meeting> =
+        meetingsWebClient.updateMeeting(id, input)
 
     @MutationMapping
-    fun deleteMeeting(@Argument id: Long): Mono<Boolean> = TODO()
+    fun deleteMeeting(@Argument id: Long): Mono<Boolean> = meetingsWebClient.deleteMeeting(id)
 
     @MutationMapping
     fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> = TODO()

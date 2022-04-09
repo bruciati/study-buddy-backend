@@ -19,9 +19,20 @@ class MeetingsWebClient : MeetingAttendeesActions {
 
     fun saveMeeting(input: MeetingInput): Mono<Meeting> = webClient.post()
         .uri("/meetings")
-        .bodyValue(input::toModel)
+        .bodyValue(input)
         .retrieve()
         .bodyToMono(Meeting::class.java)
+
+    fun updateMeeting(id: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
+        .uri("/meetings/$id")
+        .bodyValue(input)
+        .retrieve()
+        .bodyToMono(Meeting::class.java)
+
+    fun deleteMeeting(id: Long): Mono<Boolean> = webClient.delete()
+        .uri("/meetings/$id")
+        .retrieve()
+        .bodyToMono(Boolean::class.java)
 
 
     fun getMeetingsByGroupId(id: Long): Flux<Meeting> = webClient.get()

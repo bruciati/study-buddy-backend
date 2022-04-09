@@ -11,7 +11,7 @@ internal interface GroupMembersActions {
 
     fun saveGroupMember(input: GroupMemberInput): Mono<GroupMember> = webClient.post()
         .uri("/members")
-        .bodyValue(input::toModel)
+        .bodyValue(input)
         .retrieve()
         .bodyToMono(GroupMember::class.java)
 
