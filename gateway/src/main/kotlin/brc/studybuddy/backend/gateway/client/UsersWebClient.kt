@@ -11,6 +11,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
+private const val ENDPOINT = "/users"
+
 @Service
 class UsersWebClient : GroupMembersActions, MeetingAttendeesActions {
     @Autowired
@@ -19,34 +21,34 @@ class UsersWebClient : GroupMembersActions, MeetingAttendeesActions {
 
 
     fun saveUser(input: UserInput): Mono<User> = webClient.post()
-        .uri("/users")
+        .uri(ENDPOINT)
         .bodyValue(input)
         .retrieve()
         .bodyToMono(User::class.java)
 
 
     fun getUsers(ids: Optional<List<Long>>): Flux<User> = webClient.get()
-        .uri { b -> b.path("/users").queryParamIfPresent("id", ids).build() }
+        .uri { b -> b.path(ENDPOINT).queryParamIfPresent("id", ids).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUsersByGroupId(id: Long, isOwner: Optional<Boolean>): Flux<User> = webClient.get()
-        .uri { b -> b.path("/users/group/$id").queryParamIfPresent("is_owner", isOwner).build() }
+        .uri { b -> b.path("$ENDPOINT/group/$id").queryParamIfPresent("is_owner", isOwner).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUsersByMeetingId(id: Long, isHost: Optional<Boolean>): Flux<User> = webClient.get()
-        .uri { b -> b.path("/users/meeting/$id").queryParamIfPresent("is_host", isHost).build() }
+        .uri { b -> b.path("$ENDPOINT/meeting/$id").queryParamIfPresent("is_host", isHost).build() }
         .retrieve()
         .bodyToFlux(User::class.java)
 
     fun getUser(id: Long): Mono<User> = webClient.get()
-        .uri("/users/$id")
+        .uri("$ENDPOINT/$id")
         .retrieve()
         .bodyToMono(User::class.java)
 
     fun getUserByEmail(email: String): Mono<User> = webClient.get()
-        .uri("/users/email/$email")
+        .uri("$ENDPOINT/email/$email")
         .retrieve()
         .bodyToMono(User::class.java)
 }

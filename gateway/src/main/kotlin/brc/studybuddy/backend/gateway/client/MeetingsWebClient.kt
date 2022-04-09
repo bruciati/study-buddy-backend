@@ -10,6 +10,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
+private const val ENDPOINT = "/meetings"
+
 @Service
 class MeetingsWebClient : MeetingAttendeesActions {
     @Autowired
@@ -18,35 +20,35 @@ class MeetingsWebClient : MeetingAttendeesActions {
 
 
     fun saveMeeting(input: MeetingInput): Mono<Meeting> = webClient.post()
-        .uri("/meetings")
+        .uri(ENDPOINT)
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Meeting::class.java)
 
     fun updateMeeting(id: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
-        .uri("/meetings/$id")
+        .uri("$ENDPOINT/$id")
         .bodyValue(input)
         .retrieve()
         .bodyToMono(Meeting::class.java)
 
     fun deleteMeeting(id: Long): Mono<Boolean> = webClient.delete()
-        .uri("/meetings/$id")
+        .uri("$ENDPOINT/$id")
         .retrieve()
         .bodyToMono(Boolean::class.java)
 
 
     fun getMeetingsByGroupId(id: Long): Flux<Meeting> = webClient.get()
-        .uri("/meetings/group/$id")
+        .uri("$ENDPOINT/group/$id")
         .retrieve()
         .bodyToFlux(Meeting::class.java)
 
     fun getMeetingsByUserId(id: Long, isHost: Optional<Boolean>): Flux<Meeting> = webClient.get()
-        .uri { b -> b.path("/meetings/user/$id").queryParamIfPresent("is_host", isHost).build() }
+        .uri { b -> b.path("$ENDPOINT/user/$id").queryParamIfPresent("is_host", isHost).build() }
         .retrieve()
         .bodyToFlux(Meeting::class.java)
 
     fun getMeeting(id: Long): Mono<Meeting> = webClient.get()
-        .uri("/meetings/$id")
+        .uri("$ENDPOINT/$id")
         .retrieve()
         .bodyToMono(Meeting::class.java)
 }
