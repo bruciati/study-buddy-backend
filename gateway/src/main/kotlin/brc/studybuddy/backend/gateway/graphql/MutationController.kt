@@ -29,6 +29,7 @@ class MutationController {
     // --------------------- Group Class --------------------
     // ------------------------------------------------------
 
+    // TODO save owner user (using auth token info)
     @MutationMapping
     fun saveGroup(@Argument input: GroupInput): Mono<Group> = groupsWebClient.saveGroup(input)
 
@@ -36,6 +37,7 @@ class MutationController {
     fun updateGroup(@Argument id: Long, @Argument input: GroupInput): Mono<Group> =
         groupsWebClient.updateGroup(id, input)
 
+    // TODO delete owner user (using auth token info)
     @MutationMapping
     fun deleteGroup(@Argument id: Long): Mono<Boolean> = groupsWebClient.deleteGroup(id)
 
@@ -50,6 +52,7 @@ class MutationController {
     // -------------------- Meeting Class -------------------
     // ------------------------------------------------------
 
+    // TODO save host user (using auth token info)
     @MutationMapping
     fun saveMeeting(@Argument input: MeetingInput): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
 
@@ -57,6 +60,7 @@ class MutationController {
     fun updateMeeting(@Argument id: Long, @Argument input: MeetingInput): Mono<Meeting> =
         meetingsWebClient.updateMeeting(id, input)
 
+    // TODO delete host user (using auth token info)
     @MutationMapping
     fun deleteMeeting(@Argument id: Long): Mono<Boolean> = meetingsWebClient.deleteMeeting(id)
 
