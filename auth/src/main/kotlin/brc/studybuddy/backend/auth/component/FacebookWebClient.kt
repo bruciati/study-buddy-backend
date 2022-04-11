@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.auth.service
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -9,16 +10,12 @@ import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import java.time.Duration
 
+
 @Component
-class FacebookClient {
+class FacebookWebClient {
 
-    private val httpClient: HttpClient = HttpClient.create()
-        .responseTimeout(Duration.ofSeconds(3))
-
-    private val webClientBuilder: WebClient.Builder = WebClient.builder()
-        .clientConnector(ReactorClientHttpConnector())
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-
+    @Autowired
+    lateinit var webClientBuilder: WebClient.Builder
     val webClient by lazy { webClientBuilder.baseUrl("https://graph.facebook.com/").build() }
 
     fun getTokenInfo(token: String): Mono<String> {

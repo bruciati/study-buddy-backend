@@ -8,30 +8,22 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.util.*
-import javax.annotation.PostConstruct
 import javax.crypto.spec.SecretKeySpec
 
 @Component
-class TokenManager {
+class TokenManager(
+    @Value("\${secrets.ttl}") val timeToLive: Long,
+    @Value("\${secrets.key}") val secretKey: String
+) {
 
-    @Value("\${secrets.ttl}")
-    var timeToLive: Long = 0
-
-    @Value("\${secrets.key}")
-    lateinit var secretKey: String
-
-    lateinit var signer: JwtBuilder
-
-    /*
-     * Since JWT depends on the private Key (which is Autowired) we're not exactly sure when the container
-     * system will eventually autowire that parameter. We use @PostConstruct to be sure that such method
-     * will be executed after the bean creation.
-     */
-    @PostConstruct
-    fun finalizeConstruction() {
-        val key = SecretKeySpec(Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS256.jcaName)
-        signer = Jwts.builder().signWith(key)
-    }
+    val signer: JwtBuilder =
+        Jwts.builder()
+            .signWith(
+                SecretKeySpec(
+                    Base64.getDecoder().decode(secretKey),
+                    SignatureAlgorithm.HS256.jcaName
+                )
+            )
 
     /*
      * Generate a new access token for the given user, with the given time to live (expressed in seconds)
