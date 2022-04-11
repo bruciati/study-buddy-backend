@@ -15,13 +15,6 @@ server:
 spring:
   application:
     name: "auth"
-  # R2DBC configurations
-  data:
-    r2dbc:
-      repositories:
-        enabled: true
-  r2dbc:
-    url: "r2dbc:postgres://postgres:pwd@localhost/studybuddy"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Custom Configurations
