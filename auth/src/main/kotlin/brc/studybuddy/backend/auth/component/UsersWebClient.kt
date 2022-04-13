@@ -7,19 +7,26 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 internal const val USERS_BASEURL = "lb://users"
-internal const val USERS_ENDPOINT = "/users"
 
 @Component
 class UsersWebClient {
 
     @Autowired
     lateinit var webClientBuilder: WebClient.Builder
-    val webClient by lazy { webClientBuilder.baseUrl("lb://users").build() }
+    val webClient by lazy { webClientBuilder.baseUrl(USERS_BASEURL).build() }
 
     fun getUserByEmail(email: String): Mono<User> =
             webClient.get()
                 .uri("/users/email/{email}", email)
                 .retrieve()
                 .bodyToMono(User::class.java)
+
+//    fun insertFacebookUser(email: String, facebookId: Int): Mono<User> {
+//        return webClient.post()
+//                .uri("/users/facebook")
+//                .bodyValue(User(email, facebookId))
+//                .retrieve()
+//                .bodyToMono(User::class.java)
+//    }
 
 }

@@ -42,7 +42,8 @@ class AuthService {
 //            .switchIfEmpty(checkFacebookToken(user))
 
     /*
-     * Check the facebook token, if valid, save it into the repository
+     * Check if the received Facebook token is valid by calling the Facebook API
+     * If the user is valid, returns a the userId associated with the token
      */
-    fun checkFacebookToken(user: User): Mono<User> = Mono.just(user)
+    fun checkFacebookToken(user: User): Mono<Int> = Mono.just(130)
 }

@@ -22,7 +22,8 @@ spring:
 secrets:
   key: "asdkfja82345n23489fdshnf894nfjanf094u3n34f9fnjanf09u43nf43jknf0a97sdhfshdflakjsdhf"
   ttl: 300000 # time to live in milliseconds for each token
-
+  facebook:
+    apptoken: "SECRET_APP_TOKEN"
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
 # ----------------------------------------------------------------------------------------------

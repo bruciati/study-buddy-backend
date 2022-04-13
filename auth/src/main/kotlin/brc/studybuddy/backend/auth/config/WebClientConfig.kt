@@ -18,7 +18,7 @@ class WebClientConfig {
         .responseTimeout(Duration.ofSeconds(3))
 
     @Bean
-    @LoadBalanced
+//    @LoadBalanced
     fun webClientBuilder(httpClient: HttpClient): WebClient.Builder = WebClient.builder()
         .clientConnector(ReactorClientHttpConnector(httpClient))
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
