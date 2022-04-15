@@ -22,7 +22,7 @@ spring:
     config:
       server:
         native:
-          search-locations: ["file:./config", "classpath:/config"]
+          search-locations: ["file:./config", "classpath:/configserver"]
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
