@@ -10,7 +10,7 @@ import javax.crypto.spec.SecretKeySpec
 
 @Configuration
 class AuthConfig {
-    @Value("\${secrets.key}")
+    @Value("\${auth.secret}")
     lateinit var secretKey: String
 
     @Bean

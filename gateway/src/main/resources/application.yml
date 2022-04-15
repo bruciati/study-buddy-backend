@@ -15,12 +15,15 @@ server:
 spring:
   application:
     name: "gateway"
+  # Config-Server configurations
+  config:
+    import: "optional:configserver:http://localhost:8761" # Same as "eureka.client.service-url.defaultZone"
   # GraphQl configurations
   graphql:
     cors:
       allowed-origins: "*"
       max-age: "1800s"
-  # Gateway
+  # Gateway configurations
   cloud:
     gateway:
       routes:
@@ -35,10 +38,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
-
-# ----------------------------------------------------------------------------------------------
-#                                       Custom Configurations
-# ----------------------------------------------------------------------------------------------
-secrets:
-  key: "asdkfja82345n23489fdshnf894nfjanf094u3n34f9fnjanf09u43nf43jknf0a97sdhfshdflakjsdhf"
+      defaultZone: "http://localhost:8761/eureka"
