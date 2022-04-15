@@ -4,8 +4,8 @@ let
   jdk = pkgs.jdk17_headless;
 in
 pkgs.mkShell {
-  buildInputs = [
+  buildInputs = with pkgs; [
     jdk
-    pkgs.maven
+    jetbrains.idea-ultimate
   ];
 }
