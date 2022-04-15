@@ -30,6 +30,13 @@
         </dependency>
         <!-- END/Eureka Server -->
 
+        <!-- Config Server -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+        <!-- END/Config Server -->
+
         <!-- Kotlin Addons -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

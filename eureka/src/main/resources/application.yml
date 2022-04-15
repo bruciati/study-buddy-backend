@@ -15,6 +15,14 @@ server:
 spring:
   application:
     name: "eureka"
+  # ConfigServer Configurations
+  profiles:
+    active: "native"
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: ["file:./config", "classpath:/config"]
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
@@ -24,4 +32,4 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
     service-url:
-      defaultZone: http://0.0.0.0:8761/eureka
+      defaultZone: "http://0.0.0.0:8761/eureka"
