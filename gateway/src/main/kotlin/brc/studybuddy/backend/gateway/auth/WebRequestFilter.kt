@@ -21,6 +21,7 @@ class WebRequestFilter : WebFilter {
         val authCode = exchange.request.headers.getFirst("Authorization")
 
         // TODO Implement unauthenticated request filtering
+        exchange.request.headers.add("X-UserID", "1")
         return true
     }
 
