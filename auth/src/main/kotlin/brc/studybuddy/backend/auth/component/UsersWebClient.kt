@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.auth.component
 
+import brc.studybuddy.input.UserInput
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -21,12 +22,12 @@ class UsersWebClient {
                 .retrieve()
                 .bodyToMono(User::class.java)
 
-//    fun insertFacebookUser(email: String, facebookId: Int): Mono<User> {
-//        return webClient.post()
-//                .uri("/users/facebook")
-//                .bodyValue(User(email, facebookId))
-//                .retrieve()
-//                .bodyToMono(User::class.java)
-//    }
+    fun insertFacebookUser(email: String, facebookId: Long): Mono<User> {
+        return webClient.post()
+                .uri("/users/facebook")
+                .bodyValue(UserInput(email, User.AuthType.FACEBOOK, facebookId.toString()))
+                .retrieve()
+                .bodyToMono(User::class.java)
+    }
 
 }

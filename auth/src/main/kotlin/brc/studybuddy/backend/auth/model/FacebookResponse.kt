@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
+/* Main response wrapper */
+data class FacebookResponse(val data: FacebookResponseData)
+
+/* Instruct Jackson with the classes that can use to deserialize the interface */
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
-    JsonSubTypes.Type(value = Success::class, name = "data"),
-    JsonSubTypes.Type(value = Error::class, name = "data")
+    JsonSubTypes.Type(value = FacebookSuccess::class),
+    JsonSubTypes.Type(value = FacebookError::class)
 )
 interface FacebookResponseData
 
-
-data class FacebookResponse(
-    val data: FacebookResponseData
-)
-
-data class Success(
+/* Successful Facebook response */
+data class FacebookSuccess(
     @JsonProperty("app_id")
     val appId: Long,
     val type: String,
@@ -29,7 +29,8 @@ data class Success(
     val userId: Long
 ) : FacebookResponseData
 
-data class Error(
+/* Error Facebook response */
+data class FacebookError(
     val error: Error,
     @JsonProperty("is_valid")
     val isValid: Boolean,
