@@ -5,6 +5,7 @@ import brc.studybuddy.backend.gateway.client.MeetingsWebClient
 import brc.studybuddy.backend.gateway.client.UsersWebClient
 import brc.studybuddy.input.GroupInput
 import brc.studybuddy.input.GroupMemberInput
+import brc.studybuddy.input.MeetingAttendeeInput
 import brc.studybuddy.input.MeetingInput
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
@@ -89,9 +90,27 @@ class MutationController {
     // -------------------- Meeting Class -------------------
     // ------------------------------------------------------
 
-    // TODO save host user (using auth token info)
     @MutationMapping
-    fun saveMeeting(@Argument input: MeetingInput): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
+    fun saveMeeting(
+        @RequestHeader("X-UserID") userId: Long,
+        @Argument input: MeetingInput
+    ): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
+        .flatMap { m ->
+            Mono.just(MeetingAttendeeInput(m.id, userId, true))
+                .flatMap { a ->
+                    meetingsWebClient.saveMeetingAttendee(a)
+                        .then(usersWebClient.saveMeetingAttendee(a))
+                        .onErrorResume { e ->
+                            meetingsWebClient.deleteMeetingAttendee(a)
+                                .then(Mono.error(e))
+                        }
+                }
+                .onErrorResume { e ->
+                    meetingsWebClient.deleteMeeting(m.id)
+                        .then(Mono.error(e))
+                }
+                .thenReturn(m)
+        }
 
     @MutationMapping
     fun updateMeeting(@Argument id: Long, @Argument input: MeetingInput): Mono<Meeting> =
@@ -99,11 +118,28 @@ class MutationController {
 
     // TODO delete host user (using auth token info)
     @MutationMapping
-    fun deleteMeeting(@Argument id: Long): Mono<Boolean> = meetingsWebClient.deleteMeeting(id)
+    fun deleteMeeting(
+        @RequestHeader("X-UserID") userId: Long,
+        @Argument meetingId: Long
+    ): Mono<Boolean> = meetingsWebClient.deleteMeeting(meetingId)
 
     @MutationMapping
-    fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
+    fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> =
+        Mono.just(MeetingAttendeeInput(meetingId, userId, false))
+            .flatMap { a ->
+                meetingsWebClient.saveMeetingAttendee(a)
+                    .then(usersWebClient.saveMeetingAttendee(a))
+                    .onErrorResume { e ->
+                        meetingsWebClient.deleteMeetingAttendee(a)
+                            .then(Mono.error(e))
+                    }
+                    .thenReturn(true)
+            }
 
     @MutationMapping
-    fun removeMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> = TODO()
+    fun removeMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> =
+        Mono.just(MeetingAttendeeInput(meetingId, userId, false))
+            .flatMap { a ->
+                TODO()
+            }
 }

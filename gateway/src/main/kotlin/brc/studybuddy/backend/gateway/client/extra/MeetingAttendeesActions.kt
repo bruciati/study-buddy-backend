@@ -27,8 +27,8 @@ internal interface MeetingAttendeesActions {
         .retrieve()
         .bodyToMono(Boolean::class.java)
 
-    fun deleteMeetingAttendeeByMeetingIdAndUserId(meetingId: Long, userId: Long): Mono<Boolean> = webClient.delete()
-        .uri("$ATTENDEES_ENDPOINT/meeting/$meetingId/user/$userId")
+    fun deleteMeetingAttendee(input: MeetingAttendeeInput): Mono<Boolean> = webClient.delete()
+        .uri("$ATTENDEES_ENDPOINT/meeting/${input.meetingId}/user/${input.userId}")
         .retrieve()
         .bodyToMono(Boolean::class.java)
 }
