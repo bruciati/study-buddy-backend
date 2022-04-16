@@ -3,6 +3,7 @@ package brc.studybuddy.backend.gateway.auth
 import brc.studybuddy.backend.gateway.config.AuthConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
@@ -17,11 +18,14 @@ class WebRequestFilter : WebFilter {
     lateinit var authConfig: AuthConfig
 
 
-    private fun isClientAuthorized(exchange: ServerWebExchange): Boolean {
-        val authCode = exchange.request.headers.getFirst("Authorization")
+    // TODO Implement unauthenticated request filtering
+    private fun isClientAuthorized(headers: HttpHeaders): Boolean {
+        val authCode = headers.getFirst("Authorization")
 
-        // TODO Implement unauthenticated request filtering
-        exchange.request.headers.add("X-UserID", "1")
+        val tokenUserId = 1L
+        headers.remove("X-UserID")
+        headers.add("X-UserID", tokenUserId.toString())
+
         return true
     }
 
@@ -29,7 +33,7 @@ class WebRequestFilter : WebFilter {
     // Webflux filter
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val reqPath = exchange.request.path.value()
-        return when (isClientAuthorized(exchange) || reqPath.startsWith("/auth")) {
+        return when (isClientAuthorized(exchange.request.headers) || reqPath.startsWith("/auth")) {
             true -> chain.filter(exchange)
             false -> with(exchange.response) {
                 statusCode = HttpStatus.UNAUTHORIZED
