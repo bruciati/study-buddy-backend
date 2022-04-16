@@ -27,8 +27,8 @@ internal interface GroupMembersActions {
         .retrieve()
         .bodyToMono(Boolean::class.java)
 
-    fun deleteGroupMemberByGroupIdAndUserId(groupId: Long, userId: Long): Mono<Boolean> = webClient.delete()
-        .uri("$MEMBERS_ENDPOINT/group/$groupId/user/$userId")
+    fun deleteGroupMember(input: GroupMemberInput): Mono<Boolean> = webClient.delete()
+        .uri("$MEMBERS_ENDPOINT/group/${input.groupId}/user/${input.userId}")
         .retrieve()
         .bodyToMono(Boolean::class.java)
 }
