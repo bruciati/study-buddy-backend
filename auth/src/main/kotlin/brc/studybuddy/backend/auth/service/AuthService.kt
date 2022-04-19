@@ -6,6 +6,7 @@ import brc.studybuddy.backend.auth.component.UsersWebClient
 import brc.studybuddy.backend.auth.model.AuthError
 import brc.studybuddy.backend.auth.model.FacebookError
 import brc.studybuddy.backend.auth.model.FacebookSuccess
+import brc.studybuddy.input.UserInput
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -27,7 +28,7 @@ class AuthService {
     @Autowired
     lateinit var tokenManager: TokenManager
 
-    fun authenticate(user: User): Mono<String> =
+    fun authenticate(user: UserInput): Mono<String> =
         Mono.just(user)
             .flatMap {
                 when (it.authType) {
@@ -38,7 +39,7 @@ class AuthService {
             }
             .map(tokenManager::generateToken)
 
-    fun emailAuthentication(user: User): Mono<User> =
+    fun emailAuthentication(user: UserInput): Mono<User> =
         Mono.just(user)
             .flatMap { u ->
                 usersWebClient.getUserByEmail(u.email)
@@ -46,7 +47,7 @@ class AuthService {
             }
             .switchIfEmpty(Mono.error(AuthError(401, "Incorrect credentials")))
 
-    fun facebookAuthentication(user: User): Mono<User> =
+    fun facebookAuthentication(user: UserInput): Mono<User> =
         /*
          * Check if the received Facebook token is valid by calling the Facebook API
          * If the user is valid, returns a the userId associated with the token
