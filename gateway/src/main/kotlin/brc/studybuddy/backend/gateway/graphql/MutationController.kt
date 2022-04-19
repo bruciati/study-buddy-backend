@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.gateway.graphql
 
+import brc.studybuddy.backend.gateway.auth.USERID_HEADER
 import brc.studybuddy.backend.gateway.client.GroupsWebClient
 import brc.studybuddy.backend.gateway.client.MeetingsWebClient
 import brc.studybuddy.backend.gateway.client.UsersWebClient
@@ -34,7 +35,7 @@ class MutationController {
 
     @MutationMapping
     fun saveGroup(
-        @RequestHeader("X-UserID") userId: Long,
+        @RequestHeader(USERID_HEADER) userId: Long,
         @Argument input: GroupInput
     ): Mono<Group> = groupsWebClient.saveGroup(input)
         .flatMap { g ->
@@ -92,7 +93,7 @@ class MutationController {
 
     @MutationMapping
     fun saveMeeting(
-        @RequestHeader("X-UserID") userId: Long,
+        @RequestHeader(USERID_HEADER) userId: Long,
         @Argument input: MeetingInput
     ): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
         .flatMap { m ->
