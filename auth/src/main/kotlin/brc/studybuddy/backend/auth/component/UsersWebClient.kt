@@ -24,7 +24,7 @@ class UsersWebClient {
 
     fun insertFacebookUser(email: String, facebookId: Long): Mono<User> {
         return webClient.post()
-                .uri("/users/facebook")
+                .uri("/users")
                 .bodyValue(UserInput(email, User.AuthType.FACEBOOK, facebookId.toString()))
                 .retrieve()
                 .bodyToMono(User::class.java)
