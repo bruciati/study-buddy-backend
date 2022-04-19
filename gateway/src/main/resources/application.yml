@@ -31,6 +31,11 @@ spring:
           uri: "lb://auth"
           predicates:
             - "Path=/auth/**"
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+               allowedOrigins: "*"
+               allowedMethods: "*"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
