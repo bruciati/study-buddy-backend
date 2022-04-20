@@ -37,37 +37,22 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency> <!-- Enables GraphiQl -->
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
         <!-- END/Spring -->
 
-        <!-- Gateway -->
-        <dependency>
+        <!-- Spring Boot -->
+        <dependency> <!-- Gateway -->
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-        <!-- END/Gateway -->
-
-        <!-- Eureka Client -->
-        <dependency>
+        <dependency> <!-- Eureka Client -->
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <!-- END/Eureka Client -->
-
-        <!-- Config Client -->
-        <dependency>
+        <dependency> <!-- Config Client -->
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-        <!-- END/Config Client -->
+        <!-- END/Spring Boot -->
 
         <!-- GraphQl -->
         <dependency>
