@@ -1,5 +1,7 @@
 package brc.studybuddy.backend.gateway.config
 
+import io.jsonwebtoken.JwtParser
+import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -10,11 +12,13 @@ import javax.crypto.spec.SecretKeySpec
 
 @Configuration
 class AuthConfig {
-    @Value("\${auth.secret}")
-    lateinit var secretKey: String
+    @Bean
+    fun privateKeyProvider(@Value("\${auth.secret}") authSecret: String): Key = SecretKeySpec(
+        Base64.getDecoder().decode(authSecret), SignatureAlgorithm.HS256.jcaName
+    )
 
     @Bean
-    fun privateKeyProvider(): Key = SecretKeySpec(
-        Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS256.jcaName
-    )
+    fun jwtParserProvider(privateKeyProvider: Key): JwtParser = Jwts.parserBuilder()
+        .setSigningKey(privateKeyProvider)
+        .build()
 }

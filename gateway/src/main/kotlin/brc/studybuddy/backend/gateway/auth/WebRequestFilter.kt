@@ -1,6 +1,9 @@
 package brc.studybuddy.backend.gateway.auth
 
-import brc.studybuddy.backend.gateway.config.AuthConfig
+import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.JwtParser
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
@@ -24,18 +27,28 @@ private val BEARER_PATTERN: Pattern = Pattern.compile("^Bearer (.+?)$")
 @Order(Int.MIN_VALUE)
 class WebRequestFilter : WebFilter {
     @Autowired
-    lateinit var authConfig: AuthConfig
+    lateinit var jwtParser: JwtParser
 
+    val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
-    // TODO Implement unauthenticated request filtering
     private fun isClientAuthorized(headers: HttpHeaders): Boolean {
-        val authToken = getToken(headers)
+        val token = getToken(headers)
 
-        val tokenUserId = 1L
-        headers.remove(USERID_HEADER)
-        headers.add(USERID_HEADER, tokenUserId.toString())
+        if (token.isPresent) {
+            try {
+                val jwtClaim = jwtParser.parseClaimsJws(token.get())
+                val userId = jwtClaim.body.subject
 
-        return true
+                headers.remove(USERID_HEADER)
+                headers.add(USERID_HEADER, userId)
+
+                return true
+            } catch (e: JwtException) {
+                logger.error("Authentication", e)
+            }
+        }
+
+        return false
     }
 
     private fun getToken(headers: HttpHeaders): Optional<String> = Optional
