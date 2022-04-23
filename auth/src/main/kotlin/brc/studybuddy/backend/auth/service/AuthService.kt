@@ -1,22 +1,34 @@
 package brc.studybuddy.backend.auth.service
 
+import brc.studybuddy.backend.auth.component.FacebookWebClient
 import brc.studybuddy.backend.auth.component.TokenManager
 import brc.studybuddy.backend.auth.component.UsersWebClient
 import brc.studybuddy.backend.auth.model.AuthError
+import brc.studybuddy.backend.auth.model.FacebookError
+import brc.studybuddy.backend.auth.model.FacebookSuccess
+import brc.studybuddy.input.UserInput
 import brc.studybuddy.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
+
+/*
+ * TODO: Change hardcoded reponse statuses to HTPPStatuses
+ */
 @Service
 class AuthService {
 
     @Autowired
+    lateinit var facebookWebClient: FacebookWebClient
+
+    @Autowired
     lateinit var usersWebClient: UsersWebClient
+
     @Autowired
     lateinit var tokenManager: TokenManager
 
-    fun authenticate(user: User): Mono<String> =
+    fun authenticate(user: UserInput): Mono<String> =
         Mono.just(user)
             .flatMap {
                 when (it.authType) {
@@ -27,7 +39,7 @@ class AuthService {
             }
             .map(tokenManager::generateToken)
 
-    fun emailAuthentication(user: User): Mono<User> =
+    fun emailAuthentication(user: UserInput): Mono<User> =
         Mono.just(user)
             .flatMap { u ->
                 usersWebClient.getUserByEmail(u.email)
@@ -35,15 +47,25 @@ class AuthService {
             }
             .switchIfEmpty(Mono.error(AuthError(401, "Incorrect credentials")))
 
-    fun facebookAuthentication(user: User): Mono<User> =
-        Mono.just(user)
-//            .flatMap { u -> userRepository.findFirstByEmailAndLoginValue(u.email, u.authValue) }
-//            .filter { it.authValue == user.authValue }
-//            .switchIfEmpty(checkFacebookToken(user))
-
-    /*
-     * Check if the received Facebook token is valid by calling the Facebook API
-     * If the user is valid, returns a the userId associated with the token
-     */
-    fun checkFacebookToken(user: User): Mono<Int> = Mono.just(130)
+    fun facebookAuthentication(user: UserInput): Mono<User> =
+        /*
+         * Check if the received Facebook token is valid by calling the Facebook API
+         * If the user is valid, returns a the userId associated with the token
+         */
+        facebookWebClient.getTokenInfo(user.authValue)
+            .map { response ->
+                when (response.data) {
+                    is FacebookSuccess -> response.data.userId
+                    is FacebookError -> throw AuthError(401, response.data.error.message)
+                    else -> {
+                        throw Error("An unexpected error occurred while trying to fetch Facebook token data")
+                    }
+                }
+            }
+            .flatMap {
+                usersWebClient
+                    .getUserByEmail(user.email)
+                    //.onErrorResume.. (we don't know already how this function will behave
+                    .switchIfEmpty(usersWebClient.insertFacebookUser(user.email, it))
+            }
 }

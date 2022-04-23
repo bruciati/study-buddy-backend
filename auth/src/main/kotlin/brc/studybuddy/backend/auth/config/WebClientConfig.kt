@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.auth.config
 
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,7 +19,12 @@ class WebClientConfig {
         .responseTimeout(Duration.ofSeconds(3))
 
     @Bean
-//    @LoadBalanced
+    @LoadBalanced
+    fun loadBalancedWebClientBuilder(httpClient: HttpClient): WebClient.Builder = WebClient.builder()
+        .clientConnector(ReactorClientHttpConnector(httpClient))
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+
+    @Bean
     fun webClientBuilder(httpClient: HttpClient): WebClient.Builder = WebClient.builder()
         .clientConnector(ReactorClientHttpConnector(httpClient))
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

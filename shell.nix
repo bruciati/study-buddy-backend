@@ -1,11 +1,27 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, system ? builtins.currentSystem }:
 
 let
+  devshell = import (fetchTarball "https://github.com/numtide/devshell/archive/master.tar.gz") { inherit system; };
   jdk = pkgs.jdk17_headless;
+
+
 in
-pkgs.mkShell {
-  buildInputs = [
+devshell.mkShell {
+  name = "StudyBuddy Backend";
+
+  motd = ''
+    Entered the development environment.
+  '';
+
+  env = [
+    {
+      name = "JAVA_HOME";
+      value = pkgs.jdk.home;
+    }
+  ];
+
+  packages = with pkgs; [
     jdk
-    pkgs.maven
+    jetbrains.idea-ultimate
   ];
 }

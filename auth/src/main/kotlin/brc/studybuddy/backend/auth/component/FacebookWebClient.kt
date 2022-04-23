@@ -16,7 +16,7 @@ class FacebookWebClient(
     lateinit var webClientBuilder: WebClient.Builder
     val webClient by lazy { webClientBuilder.baseUrl("https://graph.facebook.com/").build() }
 
-    fun getTokenInfo(token: String): Mono<FacebookResponse> {
+    fun getTokenInfo(token: String?): Mono<FacebookResponse> {
         return webClient.get()
             .uri("/debug_token?input_token=$token&access_token=$appAccessToken")
             .retrieve()
