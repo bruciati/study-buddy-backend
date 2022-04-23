@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0-M3</version>
+        <version>2.7.0-RC1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,7 +20,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.6.10</kotlin.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
-        <studybuddy-models.version>v0.6.3</studybuddy-models.version>
+        <studybuddy-models.version>v0.6.4</studybuddy-models.version>
     </properties>
 
     <dependencies>
@@ -37,6 +37,14 @@
             </exclusions>
         </dependency>
         <!-- END/Spring -->
+
+        <dependency>
+            <groupId>com.github.giuseppe998e</groupId>
+            <artifactId>spring-webflux-response-wrapper</artifactId>
+            <version>v0.2.1</version>
+            <scope>system</scope>
+            <systemPath>/home/giuseppe/Workspace/spring-webflux-response-wrapper/lib/build/libs/lib-0.2.1.jar</systemPath>
+        </dependency>
 
         <!-- Eureka Client -->
         <dependency>
