@@ -38,14 +38,6 @@
         </dependency>
         <!-- END/Spring -->
 
-        <dependency>
-            <groupId>com.github.giuseppe998e</groupId>
-            <artifactId>spring-webflux-response-wrapper</artifactId>
-            <version>v0.2.1</version>
-            <scope>system</scope>
-            <systemPath>/home/giuseppe/Workspace/spring-webflux-response-wrapper/lib/build/libs/lib-0.2.1.jar</systemPath>
-        </dependency>
-
         <!-- Eureka Client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
