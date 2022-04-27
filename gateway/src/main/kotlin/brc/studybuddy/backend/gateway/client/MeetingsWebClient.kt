@@ -2,7 +2,6 @@ package brc.studybuddy.backend.gateway.client
 
 import brc.studybuddy.backend.gateway.client.extra.MeetingAttendeesActions
 import brc.studybuddy.input.MeetingInput
-import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
