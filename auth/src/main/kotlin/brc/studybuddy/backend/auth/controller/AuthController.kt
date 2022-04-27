@@ -17,11 +17,17 @@ class AuthController {
 
     @Autowired
     lateinit var authService: AuthService
-    var logger: Logger? = LoggerFactory.getLogger(AuthController::class.java)
+    val logger: Logger = LoggerFactory.getLogger("AuthenticationController")
 
     @PostMapping
     fun authenticate(@RequestBody user: UserInput): Mono<AuthResponse> =
         authService.authenticate(user)
+            .map { s -> AuthSuccess(s.first, s.second) }
+
+    @PostMapping(path = ["/refresh"])
+    fun refresh(@RequestBody refreshToken: String): Mono<AuthResponse> =
+        authService.refresh(refreshToken.substring(1, refreshToken.length-1))
+            .doFirst { logger.info("got: $refreshToken") }
             .map { s -> AuthSuccess(s.first, s.second) }
 
 }

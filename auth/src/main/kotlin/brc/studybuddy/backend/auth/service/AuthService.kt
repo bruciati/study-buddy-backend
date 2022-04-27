@@ -14,10 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
-
-/*
- * TODO: Change hardcoded reponse statuses to HTPPStatuses
- */
 @Service
 class AuthService {
 
@@ -45,7 +41,7 @@ class AuthService {
                     else -> Mono.error(AuthError(HttpStatus.SC_BAD_REQUEST, "Login type not allowed"))
                 }
             }
-            .map(tokenManager::generateTokens)
+            .map { tokenManager.generateTokens(it.id) }
 
     /*
     * Validate the given UserInput by returning an error in case it's invalid
@@ -96,4 +92,11 @@ class AuthService {
                     .getUserByEmail(user.email)
                     .switchIfEmpty(usersWebClient.insertFacebookUser(user.email, it))
             }
+
+    fun refresh(refreshToken: String): Mono<Tokens> =
+        Mono.just(refreshToken)
+            .map(tokenManager::validateRefreshToken)
+            .onErrorMap { e -> AuthError(HttpStatus.SC_BAD_REQUEST, e.message!!) }
+            .map(tokenManager::generateTokens)
+
 }
