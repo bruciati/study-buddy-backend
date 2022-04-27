@@ -9,9 +9,8 @@ import reactor.core.publisher.Mono
 @Repository
 sealed interface MembersRepository : ReactiveCrudRepository<GroupMember, Long> {
     fun findAllByUserId(userId: Long): Flux<GroupMember>
-    fun findAllByUserIdAndIsOwner(userId: Long, isOwner: Boolean = true): Flux<GroupMember>
+    fun findAllByGroupId(groupId: Long): Flux<GroupMember>
+    fun findByGroupIdAndUserId(groupId: Long, userId: Long): Mono<GroupMember>
 
-    fun deleteAllByGroupId(groupId: Long): Mono<Void>
-    fun deleteAllByUserId(userId: Long): Mono<Void>
     fun deleteByGroupIdAndUserId(groupId: Long, userId: Long): Mono<Void>
 }

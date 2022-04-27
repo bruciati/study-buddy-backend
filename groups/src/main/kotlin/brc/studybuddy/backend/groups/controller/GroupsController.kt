@@ -1,10 +1,8 @@
 package brc.studybuddy.backend.groups.controller
 
 import brc.studybuddy.backend.groups.repository.GroupsRepository
-import brc.studybuddy.backend.groups.repository.MembersRepository
 import brc.studybuddy.input.GroupInput
 import brc.studybuddy.model.Group
-import brc.studybuddy.model.GroupMember
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -18,24 +16,23 @@ class GroupsController {
     @Autowired
     private lateinit var groupsRepository: GroupsRepository
 
-    @Autowired
-    private lateinit var membersRepository: MembersRepository
-
 
     @PostMapping
-    fun save(@RequestBody input: GroupInput): Mono<Group> = Mono.just(input)
-        .map(GroupInput::toModel)
-        .flatMap(groupsRepository::save)
+    fun save(@RequestBody input: GroupInput): Mono<Group> =
+        Mono.just(input)
+            .map(GroupInput::toModel)
+            .flatMap(groupsRepository::save)
 
 
     @GetMapping // /groups?id=1&id=2...
-    fun findAll(@RequestParam id: Optional<List<Long>>): Flux<Group> = when (id.isPresent) {
-        true -> groupsRepository.findAllById(id.get())
-        false -> groupsRepository.findAll()
-    }
+    fun findAll(@RequestParam id: Optional<List<Long>>): Flux<Group> =
+        when (id.isPresent) {
+            true -> groupsRepository.findAllById(id.get())
+            false -> groupsRepository.findAll()
+        }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): Mono<Group> = groupsRepository.findById(id)
+    fun findById(@PathVariable id: Long): Mono<Group> =groupsRepository.findById(id)
 
     @GetMapping("/title/{title}")
     fun findByTitle(@PathVariable title: String): Mono<Group> = groupsRepository.findByTitle(title)
@@ -43,11 +40,9 @@ class GroupsController {
     @GetMapping("/user/{id}")
     fun findAllByUserId(@PathVariable id: Long, @RequestParam("is_owner") isOwner: Optional<Boolean>): Flux<Group> =
         when (isOwner.isPresent) {
-            true -> membersRepository.findAllByUserIdAndIsOwner(id, isOwner.get())
-            false -> membersRepository.findAllByUserId(id)
+            true -> groupsRepository.findAllByUserIdAndIsOwner(id, isOwner.get())
+            false -> groupsRepository.findAllByUserId(id)
         }
-            .map(GroupMember::groupId)
-            .flatMap(groupsRepository::findById)
 
 
     @PutMapping("/{id}")
@@ -64,20 +59,34 @@ class GroupsController {
 
 
     @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id: Long): Mono<Boolean> = groupsRepository.deleteById(id)
-        .thenReturn(true)
-        .onErrorReturn(false)
+    fun deleteById(@PathVariable id: Long): Mono<Group> =
+        groupsRepository.findById(id)
+            .flatMap { g ->
+                groupsRepository.deleteById(id)
+                    .thenReturn(g)
+            }
 
     @DeleteMapping("/title/{title}")
-    fun deleteByTitle(@PathVariable title: String): Mono<Boolean> = groupsRepository.deleteByTitle(title)
-        .thenReturn(true)
-        .onErrorReturn(false)
+    fun deleteByTitle(@PathVariable title: String): Mono<Group> =
+        groupsRepository.findByTitle(title)
+            .flatMap { g ->
+                groupsRepository.deleteById(g.id)
+                    .thenReturn(g)
+            }
 
     @DeleteMapping("/user/{id}")
-    fun deleteAllByUserIdAndIsOwnerTrue(@PathVariable id: Long): Mono<Boolean> =
-        membersRepository.findAllByUserIdAndIsOwner(id)
-            .map(GroupMember::groupId)
-            .flatMap(groupsRepository::deleteById)
-            .then(Mono.just(true))
-            .onErrorReturn(false)
+    fun deleteAllByUserIdAndIsOwnerTrue(@PathVariable id: Long): Flux<Group> =
+        groupsRepository.findAllByUserIdAndIsOwner(id, true)
+            .flatMap { g ->
+                groupsRepository.deleteById(g.id)
+                    .thenReturn(g)
+            }
+
+    @DeleteMapping(path = ["/group/{groupId}/user/{userId}", "/user/{userId}/group/{groupId}"])
+    fun deleteByGroupIdAndUserIdAndIsOwnerTrue(@PathVariable groupId: Long, @PathVariable userId: Long): Mono<Group> =
+        groupsRepository.findByGroupIdAndUserIdAndIsOwnerTrue(groupId, userId)
+            .flatMap { g ->
+                groupsRepository.deleteById(g.id)
+                    .thenReturn(g)
+            }
 }

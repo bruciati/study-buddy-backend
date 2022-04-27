@@ -6,6 +6,7 @@ import brc.studybuddy.model.GroupMember
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -16,26 +17,33 @@ class MembersController {
 
 
     @PostMapping
-    fun save(@RequestBody input: GroupMemberInput): Mono<GroupMember> = Mono.just(input)
-        .map(GroupMemberInput::toModel)
-        .flatMap(membersRepository::save)
+    fun save(@RequestBody input: GroupMemberInput): Mono<GroupMember> =
+        Mono.just(input)
+            .map(GroupMemberInput::toModel)
+            .flatMap(membersRepository::save)
 
 
     @DeleteMapping("/group/{id}")
-    fun deleteAllByGroupId(@PathVariable id: Long): Mono<Boolean> =
-        membersRepository.deleteAllByGroupId(id)
-            .thenReturn(true)
-            .onErrorReturn(false)
+    fun deleteAllByGroupId(@PathVariable id: Long): Flux<GroupMember> =
+        membersRepository.findAllByGroupId(id)
+            .flatMap { m ->
+                membersRepository.deleteByGroupIdAndUserId(m.groupId, m.userId)
+                    .thenReturn(m)
+            }
 
     @DeleteMapping("/user/{id}")
-    fun deleteAllByUserId(@PathVariable id: Long): Mono<Boolean> =
-        membersRepository.deleteAllByUserId(id)
-            .thenReturn(true)
-            .onErrorReturn(false)
+    fun deleteAllByUserId(@PathVariable id: Long): Flux<GroupMember> =
+        membersRepository.findAllByUserId(id)
+            .flatMap { m ->
+                membersRepository.deleteByGroupIdAndUserId(m.groupId, m.userId)
+                    .thenReturn(m)
+            }
 
     @DeleteMapping(path = ["/group/{groupId}/user/{userId}", "/user/{userId}/group/{groupId}"])
-    fun deleteByGroupIdAndUserId(@PathVariable groupId: Long, @PathVariable userId: Long): Mono<Boolean> =
-        membersRepository.deleteByGroupIdAndUserId(groupId, userId)
-            .thenReturn(true)
-            .onErrorReturn(false)
+    fun deleteByGroupIdAndUserId(@PathVariable groupId: Long, @PathVariable userId: Long): Mono<GroupMember> =
+        membersRepository.findByGroupIdAndUserId(groupId, userId)
+            .flatMap { m ->
+                membersRepository.deleteByGroupIdAndUserId(groupId, userId)
+                    .thenReturn(m)
+            }
 }
