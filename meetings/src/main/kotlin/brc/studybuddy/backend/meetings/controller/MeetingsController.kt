@@ -1,10 +1,8 @@
 package brc.studybuddy.backend.meetings.controller
 
-import brc.studybuddy.backend.meetings.repository.MeetingAttendeesRepository
 import brc.studybuddy.backend.meetings.repository.MeetingsRepository
 import brc.studybuddy.input.MeetingInput
 import brc.studybuddy.model.Meeting
-import brc.studybuddy.model.MeetingAttendee
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -18,53 +16,84 @@ class MeetingsController {
     @Autowired
     lateinit var meetingsRepository: MeetingsRepository
 
-    @Autowired
-    lateinit var attendeesRepository: MeetingAttendeesRepository
+
+    @PostMapping
+    fun save(@RequestBody input: MeetingInput): Mono<Meeting> =
+        Mono.just(input)
+            .map(MeetingInput::toModel)
+            .flatMap(meetingsRepository::save)
 
 
     @GetMapping
-    fun getMeetings(@RequestParam id: Optional<List<Long>>): Flux<Meeting> = when (id.isPresent) {
-        true -> meetingsRepository.findAllById(id.get())
-        false -> meetingsRepository.findAll()
-    }
+    fun findAll(@RequestParam id: Optional<List<Long>>): Flux<Meeting> =
+        when (id.isPresent) {
+            true -> meetingsRepository.findAllById(id.get())
+            false -> meetingsRepository.findAll()
+        }
+
+    @GetMapping("/{id}")
+    fun findById(@PathVariable id: Long): Mono<Meeting> = meetingsRepository.findById(id)
+
+    @GetMapping("/name/{name}")
+    fun findByName(@PathVariable name: String): Mono<Meeting> = meetingsRepository.findByName(name)
 
     @GetMapping("/location/{location}")
-    fun getMeetingByLocation(@PathVariable("location") location: String) =
+    fun findAllByLocation(@PathVariable location: String): Flux<Meeting> =
         meetingsRepository.findAllByLocation(location)
 
     @GetMapping("/user/{id}")
-    fun getMeetingsByUserId(@PathVariable id: Long, @RequestParam("is_host") isHost: Optional<Boolean>): Flux<Meeting> =
+    fun findAllByUserId(@PathVariable id: Long, @RequestParam("is_host") isHost: Optional<Boolean>): Flux<Meeting> =
         when (isHost.isPresent) {
-            true -> attendeesRepository.findAllByUserIdAndIsHost(id, isHost.get())
-            false -> attendeesRepository.findAllByUserId(id)
+            true -> meetingsRepository.findAllByUserIdAndIsHost(id, isHost.get())
+            false -> meetingsRepository.findAllByUserId(id)
         }
-            .map(MeetingAttendee::meetingId)
-            .flatMap(meetingsRepository::findById)
 
     @GetMapping("/group/{id}")
-    fun getMeetingsByGroupId(@PathVariable id: Long): Flux<Meeting> = meetingsRepository.findByGroupId(id)
+    fun findAllByGroupId(@PathVariable id: Long): Flux<Meeting> = meetingsRepository.findAllByGroupId(id)
 
-    @DeleteMapping("/user/{id}")
-    fun deleteMeetingByUserIdAndIsHost(@PathVariable id: Long): Mono<Boolean> =
-        attendeesRepository.findAllByUserIdAndIsHost(id)
-            .map(MeetingAttendee::meetingId)
-            .flatMap(meetingsRepository::deleteById)
-            .then(Mono.just(true))
-            .onErrorReturn(false)
-
-    @PostMapping
-    fun addMeeting(@RequestBody input: MeetingInput): Mono<Meeting> = Mono.just(input)
-        .map(MeetingInput::toModel)
-        .flatMap(meetingsRepository::save)
 
     @PutMapping("/{id}")
-    fun updateMeetingById(@PathVariable id: Long, @RequestBody input: MeetingInput): Mono<Meeting> =
+    fun updateById(@PathVariable id: Long, @RequestBody input: MeetingInput): Mono<Meeting> =
         meetingsRepository.findById(id)
             .map(input::updateModel)
             .flatMap(meetingsRepository::save)
 
+    @PutMapping("/name/{name}")
+    fun updateByName(@PathVariable name: String, @RequestBody input: MeetingInput): Mono<Meeting> =
+        meetingsRepository.findByName(name)
+            .map(input::updateModel)
+            .flatMap(meetingsRepository::save)
+
+
     @DeleteMapping("/{id}")
-    fun deleteMeetingById(@PathVariable id: Long): Mono<Boolean> = meetingsRepository.deleteById(id)
-        .thenReturn(true)
-        .onErrorReturn(false)
+    fun deleteById(@PathVariable id: Long): Mono<Meeting> =
+        meetingsRepository.findById(id)
+            .flatMap { m ->
+                meetingsRepository.deleteById(id)
+                    .thenReturn(m)
+            }
+
+    @DeleteMapping("/{name}")
+    fun deleteByName(@PathVariable name: String): Mono<Meeting> =
+        meetingsRepository.findByName(name)
+            .flatMap { m ->
+                meetingsRepository.deleteById(m.id)
+                    .thenReturn(m)
+            }
+
+    @DeleteMapping("/user/{id}")
+    fun deleteAllByUserIdAndIsHostTrue(@PathVariable id: Long): Flux<Meeting> =
+        meetingsRepository.findAllByUserIdAndIsHost(id, true)
+            .flatMap { m ->
+                meetingsRepository.deleteById(m.id)
+                    .thenReturn(m)
+            }
+
+    @DeleteMapping(path = ["/meeting/{meetingId}/user/{userId}", "/user/{userId}/meeting/{meetingId}"])
+    fun deleteAllByMeetingIdAndUserIdAndIsHostTrue(meetingId: Long, userId: Long): Mono<Meeting> =
+        meetingsRepository.findByMeetingIdAndUserIdAndIsHostTrue(meetingId, userId)
+            .flatMap { m ->
+                meetingsRepository.deleteById(m.id)
+                    .thenReturn(m)
+            }
 }
