@@ -2,6 +2,7 @@ package brc.studybuddy.backend.gateway.client
 
 import brc.studybuddy.backend.gateway.client.extra.MeetingAttendeesActions
 import brc.studybuddy.input.MeetingInput
+import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,17 +24,6 @@ class MeetingsWebClient : MeetingAttendeesActions {
         .retrieve()
         .bodyToMono(Meeting::class.java)
 
-    fun updateMeeting(id: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
-        .uri("$MEETINGS_ENDPOINT/$id")
-        .bodyValue(input)
-        .retrieve()
-        .bodyToMono(Meeting::class.java)
-
-    fun deleteMeeting(id: Long): Mono<Boolean> = webClient.delete()
-        .uri("$MEETINGS_ENDPOINT/$id")
-        .retrieve()
-        .bodyToMono(Boolean::class.java)
-
 
     fun getMeetingsByGroupId(id: Long): Flux<Meeting> = webClient.get()
         .uri("$MEETINGS_ENDPOINT/group/$id")
@@ -47,6 +37,24 @@ class MeetingsWebClient : MeetingAttendeesActions {
 
     fun getMeeting(id: Long): Mono<Meeting> = webClient.get()
         .uri("$MEETINGS_ENDPOINT/$id")
+        .retrieve()
+        .bodyToMono(Meeting::class.java)
+
+
+    fun updateMeeting(id: Long, input: MeetingInput): Mono<Meeting> = webClient.put()
+        .uri("$MEETINGS_ENDPOINT/$id")
+        .bodyValue(input)
+        .retrieve()
+        .bodyToMono(Meeting::class.java)
+
+
+    fun deleteMeeting(id: Long): Mono<Meeting> = webClient.delete()
+        .uri("$MEETINGS_ENDPOINT/$id")
+        .retrieve()
+        .bodyToMono(Meeting::class.java)
+
+    fun deleteMeetingByIdAndUserIdAndIsHostTrue(meetingId: Long, userId: Long): Mono<Meeting> = webClient.delete()
+        .uri("$MEETINGS_ENDPOINT/meeting/$meetingId/user/$userId")
         .retrieve()
         .bodyToMono(Meeting::class.java)
 }

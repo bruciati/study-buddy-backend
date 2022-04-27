@@ -23,17 +23,6 @@ class GroupsWebClient : GroupMembersActions {
         .retrieve()
         .bodyToMono(Group::class.java)
 
-    fun updateGroup(id: Long, input: GroupInput): Mono<Group> = webClient.put()
-        .uri("$GROUPS_ENDPOINT/$id")
-        .bodyValue(input)
-        .retrieve()
-        .bodyToMono(Group::class.java)
-
-    fun deleteGroup(id: Long): Mono<Boolean> = webClient.delete()
-        .uri("$GROUPS_ENDPOINT/$id")
-        .retrieve()
-        .bodyToMono(Boolean::class.java)
-
 
     fun getGroups(ids: Optional<List<Long>>): Flux<Group> = webClient.get()
         .uri { b -> b.path(GROUPS_ENDPOINT).queryParamIfPresent("id", ids).build() }
@@ -52,6 +41,24 @@ class GroupsWebClient : GroupMembersActions {
 
     fun getGroupByTitle(title: String): Mono<Group> = webClient.get()
         .uri("$GROUPS_ENDPOINT/title/$title")
+        .retrieve()
+        .bodyToMono(Group::class.java)
+
+
+    fun updateGroup(id: Long, input: GroupInput): Mono<Group> = webClient.put()
+        .uri("$GROUPS_ENDPOINT/$id")
+        .bodyValue(input)
+        .retrieve()
+        .bodyToMono(Group::class.java)
+
+
+    fun deleteGroup(id: Long): Mono<Group> = webClient.delete()
+        .uri("$GROUPS_ENDPOINT/$id")
+        .retrieve()
+        .bodyToMono(Group::class.java)
+
+    fun deleteGroupByIdAndUserIdAndIsOwnerTrue(groupId: Long, userId: Long): Mono<Group> = webClient.delete()
+        .uri("$GROUPS_ENDPOINT/group/$groupId/user/$userId")
         .retrieve()
         .bodyToMono(Group::class.java)
 }

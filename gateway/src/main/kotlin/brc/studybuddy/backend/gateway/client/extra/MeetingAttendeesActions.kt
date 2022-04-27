@@ -17,18 +17,18 @@ internal interface MeetingAttendeesActions {
         .bodyToMono(MeetingAttendee::class.java)
 
 
-    fun deleteMeetingAttendeesByUserId(id: Long): Mono<Boolean> = webClient.delete()
+    fun deleteMeetingAttendeesByUserId(id: Long): Mono<MeetingAttendee> = webClient.delete()
         .uri("$ATTENDEES_ENDPOINT/user/$id")
         .retrieve()
-        .bodyToMono(Boolean::class.java)
+        .bodyToMono(MeetingAttendee::class.java)
 
-    fun deleteMeetingAttendeesByMeetingId(id: Long): Mono<Boolean> = webClient.delete()
+    fun deleteMeetingAttendeesByMeetingId(id: Long): Mono<MeetingAttendee> = webClient.delete()
         .uri("$ATTENDEES_ENDPOINT/meeting/$id")
         .retrieve()
-        .bodyToMono(Boolean::class.java)
+        .bodyToMono(MeetingAttendee::class.java)
 
-    fun deleteMeetingAttendee(input: MeetingAttendeeInput): Mono<Boolean> = webClient.delete()
+    fun deleteMeetingAttendee(input: MeetingAttendeeInput): Mono<MeetingAttendee> = webClient.delete()
         .uri("$ATTENDEES_ENDPOINT/meeting/${input.meetingId}/user/${input.userId}")
         .retrieve()
-        .bodyToMono(Boolean::class.java)
+        .bodyToMono(MeetingAttendee::class.java)
 }
