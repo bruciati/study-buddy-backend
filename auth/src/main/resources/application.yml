@@ -21,7 +21,13 @@ spring:
 # ----------------------------------------------------------------------------------------------
 secrets:
   key: "asdkfja82345n23489fdshnf894nfjanf094u3n34f9fnjanf09u43nf43jknf0a97sdhfshdflakjsdhf"
-  ttl: 300000 # time to live in milliseconds for each token
+  access:
+    # Time to live (expiration time) in seconds for each authentication token
+    ttl: 300
+  refresh:
+    # Time to live for the fresh token. It is added to the authentication token's ttl
+    # In other words: ttl = authentication.ttl + refresh.ttl
+    ttl: 120
   facebook:
     apptoken: "475499464360666|9f81835d84d715b51845635fd481ff25"
 # ----------------------------------------------------------------------------------------------

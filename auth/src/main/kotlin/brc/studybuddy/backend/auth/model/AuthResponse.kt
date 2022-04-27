@@ -3,7 +3,8 @@ package brc.studybuddy.backend.auth.model
 sealed interface AuthResponse
 
 data class AuthSuccess(
-    val token: String
+    val accessToken: String,
+    val refreshToken: String
 ) : AuthResponse
 
 data class AuthError(

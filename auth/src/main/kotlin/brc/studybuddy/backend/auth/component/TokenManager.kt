@@ -10,9 +10,14 @@ import java.time.Instant
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
+const val accessTokenTypeName: String = "isAccessToken"
+
+typealias Tokens = Pair<String, String>
+
 @Component
 class TokenManager(
-    @Value("\${secrets.ttl}") val timeToLive: Long,
+    @Value("\${secrets.access.ttl}") val accessTokenTimeToLive: Long,
+    @Value("\${secrets.refresh.ttl}") val refreshTokenTimeToLive: Long,
     @Value("\${secrets.key}") val secretKey: String
 ) {
 
@@ -26,14 +31,24 @@ class TokenManager(
             )
 
     /*
-     * Generate a new access token for the given user, with the given time to live (expressed in seconds)
+     * Generate access and refresh token for the given user, with the given time to live (expressed in seconds)
      */
-    fun generateToken(user: User): String {
+    fun generateTokens(user: User): Tokens {
         val now = Instant.now()
-        val expire = now.plusSeconds(timeToLive)
-        return signer.setSubject(user.id.toString())
+        val accessTokenExpire = now.plusSeconds(accessTokenTimeToLive)
+        val refreshTokenExpire = accessTokenExpire.plusSeconds(refreshTokenTimeToLive)
+
+        val tokenBuilder = signer.setSubject(user.id.toString())
             .setIssuedAt(Date.from(now))
-            .setExpiration(Date.from(expire))
-            .compact()
+
+        return Pair(
+            tokenBuilder.claim(accessTokenTypeName, true)
+                .setExpiration(Date.from(accessTokenExpire))
+                .compact(),
+            tokenBuilder.claim(accessTokenTypeName, false)
+                .setExpiration(Date.from(refreshTokenExpire))
+                .compact()
+        )
     }
+
 }
