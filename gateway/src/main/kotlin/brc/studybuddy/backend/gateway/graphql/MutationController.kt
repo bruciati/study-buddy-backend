@@ -9,7 +9,9 @@ import brc.studybuddy.input.GroupMemberInput
 import brc.studybuddy.input.MeetingAttendeeInput
 import brc.studybuddy.input.MeetingInput
 import brc.studybuddy.model.Group
+import brc.studybuddy.model.GroupMember
 import brc.studybuddy.model.Meeting
+import brc.studybuddy.model.MeetingAttendee
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
@@ -94,10 +96,15 @@ class MutationController {
             }
 
     @MutationMapping
-    fun removeGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> =
+    fun removeGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<GroupMember> =
         Mono.just(GroupMemberInput(groupId, userId, false))
             .flatMap { m ->
-                TODO()
+                groupsWebClient.deleteGroupMember(m)
+                    .flatMap { usersWebClient.deleteGroupMember(m) }
+                    .onErrorResume { e ->
+                        groupsWebClient.saveGroupMember(m)
+                            .then(Mono.error(e))
+                    }
             }
 
 
@@ -166,9 +173,14 @@ class MutationController {
             }
 
     @MutationMapping
-    fun removeMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> =
+    fun removeMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<MeetingAttendee> =
         Mono.just(MeetingAttendeeInput(meetingId, userId, false))
             .flatMap { a ->
-                TODO()
+                meetingsWebClient.deleteMeetingAttendee(a)
+                    .flatMap { usersWebClient.deleteMeetingAttendee(a) }
+                    .onErrorResume { e ->
+                        meetingsWebClient.saveMeetingAttendee(a)
+                            .then(Mono.error(e))
+                    }
             }
 }
