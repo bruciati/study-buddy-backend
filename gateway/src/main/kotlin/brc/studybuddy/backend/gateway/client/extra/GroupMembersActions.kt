@@ -4,6 +4,7 @@ import brc.studybuddy.backend.gateway.client.MEMBERS_ENDPOINT
 import brc.studybuddy.input.GroupMemberInput
 import brc.studybuddy.model.GroupMember
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 internal interface GroupMembersActions {
@@ -17,15 +18,31 @@ internal interface GroupMembersActions {
         .bodyToMono(GroupMember::class.java)
 
 
-    fun deleteGroupMembersByUserId(id: Long): Mono<GroupMember> = webClient.delete()
+    fun getGroupMembersByGroupId(id: Long): Flux<GroupMember> = webClient.get()
+        .uri("$MEMBERS_ENDPOINT/group/$id")
+        .retrieve()
+        .bodyToFlux(GroupMember::class.java)
+
+    fun getGroupMembersByUserId(id: Long): Flux<GroupMember> = webClient.get()
         .uri("$MEMBERS_ENDPOINT/user/$id")
+        .retrieve()
+        .bodyToFlux(GroupMember::class.java)
+
+    fun getGroupMemberByGroupIdAndUserId(groupId: Long, userId: Long): Mono<GroupMember> = webClient.get()
+        .uri("$MEMBERS_ENDPOINT/group/$groupId/user/$userId")
         .retrieve()
         .bodyToMono(GroupMember::class.java)
 
-    fun deleteGroupMembersByGroupId(id: Long): Mono<GroupMember> = webClient.delete()
+
+    fun deleteGroupMembersByGroupId(id: Long): Flux<GroupMember> = webClient.delete()
         .uri("$MEMBERS_ENDPOINT/group/$id")
         .retrieve()
-        .bodyToMono(GroupMember::class.java)
+        .bodyToFlux(GroupMember::class.java)
+
+    fun deleteGroupMembersByUserId(id: Long): Flux<GroupMember> = webClient.delete()
+        .uri("$MEMBERS_ENDPOINT/user/$id")
+        .retrieve()
+        .bodyToFlux(GroupMember::class.java)
 
     fun deleteGroupMember(input: GroupMemberInput): Mono<GroupMember> = webClient.delete()
         .uri("$MEMBERS_ENDPOINT/group/${input.groupId}/user/${input.userId}")
