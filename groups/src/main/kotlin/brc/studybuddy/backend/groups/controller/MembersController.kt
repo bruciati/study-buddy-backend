@@ -23,6 +23,19 @@ class MembersController {
             .flatMap(membersRepository::save)
 
 
+    @GetMapping("/group/{id}")
+    fun findAllByGroupId(@PathVariable id: Long): Flux<GroupMember> =
+        membersRepository.findAllByGroupId(id)
+
+    @GetMapping("/user/{id}")
+    fun findAllByUserId(@PathVariable id: Long): Flux<GroupMember> =
+        membersRepository.findAllByUserId(id)
+
+    @GetMapping(path = ["/group/{groupId}/user/{userId}", "/user/{userId}/group/{groupId}"])
+    fun findByGroupIdAndUserId(@PathVariable groupId: Long, @PathVariable userId: Long): Mono<GroupMember> =
+        membersRepository.findByGroupIdAndUserId(groupId, userId)
+
+
     @DeleteMapping("/group/{id}")
     fun deleteAllByGroupId(@PathVariable id: Long): Flux<GroupMember> =
         membersRepository.findAllByGroupId(id)
