@@ -65,6 +65,7 @@ class MutationController {
     ): Mono<Group> = groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, userId)
         .filter(GroupMember::isOwner)
         .then(groupsWebClient.updateGroup(groupId, input))
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun deleteGroup(
@@ -79,6 +80,7 @@ class MutationController {
                 .flatMap { m -> usersWebClient.saveGroupMember(m.toInput()) }
                 .then(Mono.error(e))
         }
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun addGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> =
@@ -140,6 +142,7 @@ class MutationController {
     ): Mono<Meeting> = meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, userId)
         .filter(MeetingAttendee::isHost)
         .then(meetingsWebClient.updateMeeting(meetingId, input))
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun deleteMeeting(
@@ -154,6 +157,7 @@ class MutationController {
                 .flatMap { a -> usersWebClient.saveMeetingAttendee(a.toInput()) }
                 .then(Mono.error(e))
         }
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> =
