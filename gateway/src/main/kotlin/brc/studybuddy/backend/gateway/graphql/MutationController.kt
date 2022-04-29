@@ -58,28 +58,26 @@ class MutationController {
         }
 
     @MutationMapping
-    fun updateGroup(@Argument id: Long, @Argument input: GroupInput): Mono<Group> =
-        groupsWebClient.updateGroup(id, input)
+    fun updateGroup(
+        @RequestHeader(USERID_HEADER) userId: Long,
+        @Argument groupId: Long,
+        @Argument input: GroupInput
+    ): Mono<Group> = groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, userId)
+        .filter(GroupMember::isOwner)
+        .then(groupsWebClient.updateGroup(groupId, input))
 
-    @MutationMapping // FIXME
+    @MutationMapping
     fun deleteGroup(
         @RequestHeader(USERID_HEADER) userId: Long,
         @Argument groupId: Long
-    ): Mono<Group> = groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(groupId, userId)
-        .flatMap { g ->
-            groupsWebClient.deleteGroupMembersByGroupId(groupId)
-                .flatMap { m ->
-                    usersWebClient.deleteGroupMembersByGroupId(groupId)
-                        .onErrorResume { e ->
-                            groupsWebClient.saveGroupMember(m.toInput())
-                                .then(Mono.error(e))
-                        }
-                }
-                .thenReturn(g)
-                .onErrorResume { e ->
-                    groupsWebClient.saveGroup(g.toInput())
-                        .then(Mono.error(e))
-                }
+    ): Mono<Group> = groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, userId)
+        .filter(GroupMember::isOwner)
+        .thenMany(usersWebClient.deleteGroupMembersByGroupId(groupId))
+        .then(groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(groupId, userId))
+        .onErrorResume { e ->
+            groupsWebClient.getGroupMembersByGroupId(groupId)
+                .flatMap { m -> usersWebClient.saveGroupMember(m.toInput()) }
+                .then(Mono.error(e))
         }
 
     @MutationMapping
@@ -100,7 +98,7 @@ class MutationController {
         Mono.just(GroupMemberInput(groupId, userId, false))
             .flatMap { m ->
                 groupsWebClient.deleteGroupMember(m)
-                    .flatMap { usersWebClient.deleteGroupMember(m) }
+                    .then(usersWebClient.deleteGroupMember(m))
                     .onErrorResume { e ->
                         groupsWebClient.saveGroupMember(m)
                             .then(Mono.error(e))
@@ -135,28 +133,26 @@ class MutationController {
         }
 
     @MutationMapping
-    fun updateMeeting(@Argument id: Long, @Argument input: MeetingInput): Mono<Meeting> =
-        meetingsWebClient.updateMeeting(id, input)
+    fun updateMeeting(
+        @RequestHeader(USERID_HEADER) userId: Long,
+        @Argument meetingId: Long,
+        @Argument input: MeetingInput
+    ): Mono<Meeting> = meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, userId)
+        .filter(MeetingAttendee::isHost)
+        .then(meetingsWebClient.updateMeeting(meetingId, input))
 
-    @MutationMapping // FIXME
+    @MutationMapping
     fun deleteMeeting(
         @RequestHeader(USERID_HEADER) userId: Long,
         @Argument meetingId: Long
-    ): Mono<Meeting> = meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(meetingId, userId)
-        .flatMap { m ->
-            meetingsWebClient.deleteMeetingAttendeesByMeetingId(meetingId)
-                .flatMap { a ->
-                    usersWebClient.deleteMeetingAttendeesByMeetingId(meetingId)
-                        .onErrorResume { e ->
-                            meetingsWebClient.saveMeetingAttendee(a.toInput())
-                                .then(Mono.error(e))
-                        }
-                }
-                .thenReturn(m)
-                .onErrorResume { e ->
-                    meetingsWebClient.saveMeeting(m.toInput())
-                        .then(Mono.error(e))
-                }
+    ): Mono<Meeting> = meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, userId)
+        .filter(MeetingAttendee::isHost)
+        .thenMany(usersWebClient.deleteMeetingAttendeesByMeetingId(meetingId))
+        .then(meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(meetingId, userId))
+        .onErrorResume { e ->
+            meetingsWebClient.getMeetingAttendeesByMeetingId(meetingId)
+                .flatMap { a -> usersWebClient.saveMeetingAttendee(a.toInput()) }
+                .then(Mono.error(e))
         }
 
     @MutationMapping
@@ -177,7 +173,7 @@ class MutationController {
         Mono.just(MeetingAttendeeInput(meetingId, userId, false))
             .flatMap { a ->
                 meetingsWebClient.deleteMeetingAttendee(a)
-                    .flatMap { usersWebClient.deleteMeetingAttendee(a) }
+                    .then(usersWebClient.deleteMeetingAttendee(a))
                     .onErrorResume { e ->
                         meetingsWebClient.saveMeetingAttendee(a)
                             .then(Mono.error(e))
