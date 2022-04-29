@@ -23,6 +23,19 @@ class AttendeesController {
             .flatMap(attendeesRepository::save)
 
 
+    @GetMapping("/meeting/{id}")
+    fun findAllByMeetingId(@PathVariable id: Long): Flux<MeetingAttendee> =
+        attendeesRepository.findAllByMeetingId(id)
+
+    @GetMapping("/user/{id}")
+    fun findAllByUserId(@PathVariable id: Long): Flux<MeetingAttendee> =
+        attendeesRepository.findAllByUserId(id)
+
+    @GetMapping(path = ["/meeting/{meetingId}/user/{userId}", "/user/{userId}/meeting/{meetingId}"])
+    fun findByUserIdAndMeetingId(@PathVariable meetingId: Long, @PathVariable userId: Long): Mono<MeetingAttendee> =
+        attendeesRepository.findByMeetingIdAndUserId(meetingId, userId)
+
+
     @DeleteMapping("/meeting/{id}")
     fun deleteAllByMeetingId(@PathVariable id: Long): Flux<MeetingAttendee> =
         attendeesRepository.findAllByMeetingId(id)
