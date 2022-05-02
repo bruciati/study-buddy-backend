@@ -1,0 +1,11 @@
+type Query {
+    users(ids: [ID!]): [User!]!
+    userById(id: ID!): User
+    userByEmail(email: String!): User
+
+    groups(ids: [ID!]): [Group!]!
+    groupById(id: ID!): Group
+    userByTitle(title: String!): User
+
+    meetingById(id: ID!): Meeting
+}
