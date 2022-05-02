@@ -37,19 +37,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
         <!-- END/Spring -->
 
-        <!-- Eureka Client -->
-        <dependency>
+        <!-- Spring Boot -->
+        <dependency> <!-- Eureka Client -->
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <!-- END/Eureka Client -->
+        <dependency> <!-- Config Client -->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <!-- END/Spring Boot -->
 
         <!-- StudyBuddy Models -->
         <dependency>

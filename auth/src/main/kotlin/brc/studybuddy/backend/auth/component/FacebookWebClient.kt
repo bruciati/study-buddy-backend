@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class FacebookWebClient(
-    @Value("\${secrets.facebook.apptoken}") private val appAccessToken: String
+    @Value("\${auth.facebook.apptoken}") private val appAccessToken: String
 ) {
 
     @Autowired

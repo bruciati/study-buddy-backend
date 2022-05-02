@@ -15,15 +15,14 @@ server:
 spring:
   application:
     name: "auth"
+  # Config-Server configurations
+  config:
+    import: "optional:configserver:http://localhost:8761" # Same as "eureka.client.service-url.defaultZone"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Custom Configurations
 # ----------------------------------------------------------------------------------------------
-secrets:
-  key: "asdkfja82345n23489fdshnf894nfjanf094u3n34f9fnjanf09u43nf43jknf0a97sdhfshdflakjsdhf"
-  access:
-    # Time to live (expiration time) in seconds for each authentication token
-    ttl: 300
+auth:
   refresh:
     # Time to live for the fresh token. It is added to the authentication token's ttl
     # In other words: ttl = authentication.ttl + refresh.ttl

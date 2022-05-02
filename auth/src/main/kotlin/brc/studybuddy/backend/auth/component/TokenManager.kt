@@ -13,9 +13,9 @@ typealias Tokens = Pair<String, String>
 
 @Component
 class TokenManager(
-    @Value("\${secrets.access.ttl}") val accessTokenTimeToLive: Long,
-    @Value("\${secrets.refresh.ttl}") val refreshTokenTimeToLive: Long,
-    @Value("\${secrets.key}") val secretKey: String
+    @Value("\${auth.ttl}") val accessTokenTimeToLive: Long,
+    @Value("\${auth.refresh.ttl}") val refreshTokenTimeToLive: Long,
+    @Value("\${auth.secret}") val secretKey: String
 ) {
 
     private final val signingKey = SecretKeySpec(
