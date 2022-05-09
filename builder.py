@@ -2,7 +2,7 @@
 from concurrent.futures import ThreadPoolExecutor, wait
 import multiprocessing
 import os
-from subprocess import  Popen, PIPE
+from subprocess import  Popen, DEVNULL, PIPE
 
 # --------------------
 # CONSTANTS
@@ -33,23 +33,33 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 # FUNCTIONS
 def build_microservice(service):
     service_cwd = "{}/{}".format(os.getcwd(), service)
-    with Popen([MAVEN_CMD, "clean", "package", "-Dmaven.test.skip"], cwd=service_cwd, shell=False) as process:
-        print(f" ---->> Building '{service}' jar...")
-        process.wait()
+    with Popen([MAVEN_CMD, "clean", "package", "-Dmaven.test.skip"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+        print(f" ---->> Building '{service}' microservice jar...")
+        if process.wait() == 0:
+            print(f" ---->> Microservice jar '{service}' OK!")
+            return True
+        else:
+            print(f" ---->> Microservice jar '{service}' FAILED!")
+            return False
 
 
 def build_dockerimage(service, port):
     service_cwd = "{}/{}".format(os.getcwd(), service)
     input_string = DOCKER_TMPLT.format(service = service, port = port)
-    with Popen([DOCKER_CMD, "build", ".", "-f", "-", "-t", f"{service}_img:latest"], cwd=service_cwd, stdin=PIPE, shell=False) as process:
+    with Popen([DOCKER_CMD, "build", ".", "-f", "-", "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' docker image...")
         process.communicate(str.encode(input_string))
-        process.wait()
+        if process.wait() == 0:
+            print(f" ---->> Docker image '{service}' OK!")
+            return True
+        else:
+            print(f" ---->> Docker image '{service}' FAILED!")
+            return False
 
 
 def build_task(service, port):
-    build_microservice(service)
-    build_dockerimage(service, port)
+    build_microservice(service) and \
+        build_dockerimage(service, port)
 
 
 # --------------------
