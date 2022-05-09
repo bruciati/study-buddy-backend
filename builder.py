@@ -22,7 +22,7 @@ FROM openjdk:17-alpine
 COPY target/{service}-0.0.1.jar /app.jar
 EXPOSE {port:d}
 RUN adduser -S web && \\
-    chown web /app.jar && \\
+    chown web:web /app.jar && \\
     chmod +x /app.jar
 USER web
 ENTRYPOINT ["java", "-jar", "/app.jar"]
