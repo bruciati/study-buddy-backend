@@ -21,6 +21,7 @@ devshell.mkShell {
   ];
 
   packages = with pkgs; [
+    minikube
     jdk
     jetbrains.idea-ultimate
   ];
