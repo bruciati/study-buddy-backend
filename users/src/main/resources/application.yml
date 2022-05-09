@@ -21,7 +21,7 @@ spring:
       repositories:
         enabled: true
   r2dbc:
-    url: "r2dbc:postgres://postgres:pwd123@localhost/users"
+    url: "r2dbc:postgres://postgres:pwd123@localhost/postgres"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
