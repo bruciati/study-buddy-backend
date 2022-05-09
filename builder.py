@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, wait
 import multiprocessing
 import os
 from subprocess import  Popen, PIPE
@@ -54,7 +54,7 @@ def build_task(service, port):
 
 # --------------------
 # MAIN
-cores = multiprocessing.cpu_count()
-with ThreadPoolExecutor(max_workers = cores) as executor:
+max_workers = min(len(SERVICES), multiprocessing.cpu_count())
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
     futures = { executor.submit(build_task, s, p): (s, p, d) for (s, p, d) in SERVICES }
-    as_completed(futures)
+    wait(futures)
