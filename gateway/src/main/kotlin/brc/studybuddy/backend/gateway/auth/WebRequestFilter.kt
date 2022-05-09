@@ -61,7 +61,7 @@ class WebRequestFilter : WebFilter {
     // Webflux filter
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val reqPath = exchange.request.path.value()
-        return when (isClientAuthorized(exchange.request.headers) || reqPath.startsWith("/auth") || reqPath.startsWith("/graphiql")) {
+        return when (isClientAuthorized(exchange.request.headers) || reqPath.startsWith("/auth")) {
             true -> chain.filter(exchange)
             false -> with(exchange.response) {
                 statusCode = HttpStatus.UNAUTHORIZED
