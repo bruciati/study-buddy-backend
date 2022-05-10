@@ -36,7 +36,7 @@ DOCKER = {
         "WITH_DB": """
             RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/main\\nhttps://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \\
                 apk update && \\
-                apk add postgresql14
+                apk add --no-cache postgresql14
             USER postgres
             RUN mkdir /var/lib/postgresql/data && \\
                 chmod 0700 /var/lib/postgresql/data && \\
