@@ -31,7 +31,7 @@ DOCKER = {
         """,
         "WITHOUT_DB": """
             USER web
-            ENTRYPOINT "java -jar /app.jar"
+            ENTRYPOINT ["java", "-jar", "/app.jar"]
         """,
         "WITH_DB": """
             RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/main\\nhttps://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \\
