@@ -21,11 +21,19 @@ DOCKER_TMPLT = """
 FROM openjdk:17-alpine
 COPY target/{service}-0.0.1.jar /app.jar
 EXPOSE {port:d}
-RUN adduser -S web && \\
-    chown web:web /app.jar && \\
-    chmod +x /app.jar
-USER web
+RUN chmod +x /app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
+"""
+DOCKER_DB_TMPLT = """
+FROM postgres:14.2-alpine
+COPY target/{service}-0.0.1.jar /app.jar
+EXPOSE {port:d}
+RUN apk update && \\
+    apk add openjdk17 supervisor && \\
+    chmod +x /app.jar
+ENV POSTGRES_PASSWORD pwd123
+RUN echo -e "[supervisord]\\nnodaemon=true\\n\\n[program:postgres]\\ncommand=/usr/local/bin/docker-entrypoint.sh\\npriority=1\\n\\n[program:spring]\\ncommand=java -jar /app.jar\\npriority=2" > /supervisor.conf
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor.conf"]
 """
 
 
@@ -43,9 +51,10 @@ def build_microservice(service):
             return False
 
 
-def build_dockerimage(service, port):
+def build_dockerimage(service, port, db):
     service_cwd = "{}/{}".format(os.getcwd(), service)
-    input_string = DOCKER_TMPLT.format(service = service, port = port)
+    input_string = DOCKER_DB_TMPLT if db is True else DOCKER_TMPLT
+    input_string = input_string.format(service = service, port = port)
     with Popen([DOCKER_CMD, "build", ".", "-f", "-", "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' docker image...")
         process.communicate(str.encode(input_string))
@@ -57,14 +66,14 @@ def build_dockerimage(service, port):
             return False
 
 
-def build_task(service, port):
+def build_task(service, port, db):
     build_microservice(service) and \
-        build_dockerimage(service, port)
+        build_dockerimage(service, port, db)
 
 
 # --------------------
 # MAIN
 max_workers = min(len(SERVICES), multiprocessing.cpu_count())
 with ThreadPoolExecutor(max_workers=max_workers) as executor:
-    futures = { executor.submit(build_task, s, p): (s, p, d) for (s, p, d) in SERVICES }
+    futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in SERVICES }
     wait(futures)
