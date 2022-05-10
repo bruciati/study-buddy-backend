@@ -6,42 +6,55 @@ from subprocess import  Popen, DEVNULL, PIPE
 
 # --------------------
 # CONSTANTS
-MAVEN_CMD = "./mvnw"
-SERVICES = [
-    ("eureka",   8761, False),
-    ("gateway",  8080, False),
-    ("auth",     8081, False),
-    ("users",    8082, True ),
-    ("groups",   8083, True ),
-    ("meetings", 8084, True )
-] # (service_name, service_port, needs_db)
+MAVEN = {
+    "CMD": "./mvnw",
+    "PROJECTS": [
+        ("eureka",   8761, False),
+        ("gateway",  8080, False),
+        ("auth",     8081, False),
+        ("users",    8082, True ),
+        ("groups",   8083, True ),
+        ("meetings", 8084, True )
+    ] # (service_name, service_port, needs_db)
+}
 
-DOCKER_CMD = "docker"
-DOCKER_TMPLT = """
-FROM openjdk:17-alpine
-COPY target/{service}-0.0.1.jar /app.jar
-EXPOSE {port:d}
-RUN chmod +x /app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-"""
-DOCKER_DB_TMPLT = """
-FROM postgres:14.2-alpine
-COPY target/{service}-0.0.1.jar /app.jar
-EXPOSE {port:d}
-RUN apk update && \\
-    apk add openjdk17 supervisor && \\
-    chmod +x /app.jar
-ENV POSTGRES_PASSWORD pwd123
-RUN echo -e "[supervisord]\\nnodaemon=true\\n\\n[program:postgres]\\ncommand=/usr/local/bin/docker-entrypoint.sh\\npriority=1\\n\\n[program:spring]\\ncommand=java -jar /app.jar\\npriority=2" > /supervisor.conf
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor.conf"]
-"""
-
+DOCKER = {
+    "CMD": "docker",
+    "TEMPLATES": {
+        "MAIN": """
+            FROM openjdk:17-alpine
+            COPY target/{service}-0.0.1.jar /app.jar
+            EXPOSE {port:d}
+            RUN adduser -D web && \\
+                chown web /app.jar && \\
+                chmod +x /app.jar
+        """,
+        "WITHOUT_DB": """
+            USER web
+            ENTRYPOINT "java -jar /app.jar"
+        """,
+        "WITH_DB": """
+            RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/main\\nhttps://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \\
+                apk update && \\
+                apk add postgresql14
+            USER postgres
+            RUN mkdir /var/lib/postgresql/data && \\
+                chmod 0700 /var/lib/postgresql/data && \\
+                initdb -D /var/lib/postgresql/data && \\
+                sed -r "s/unix_socket_directories\s*=\s*'.*?'/unix_socket_directories='\/tmp'/g" -i /var/lib/postgresql/data/postgresql.conf
+            USER root
+            RUN echo -e "su postgres -c 'pg_ctl start -D /var/lib/postgresql/data'\\nsu web -c 'java -jar /app.jar'" > /docker-entrypoint.sh && \\
+                chmod +x /docker-entrypoint.sh
+            ENTRYPOINT "/docker-entrypoint.sh"
+        """
+    }
+}
 
 # --------------------
 # FUNCTIONS
 def build_microservice(service):
     service_cwd = "{}/{}".format(os.getcwd(), service)
-    with Popen([MAVEN_CMD, "clean", "package", "-Dmaven.test.skip"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+    with Popen([(MAVEN["CMD"]), "clean", "package", "-Dmaven.test.skip"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' microservice jar...")
         if process.wait() == 0:
             print(f" ---->> Microservice jar '{service}' OK!")
@@ -53,9 +66,9 @@ def build_microservice(service):
 
 def build_dockerimage(service, port, db):
     service_cwd = "{}/{}".format(os.getcwd(), service)
-    input_string = DOCKER_DB_TMPLT if db is True else DOCKER_TMPLT
-    input_string = input_string.format(service = service, port = port)
-    with Popen([DOCKER_CMD, "build", ".", "-f", "-", "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+    input_string = (DOCKER["TEMPLATES"]["MAIN"]).format(service = service, port = port)
+    input_string += DOCKER["TEMPLATES"]["WITH_DB"] if db is True else DOCKER["TEMPLATES"]["WITHOUT_DB"]
+    with Popen([(DOCKER["CMD"]), "build", ".", "-f", "-", "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' docker image...")
         process.communicate(str.encode(input_string))
         if process.wait() == 0:
@@ -73,7 +86,7 @@ def build_task(service, port, db):
 
 # --------------------
 # MAIN
-max_workers = min(len(SERVICES), multiprocessing.cpu_count())
+max_workers = min(len(MAVEN["PROJECTS"]), multiprocessing.cpu_count())
 with ThreadPoolExecutor(max_workers=max_workers) as executor:
-    futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in SERVICES }
+    futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
     wait(futures)
