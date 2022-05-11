@@ -4,10 +4,11 @@ import multiprocessing
 import os
 from subprocess import  Popen, DEVNULL, PIPE
 
+
 # --------------------
 # CONSTANTS
 MAVEN = {
-    "CMD": "./mvnw",
+    "CMD": ["./mvnw", "clean", "package", "-Dmaven.test.skip"],
     "PROJECTS": [
         ("eureka",   8761, False),
         ("gateway",  8080, False),
@@ -19,7 +20,7 @@ MAVEN = {
 }
 
 DOCKER = {
-    "CMD": "docker",
+    "CMD": ["docker", "build", ".", "-f", "-"],
     "TEMPLATES": {
         "MAIN": """
             FROM openjdk:17-alpine
@@ -50,11 +51,12 @@ DOCKER = {
     }
 }
 
+
 # --------------------
 # FUNCTIONS
 def build_microservice(service):
     service_cwd = "{}/{}".format(os.getcwd(), service)
-    with Popen([(MAVEN["CMD"]), "clean", "package", "-Dmaven.test.skip"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+    with Popen(MAVEN["CMD"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' microservice jar...")
         if process.wait() == 0:
             print(f" ---->> Microservice jar '{service}' OK!")
@@ -68,7 +70,7 @@ def build_dockerimage(service, port, db):
     service_cwd = "{}/{}".format(os.getcwd(), service)
     input_string = (DOCKER["TEMPLATES"]["MAIN"]).format(service = service, port = port)
     input_string += DOCKER["TEMPLATES"]["WITH_DB"] if db is True else DOCKER["TEMPLATES"]["WITHOUT_DB"]
-    with Popen([(DOCKER["CMD"]), "build", ".", "-f", "-", "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+    with Popen([*(DOCKER["CMD"]), "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' docker image...")
         process.communicate(str.encode(input_string))
         if process.wait() == 0:
