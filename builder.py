@@ -19,6 +19,7 @@ MAVEN = {
     ] # (service_name, service_port, needs_db)
 }
 
+
 DOCKER = {
     "CMD": ["docker", "build", ".", "-f", "-"],
     "TEMPLATES": {
