@@ -2,17 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: studybuddy
-  labels:
-    project: studybuddy
-    group: brc
 spec:
   selector:
     matchLabels:
-      project: studybuddy
+      app.kubernetes.io/name: studybuddy
   template:
     metadata:
       labels:
-        project: studybuddy
+        app.kubernetes.io/name: studybuddy
     spec:
       containers:
         - name: eureka-pod
@@ -64,9 +61,6 @@ spec:
 apiVersion: v1
 kind: Service
   name: studybuddy
-  labels:
-    project: studybuddy
-    group: brc
 spec:
   ports:
     - name: eureka
@@ -78,5 +72,5 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    project: brc
+    app.kubernetes.io/name: studybuddy
   type: ClusterIP
