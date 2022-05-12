@@ -86,9 +86,14 @@ def build_task(service, port, db):
         build_dockerimage(service, port, db)
 
 
+def build():
+    max_workers = min(len(MAVEN["PROJECTS"]), multiprocessing.cpu_count())
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
+        wait(futures)
+
+
 # --------------------
 # MAIN
-max_workers = min(len(MAVEN["PROJECTS"]), multiprocessing.cpu_count())
-with ThreadPoolExecutor(max_workers=max_workers) as executor:
-    futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
-    wait(futures)
+if __name__ == '__main__':
+    build()
