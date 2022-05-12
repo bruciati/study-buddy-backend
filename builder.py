@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from concurrent.futures import ThreadPoolExecutor, wait
-import multiprocessing
-import os
+from os import cpu_count, getcwd
 from subprocess import  Popen, DEVNULL, PIPE
 
 
@@ -56,7 +55,7 @@ DOCKER = {
 # --------------------
 # FUNCTIONS
 def build_microservice(service):
-    service_cwd = "{}/{}".format(os.getcwd(), service)
+    service_cwd = "{}/{}".format(getcwd(), service)
     with Popen(MAVEN["CMD"], stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' microservice jar...")
         if process.wait() == 0:
@@ -68,7 +67,7 @@ def build_microservice(service):
 
 
 def build_dockerimage(service, port, db):
-    service_cwd = "{}/{}".format(os.getcwd(), service)
+    service_cwd = "{}/{}".format(getcwd(), service)
     input_string = (DOCKER["TEMPLATES"]["MAIN"]).format(service = service, port = port)
     input_string += DOCKER["TEMPLATES"]["WITH_DB"] if db is True else DOCKER["TEMPLATES"]["WITHOUT_DB"]
     with Popen([*(DOCKER["CMD"]), "-t", f"brc/{service}:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
@@ -82,19 +81,19 @@ def build_dockerimage(service, port, db):
             return False
 
 
-def build_task(service, port, db):
+def runnable(service, port, db):
     build_microservice(service) and \
         build_dockerimage(service, port, db)
 
 
-def build():
-    max_workers = min(len(MAVEN["PROJECTS"]), multiprocessing.cpu_count())
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = { executor.submit(build_task, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
+def main():
+    max_workers = min(cpu_count(), len(MAVEN["PROJECTS"]))
+    with ThreadPoolExecutor(max_workers) as executor:
+        futures = { executor.submit(runnable, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
         wait(futures)
 
 
 # --------------------
 # MAIN
 if __name__ == '__main__':
-    build()
+    main()
