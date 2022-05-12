@@ -71,7 +71,7 @@ def build_dockerimage(service, port, db):
     service_cwd = "{}/{}".format(os.getcwd(), service)
     input_string = (DOCKER["TEMPLATES"]["MAIN"]).format(service = service, port = port)
     input_string += DOCKER["TEMPLATES"]["WITH_DB"] if db is True else DOCKER["TEMPLATES"]["WITHOUT_DB"]
-    with Popen([*(DOCKER["CMD"]), "-t", f"{service}_img:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
+    with Popen([*(DOCKER["CMD"]), "-t", f"brc/{service}:latest"], stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, cwd=service_cwd, shell=False) as process:
         print(f" ---->> Building '{service}' docker image...")
         process.communicate(str.encode(input_string))
         if process.wait() == 0:
