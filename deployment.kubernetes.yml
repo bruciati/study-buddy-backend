@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
     - name: eureka-pod
-      image: docker.io/library/brc/eureka
+      image: docker.io/brc/eureka
       imagePullPolicy: Never
 ---
 apiVersion: v1
@@ -41,7 +41,7 @@ metadata:
 spec:
   containers:
     - name: gateway-pod
-      image: docker.io/library/brc/gateway
+      image: docker.io/brc/gateway
       imagePullPolicy: Never
       env:
         - name: SPRING_APPLICATION_JSON
@@ -75,7 +75,7 @@ metadata:
 spec:
   containers:
     - name: auth-pod
-      image: docker.io/library/brc/auth
+      image: docker.io/brc/auth
       imagePullPolicy: Never
       env:
         - name: SPRING_APPLICATION_JSON
@@ -109,7 +109,7 @@ metadata:
 spec:
   containers:
     - name: users-pod
-      image: docker.io/library/brc/users
+      image: docker.io/brc/users
       imagePullPolicy: Never
       env:
         - name: SPRING_APPLICATION_JSON
@@ -143,7 +143,7 @@ metadata:
 spec:
   containers:
     - name: groups-pod
-      image: docker.io/library/brc/groups
+      image: docker.io/brc/groups
       imagePullPolicy: Never
       env:
         - name: SPRING_APPLICATION_JSON
@@ -177,7 +177,7 @@ metadata:
 spec:
   containers:
     - name: meetings-pod
-      image: docker.io/library/brc/meetings
+      image: docker.io/brc/meetings
       imagePullPolicy: Never
       env:
         - name: SPRING_APPLICATION_JSON
