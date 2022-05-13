@@ -56,6 +56,10 @@ spec:
           env:
             - name: SPRING_APPLICATION_JSON
               value: '{"eureka": {"instance": {"prefer-ip-address": false, "hostname": "gateway-web"}, "client": {"service-url": {"defaultZone": "http://eureka-web:8761/eureka"}}}, "spring": {"config": {"import": "optional:configserver:http://eureka-web:8761"}}}'
+      initContainers:
+        - name: wait-eureka-web
+          image: docker.io/library/busybox
+          command: ["sh", "-c", "until wget -q -O /dev/null 'http://eureka-web:8761' &> /dev/null; do sleep 5; done"]
 ---
 apiVersion: v1
 kind: Service
@@ -95,6 +99,10 @@ spec:
           env:
             - name: SPRING_APPLICATION_JSON
               value: '{"eureka": {"instance": {"prefer-ip-address": false, "hostname": "auth-web"}, "client": {"service-url": {"defaultZone": "http://eureka-web:8761/eureka"}}}, "spring": {"config": {"import": "optional:configserver:http://eureka-web:8761"}}}'
+      initContainers:
+        - name: wait-eureka-web
+          image: docker.io/library/busybox
+          command: ["sh", "-c", "until wget -q -O /dev/null 'http://eureka-web:8761' &> /dev/null; do sleep 5; done"]
 ---
 apiVersion: v1
 kind: Service
@@ -134,6 +142,10 @@ spec:
           env:
             - name: SPRING_APPLICATION_JSON
               value: '{"eureka": {"instance": {"prefer-ip-address": false, "hostname": "users-web"}, "client": {"service-url": {"defaultZone": "http://eureka-web:8761/eureka"}}}}'
+      initContainers:
+        - name: wait-eureka-web
+          image: docker.io/library/busybox
+          command: ["sh", "-c", "until wget -q -O /dev/null 'http://eureka-web:8761' &> /dev/null; do sleep 5; done"]
 ---
 apiVersion: v1
 kind: Service
@@ -173,6 +185,10 @@ spec:
           env:
             - name: SPRING_APPLICATION_JSON
               value: '{"eureka": {"instance": {"prefer-ip-address": false, "hostname": "groups-web"}, "client": {"service-url": {"defaultZone": "http://eureka-web:8761/eureka"}}}}'
+      initContainers:
+        - name: wait-eureka-web
+          image: docker.io/library/busybox
+          command: ["sh", "-c", "until wget -q -O /dev/null 'http://eureka-web:8761' &> /dev/null; do sleep 5; done"]
 ---
 apiVersion: v1
 kind: Service
@@ -212,6 +228,10 @@ spec:
           env:
             - name: SPRING_APPLICATION_JSON
               value: '{"eureka": {"instance": {"prefer-ip-address": false, "hostname": "meetings-web"}, "client": {"service-url": {"defaultZone": "http://eureka-web:8761/eureka"}}}}'
+      initContainers:
+        - name: wait-eureka-web
+          image: docker.io/library/busybox
+          command: ["sh", "-c", "until wget -q -O /dev/null 'http://eureka-web:8761' &> /dev/null; do sleep 5; done"]
 ---
 apiVersion: v1
 kind: Service
