@@ -81,7 +81,7 @@ def build_dockerimage(service, port, db):
             return False
 
 
-def runnable(service, port, db):
+def task(service, port, db):
     build_microservice(service) and \
         build_dockerimage(service, port, db)
 
@@ -89,7 +89,7 @@ def runnable(service, port, db):
 def main():
     max_workers = min(cpu_count(), len(MAVEN["PROJECTS"]))
     with ThreadPoolExecutor(max_workers) as executor:
-        futures = { executor.submit(runnable, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
+        futures = { executor.submit(task, s, p, d): (s, p, d) for (s, p, d) in MAVEN["PROJECTS"] }
         wait(futures)
 
 
