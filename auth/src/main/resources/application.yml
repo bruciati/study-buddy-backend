@@ -29,9 +29,6 @@ auth:
     ttl: 120
   facebook:
     apptoken: "475499464360666|9f81835d84d715b51845635fd481ff25"
-  # Fallback Configurations
-  secret: "secret123456"
-  ttl: 300000 # in ms (5 minutes)
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
