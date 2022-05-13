@@ -2,14 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: eureka-web
+  labels:
+    app: eureka-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: eureka-web
+      app: eureka-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: eureka-web
+        app: eureka-web
     spec:
       containers:
         - name: eureka-pod
@@ -23,29 +25,30 @@ kind: Service
 metadata:
   name: eureka-web
   labels:
-    app.kubernetes.io/name: eureka-web
+    app: eureka-web
 spec:
   ports:
-  - name: 8761-8761
-    port: 8761
+  - port: 8761
     protocol: TCP
     targetPort: 8761
   selector:
-    app.kubernetes.io/name: eureka-web
+    app: eureka-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gateway-web
+  labels:
+    app: gateway-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: gateway-web
+      app: gateway-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: gateway-web
+        app: gateway-web
     spec:
       containers:
         - name: gateway-pod
@@ -66,29 +69,30 @@ kind: Service
 metadata:
   name: gateway-web
   labels:
-    app.kubernetes.io/name: gateway-web
+    app: gateway-web
 spec:
   ports:
-  - name: 8080-8080
-    port: 8080
+  - port: 8080
     protocol: TCP
     targetPort: 8080
   selector:
-    app.kubernetes.io/name: gateway-web
+    app: gateway-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-web
+  labels:
+    app: auth-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: auth-web
+      app: auth-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: auth-web
+        app: auth-web
     spec:
       containers:
         - name: auth-pod
@@ -109,29 +113,30 @@ kind: Service
 metadata:
   name: auth-web
   labels:
-    app.kubernetes.io/name: auth-web
+    app: auth-web
 spec:
   ports:
-  - name: 8081-8081
-    port: 8081
+  - port: 8081
     protocol: TCP
     targetPort: 8081
   selector:
-    app.kubernetes.io/name: auth-web
+    app: auth-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: users-web
+  labels:
+    app: users-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: users-web
+      app: users-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: users-web
+        app: users-web
     spec:
       containers:
         - name: users-pod
@@ -152,29 +157,30 @@ kind: Service
 metadata:
   name: users-web
   labels:
-    app.kubernetes.io/name: users-web
+    app: users-web
 spec:
   ports:
-  - name: 8082-8082
-    port: 8082
+  - port: 8082
     protocol: TCP
     targetPort: 8082
   selector:
-    app.kubernetes.io/name: users-web
+    app: users-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: groups-web
+  labels:
+    app: groups-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: groups-web
+      app: groups-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: groups-web
+        app: groups-web
     spec:
       containers:
         - name: groups-pod
@@ -195,29 +201,30 @@ kind: Service
 metadata:
   name: groups-web
   labels:
-    app.kubernetes.io/name: groups-web
+    app: groups-web
 spec:
   ports:
-  - name: 8083-8083
-    port: 8083
+  - port: 8083
     protocol: TCP
     targetPort: 8083
   selector:
-    app.kubernetes.io/name: groups-web
+    app: groups-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: meetings-web
+  labels:
+    app: meetings-web
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: meetings-web
+      app: meetings-web
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: meetings-web
+        app: meetings-web
     spec:
       containers:
         - name: meetings-pod
@@ -238,13 +245,12 @@ kind: Service
 metadata:
   name: meetings-web
   labels:
-    app.kubernetes.io/name: meetings-web
+    app: meetings-web
 spec:
   ports:
-  - name: 8084-8084
-    port: 8084
+  - port: 8084
     protocol: TCP
     targetPort: 8084
   selector:
-    app.kubernetes.io/name: meetings-web
+    app: meetings-web
   type: ClusterIP
