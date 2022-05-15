@@ -22,12 +22,12 @@ class UsersWebClient {
                 .retrieve()
                 .bodyToMono(User::class.java)
 
-    fun insertFacebookUser(email: String?, facebookId: Long?): Mono<User> {
+    fun insertUser(userInput: UserInput): Mono<User> {
         return webClient.post()
-                .uri("/users")
-                .bodyValue(UserInput(email, User.AuthType.FACEBOOK, facebookId.toString()))
-                .retrieve()
-                .bodyToMono(User::class.java)
+            .uri("/users")
+            .bodyValue(userInput)
+            .retrieve()
+            .bodyToMono(User::class.java)
     }
 
 }
