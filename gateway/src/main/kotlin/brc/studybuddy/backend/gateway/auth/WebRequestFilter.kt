@@ -40,7 +40,7 @@ class WebRequestFilter : WebFilter {
                 val jwtClaim = jwtParser.parseClaimsJws(token.get())
                 val userId = jwtClaim.body.subject
 
-                headers.replace(USERID_HEADER, singletonList(userId))
+                headers[USERID_HEADER] = singletonList(userId)
 
                 return true
             } catch (e: JwtException) {
