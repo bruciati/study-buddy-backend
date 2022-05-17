@@ -41,7 +41,7 @@ class WebRequestFilter : WebFilter {
                 val userId = jwtClaim.body.subject
 
                 headers.replace(USERID_HEADER, singletonList(userId))
-                
+
                 return true
             } catch (e: JwtException) {
                 logger.error("Authentication", e)
