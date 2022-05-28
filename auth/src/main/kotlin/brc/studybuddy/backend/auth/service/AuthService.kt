@@ -49,7 +49,7 @@ class AuthService {
     *   - A Mono<User> containing the validated user
     *   - A Mono<AuthError> in case it is not valid
     */
-    fun validateUserInput(user: UserInput): Mono<UserInput> {
+    private fun validateUserInput(user: UserInput): Mono<UserInput> {
         return if (user.email != null && user.authValue != null && user.authType != null)
             Mono.just(user)
         else
@@ -59,7 +59,7 @@ class AuthService {
     /*
     *  Perform the authentication using email and password
     */
-    fun emailAuthentication(user: UserInput): Mono<User> =
+    private fun emailAuthentication(user: UserInput): Mono<User> =
         Mono.just(user)
             .flatMap { u ->
                 usersWebClient.getUserByEmail(u.email)
@@ -90,7 +90,15 @@ class AuthService {
             .flatMap {
                 usersWebClient
                     .getUserByEmail(user.email)
-                    .switchIfEmpty(usersWebClient.insertFacebookUser(user.email, it))
+                    .switchIfEmpty(
+                        usersWebClient.insertUser(
+                            UserInput(
+                                user.email,
+                                User.AuthType.FACEBOOK,
+                                it.toString()
+                            )
+                        )
+                    )
             }
 
     fun refresh(refreshToken: String): Mono<Tokens> =

@@ -58,6 +58,14 @@
         </dependency>
         <!-- END/StudyBuddy Models -->
 
+        <!-- Response Wrapper -->
+        <dependency>
+            <groupId>com.github.giuseppe998e</groupId>
+            <artifactId>spring-webflux-response-wrapper</artifactId>
+            <version>v0.2.3</version>
+        </dependency>
+        <!-- END/Response Wrapper -->
+
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
