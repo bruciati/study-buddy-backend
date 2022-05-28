@@ -34,8 +34,8 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-               allowedOrigins: "*"
-               allowedMethods: "*"
+            allowedOrigins: "*"
+            allowedMethods: "*"
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations

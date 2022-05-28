@@ -3,7 +3,6 @@ package brc.studybuddy.backend.gateway.client.extra
 import brc.studybuddy.backend.gateway.client.ATTENDEES_ENDPOINT
 import brc.studybuddy.backend.gateway.client.MEMBERS_ENDPOINT
 import brc.studybuddy.input.MeetingAttendeeInput
-import brc.studybuddy.model.GroupMember
 import brc.studybuddy.model.MeetingAttendee
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux

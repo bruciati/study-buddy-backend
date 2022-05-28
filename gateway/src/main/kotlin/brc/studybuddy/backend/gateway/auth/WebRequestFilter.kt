@@ -14,6 +14,7 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
+import java.util.Collections.singletonList
 import java.util.function.Predicate.not
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -32,15 +33,14 @@ class WebRequestFilter : WebFilter {
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     private fun isClientAuthorized(headers: HttpHeaders): Boolean {
-        val token = getToken(headers)
+        val token = readHeaderToken(headers)
 
         if (token.isPresent) {
             try {
                 val jwtClaim = jwtParser.parseClaimsJws(token.get())
                 val userId = jwtClaim.body.subject
 
-                headers.remove(USERID_HEADER)
-                headers.add(USERID_HEADER, userId)
+                headers[USERID_HEADER] = singletonList(userId)
 
                 return true
             } catch (e: JwtException) {
@@ -51,7 +51,7 @@ class WebRequestFilter : WebFilter {
         return false
     }
 
-    private fun getToken(headers: HttpHeaders): Optional<String> = Optional
+    private fun readHeaderToken(headers: HttpHeaders): Optional<String> = Optional
         .ofNullable(headers.getFirst(AUTHORIZATION_HEADER))
         .filter(not(String::isEmpty))
         .map(BEARER_PATTERN::matcher)
