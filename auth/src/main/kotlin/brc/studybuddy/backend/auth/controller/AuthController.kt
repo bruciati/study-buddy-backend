@@ -10,13 +10,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(value = ["auth"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class AuthController {
-
     @Autowired
     lateinit var authService: AuthService
     val logger: Logger = LoggerFactory.getLogger("AuthenticationController")
@@ -28,15 +30,6 @@ class AuthController {
 
     @PostMapping(path = ["/refresh"])
     fun refresh(@RequestBody refreshToken: String): Mono<AuthResponse> =
-        authService.refresh(refreshToken.substring(1, refreshToken.length-1))
-            .doFirst { logger.info("got: $refreshToken") }
-            .map { s -> AuthSuccess(s.first, s.second) as AuthResponse }
-            .onErrorResume {
-                Mono.just(
-                    when (it) {
-                        is AuthError -> it
-                        else -> AuthError(HttpStatus.SC_INTERNAL_SERVER_ERROR, it.message!!)
-                    }
-                )
-            }
+        authService.refresh(refreshToken.removeSurrounding("\""))
+            .map { s -> AuthSuccess(s.first, s.second) }
 }
