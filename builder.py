@@ -23,7 +23,7 @@ DOCKER = {
     "CMD": ["docker", "build", ".", "-f", "-"],
     "TEMPLATES": {
         "MAIN": """
-            FROM openjdk:17-alpine
+            FROM openjdk:18-alpine
             COPY target/{service}-0.0.1.jar /app.jar
             EXPOSE {port:d}
             RUN adduser -D web && \\
