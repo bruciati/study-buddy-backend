@@ -23,7 +23,7 @@ DOCKER = {
     "CMD": ["docker", "build", ".", "-f", "-"],
     "TEMPLATES": {
         "MAIN": """
-            FROM openjdk:17-alpine
+            FROM openjdk:18-alpine
             COPY target/{service}-0.0.1.jar /app.jar
             EXPOSE {port:d}
             RUN adduser -D web && \\
@@ -35,7 +35,7 @@ DOCKER = {
             ENTRYPOINT ["java", "-jar", "/app.jar"]
         """,
         "WITH_DB": """
-            RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/main\\nhttps://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \\
+            RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \\
                 apk update && \\
                 apk add --no-cache postgresql14
             USER postgres
