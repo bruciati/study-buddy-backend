@@ -4,7 +4,6 @@ import brc.studybuddy.backend.auth.component.FacebookWebClient
 import brc.studybuddy.backend.auth.component.TokenManager
 import brc.studybuddy.backend.auth.component.Tokens
 import brc.studybuddy.backend.auth.component.UsersWebClient
-import brc.studybuddy.backend.auth.model.AuthError
 import brc.studybuddy.backend.auth.model.FacebookError
 import brc.studybuddy.backend.auth.model.FacebookSuccess
 import brc.studybuddy.input.UserInput
