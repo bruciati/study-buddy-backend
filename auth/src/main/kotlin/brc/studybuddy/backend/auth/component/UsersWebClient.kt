@@ -28,6 +28,7 @@ class UsersWebClient {
             .bodyValue(userInput)
             .retrieve()
             .bodyToMono(User::class.java)
+            .share()
     }
 
 }
