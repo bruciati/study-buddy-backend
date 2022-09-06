@@ -38,9 +38,7 @@ class WebRequestFilter : WebFilter {
                     val userId = jwtClaim.body.subject
 
                     val newRequest = exchange.request.mutate().header(USERID_HEADER, userId).build()
-                    val newExchange = exchange.mutate().request(newRequest).build()
-
-                    newExchange
+                    exchange.mutate().request(newRequest).build()
                 } catch (e: JwtException) {
                     logger.error("Authentication", e)
                     null
@@ -48,8 +46,11 @@ class WebRequestFilter : WebFilter {
             }
 
     private fun readHeaderToken(headers: HttpHeaders): Optional<String> =
-        Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER)).filter(not(String::isEmpty))
-            .map(BEARER_PATTERN::matcher).filter(Matcher::find).map { m -> m.group(1) }
+        Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER))
+            .filter(not(String::isEmpty))
+            .map(BEARER_PATTERN::matcher)
+            .filter(Matcher::find)
+            .map { m -> m.group(1) }
 
     // Webflux filter
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -64,7 +65,8 @@ class WebRequestFilter : WebFilter {
             return with(exchange.response) {
                 statusCode = HttpStatus.UNAUTHORIZED
                 headers.add(
-                    "WWW-Authenticate", "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
+                    "WWW-Authenticate",
+                    "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
                 )
                 setComplete()
             }
