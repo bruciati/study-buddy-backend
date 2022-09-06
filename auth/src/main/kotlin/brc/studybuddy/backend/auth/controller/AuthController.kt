@@ -1,24 +1,30 @@
 package brc.studybuddy.backend.auth.controller
 
-import brc.studybuddy.backend.auth.model.AuthError
 import brc.studybuddy.backend.auth.model.AuthResponse
 import brc.studybuddy.backend.auth.model.AuthSuccess
 import brc.studybuddy.backend.auth.service.AuthService
+import brc.studybuddy.backend.auth.service.RegisterService
 import brc.studybuddy.input.UserInput
-import org.apache.http.HttpStatus
+import brc.studybuddy.model.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(value = ["auth"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class AuthController {
-
     @Autowired
     lateinit var authService: AuthService
+    @Autowired
+    lateinit var registerService: RegisterService
+
     val logger: Logger = LoggerFactory.getLogger("AuthenticationController")
 
     @PostMapping
@@ -28,15 +34,13 @@ class AuthController {
 
     @PostMapping(path = ["/refresh"])
     fun refresh(@RequestBody refreshToken: String): Mono<AuthResponse> =
-        authService.refresh(refreshToken.substring(1, refreshToken.length-1))
-            .doFirst { logger.info("got: $refreshToken") }
-            .map { s -> AuthSuccess(s.first, s.second) as AuthResponse }
-            .onErrorResume {
-                Mono.just(
-                    when (it) {
-                        is AuthError -> it
-                        else -> AuthError(HttpStatus.SC_INTERNAL_SERVER_ERROR, it.message!!)
-                    }
-                )
-            }
+        authService.refresh(refreshToken.removeSurrounding("\""))
+            .map { s -> AuthSuccess(s.first, s.second) }
+
+    @PutMapping
+    fun register(@RequestBody user: UserInput): Mono<AuthResponse> =
+        registerService.register(user)
+            .flatMap { authService.authenticate(UserInput(it.email, it.authType, it.authValue)) }
+            .map { s -> AuthSuccess(s.first, s.second) }
+
 }

@@ -4,13 +4,13 @@ import brc.studybuddy.backend.auth.component.FacebookWebClient
 import brc.studybuddy.backend.auth.component.TokenManager
 import brc.studybuddy.backend.auth.component.Tokens
 import brc.studybuddy.backend.auth.component.UsersWebClient
-import brc.studybuddy.backend.auth.model.AuthError
 import brc.studybuddy.backend.auth.model.FacebookError
 import brc.studybuddy.backend.auth.model.FacebookSuccess
 import brc.studybuddy.input.UserInput
 import brc.studybuddy.model.User
-import org.apache.http.HttpStatus
+import brc.webflux.response.wrapper.model.Response
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
@@ -38,7 +38,7 @@ class AuthService {
                 when (it.authType) {
                     User.AuthType.FACEBOOK -> facebookAuthentication(it)
                     User.AuthType.PASSWORD -> emailAuthentication(it)
-                    else -> Mono.error(AuthError(HttpStatus.SC_BAD_REQUEST, "Login type not allowed"))
+                    else -> Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "Login type not allowed"))
                 }
             }
             .map { tokenManager.generateTokens(it.id) }
@@ -53,7 +53,7 @@ class AuthService {
         return if (user.email != null && user.authValue != null && user.authType != null)
             Mono.just(user)
         else
-            Mono.error(AuthError(HttpStatus.SC_BAD_REQUEST, "The given UserInput is invalid"))
+            Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "The given UserInput is invalid"))
     }
 
     /*
@@ -65,7 +65,7 @@ class AuthService {
                 usersWebClient.getUserByEmail(u.email)
                     .filter { it.authValue == u.authValue }
             }
-            .switchIfEmpty(Mono.error(AuthError(HttpStatus.SC_UNAUTHORIZED, "Incorrect credentials")))
+            .switchIfEmpty(Mono.error(Response.Error(HttpStatus.UNAUTHORIZED, "Incorrect credentials")))
 
     /*
     * Perform the authentication using the provided Facebook token
@@ -83,7 +83,7 @@ class AuthService {
             .map { response ->
                 when (response.data) {
                     is FacebookSuccess -> response.data.userId
-                    is FacebookError -> throw AuthError(response.data.error.code, response.data.error.message)
+                    is FacebookError -> throw Response.Error(HttpStatus.valueOf(response.data.error.code), response.data.error.message)
                     else -> throw Error("An unexpected error occurred while trying to fetch Facebook token data")
                 }
             }
@@ -104,7 +104,7 @@ class AuthService {
     fun refresh(refreshToken: String): Mono<Tokens> =
         Mono.just(refreshToken)
             .map(tokenManager::validateRefreshToken)
-            .onErrorMap { e -> AuthError(HttpStatus.SC_BAD_REQUEST, e.message!!) }
+            .onErrorMap { e -> Response.Error(HttpStatus.BAD_REQUEST, e.message!!) }
             .map(tokenManager::generateTokens)
 
 }
