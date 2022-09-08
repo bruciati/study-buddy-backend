@@ -5,7 +5,7 @@ type Query {
 
     groups(ids: [ID!]): [Group!]!
     groupById(id: ID!): Group
-    userByTitle(title: String!): User
+    groupByTitle(title: String!): Group
 
     meetingById(id: ID!): Meeting
 }
