@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.gateway.graphql
 
+import brc.studybuddy.backend.gateway.auth.USERID_HEADER
 import brc.studybuddy.backend.gateway.client.GroupsWebClient
 import brc.studybuddy.backend.gateway.client.MeetingsWebClient
 import brc.studybuddy.backend.gateway.client.UsersWebClient
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestHeader
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
@@ -29,6 +31,9 @@ class QueryController {
     // ------------------------------------------------------
     // --------------------- User Class ---------------------
     // ------------------------------------------------------
+
+    @QueryMapping
+    fun me(@RequestHeader(USERID_HEADER) userId: Long) = usersWebClient.getUser(userId)
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))

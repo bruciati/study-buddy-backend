@@ -1,4 +1,5 @@
 type Query {
+    me: User!
     users(ids: [ID!]): [User!]!
     userById(id: ID!): User
     userByEmail(email: String!): User
