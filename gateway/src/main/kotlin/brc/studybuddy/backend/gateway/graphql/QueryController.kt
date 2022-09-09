@@ -1,20 +1,17 @@
 package brc.studybuddy.backend.gateway.graphql
 
-import brc.studybuddy.backend.gateway.auth.USERID_HEADER
-import brc.studybuddy.backend.gateway.auth.WebRequestFilter
+import brc.studybuddy.backend.gateway.auth.USERID_KEY
 import brc.studybuddy.backend.gateway.client.GroupsWebClient
 import brc.studybuddy.backend.gateway.client.MeetingsWebClient
 import brc.studybuddy.backend.gateway.client.UsersWebClient
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import graphql.GraphQLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestHeader
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
@@ -30,17 +27,13 @@ class QueryController {
     @Autowired
     private lateinit var meetingsWebClient: MeetingsWebClient
 
-    val logger: Logger by lazy { LoggerFactory.getLogger(QueryController::class.java) }
 
     // ------------------------------------------------------
     // --------------------- User Class ---------------------
     // ------------------------------------------------------
 
     @QueryMapping
-    fun me(@RequestHeader(USERID_HEADER) userId: Long): Mono<User> {
-        logger.error("USER_ID_HEADER", userId)
-        return usersWebClient.getUser(userId)
-    }
+    fun me(context: GraphQLContext): Mono<User> = usersWebClient.getUser(context.get(USERID_KEY))
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))
