@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.annotation.Order
 import org.springframework.graphql.server.WebGraphQlInterceptor
 import org.springframework.graphql.server.WebGraphQlRequest
 import org.springframework.graphql.server.WebGraphQlResponse
@@ -15,7 +16,7 @@ import javax.annotation.Priority
 const val USERID_KEY = "X-UserID"
 
 @Component
-@Priority(Int.MIN_VALUE + 1)
+@Order(Int.MIN_VALUE + 1)
 class WebRequestInterceptor : WebGraphQlInterceptor {
     @Autowired
     lateinit var jwtParser: JwtParser
