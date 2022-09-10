@@ -23,16 +23,14 @@ class WebRequestFilter : WebFilter {
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     private fun genAuthorizedExchange(headers: HttpHeaders): Boolean {
-        try {
-            val authToken = getHeaderAuthToken(headers)
-            if (authToken.isPresent) {
-                val isSigned = jwtParser.isSigned(authToken.get())
-                if (isSigned) {
-                    return true
-                }
+        val authToken = getHeaderAuthToken(headers)
+        if (authToken.isPresent) {
+            try {
+                jwtParser.parseClaimsJws(authToken.get())
+                return true
+            } catch (e: JwtException) {
+                logger.error("JWT Authentication", e)
             }
-        } catch (e: JwtException) {
-            logger.error("JWT Authentication", e)
         }
 
         return false
