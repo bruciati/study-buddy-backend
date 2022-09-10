@@ -8,6 +8,8 @@ import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
 import graphql.GraphQLContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -28,12 +30,17 @@ class QueryController {
     private lateinit var meetingsWebClient: MeetingsWebClient
 
 
+    val logger: Logger by lazy { LoggerFactory.getLogger(QueryController::class.java) }
+
     // ------------------------------------------------------
     // --------------------- User Class ---------------------
     // ------------------------------------------------------
 
     @QueryMapping
-    fun me(context: GraphQLContext): Mono<User> = usersWebClient.getUser(context.get(USERID_KEY))
+    fun me(context: GraphQLContext): Mono<User> {
+        logger.info("Query Subject", context.get(USERID_KEY))
+        return usersWebClient.getUser(context.get(USERID_KEY))
+    }
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))
