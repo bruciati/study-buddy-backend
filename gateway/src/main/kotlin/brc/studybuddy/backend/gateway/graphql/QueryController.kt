@@ -38,7 +38,7 @@ class QueryController {
 
     @QueryMapping
     fun me(context: GraphQLContext): Mono<User> {
-        logger.info("Query Subject", context.get(USERID_KEY))
+        logger.info("Query Subject", context.get<Long>(USERID_KEY).toString())
         return usersWebClient.getUser(context.get(USERID_KEY))
     }
 

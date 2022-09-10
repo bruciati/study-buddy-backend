@@ -34,7 +34,7 @@ class WebRequestInterceptor : WebGraphQlInterceptor {
             -1L
         }
 
-        logger.info("JWT Token", userId.get())
+        logger.info("JWT Subject", userId.get().toString())
 
         request.configureExecutionInput { _, rxBuilder ->
             rxBuilder.graphQLContext { ctxBuilder -> ctxBuilder.put(USERID_KEY, userId.get()) }.build()
