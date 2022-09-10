@@ -37,10 +37,7 @@ class QueryController {
     // ------------------------------------------------------
 
     @QueryMapping
-    fun me(context: GraphQLContext): Mono<User> {
-        logger.info("Query Subject", context.get<Long>(USERID_KEY).toString())
-        return usersWebClient.getUser(context.get(USERID_KEY))
-    }
+    fun me(context: GraphQLContext): Mono<User> = usersWebClient.getUser(context.get(USERID_KEY))
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))
