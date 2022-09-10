@@ -1,11 +1,13 @@
 package brc.studybuddy.backend.gateway.graphql
 
+import brc.studybuddy.backend.gateway.auth.USERID_KEY
 import brc.studybuddy.backend.gateway.client.GroupsWebClient
 import brc.studybuddy.backend.gateway.client.MeetingsWebClient
 import brc.studybuddy.backend.gateway.client.UsersWebClient
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
+import graphql.GraphQLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -29,6 +31,9 @@ class QueryController {
     // ------------------------------------------------------
     // --------------------- User Class ---------------------
     // ------------------------------------------------------
+
+    @QueryMapping
+    fun me(context: GraphQLContext): Mono<User> = usersWebClient.getUser(context.get(USERID_KEY))
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))

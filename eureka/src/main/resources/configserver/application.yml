@@ -1,3 +1,3 @@
 auth:
-  secret: "qNWjDyrCGyZNkK6AGGZFSBOo38aZEudh1XVW5jL7OUm2lFMWcuCU0YD6Y3rREXzVa5Wd2je983j82je923he"
-  ttl: 300000 # in ms (5 minutes)
+  secret: "df5cab289b1ac8259291d299697743d06763bc4678834c62e1f3e3507b80d7f7"
+  ttl: 300 # in seconds (5 minutes)
