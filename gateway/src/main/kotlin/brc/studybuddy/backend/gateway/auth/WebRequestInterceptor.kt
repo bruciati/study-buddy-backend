@@ -11,7 +11,6 @@ import org.springframework.graphql.server.WebGraphQlRequest
 import org.springframework.graphql.server.WebGraphQlResponse
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import javax.annotation.Priority
 
 const val USERID_KEY = "X-UserID"
 
