@@ -13,7 +13,6 @@ class CorsConfig : CorsConfiguration() {
     @Bean
     fun corsFilter(): CorsWebFilter {
         val corsConfiguration = CorsConfiguration()
-        corsConfiguration.allowCredentials = true
         corsConfiguration.addAllowedOrigin("*")
         corsConfiguration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
         corsConfiguration.addAllowedHeader("origin")
