@@ -32,10 +32,11 @@ spring:
           predicates:
             - "Path=/auth/**"
       globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
+        cors-configurations:
+            '[/**]':
+              allowedOrigins: "*"
+              allowedMethods: "*"
+
 
 # ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
