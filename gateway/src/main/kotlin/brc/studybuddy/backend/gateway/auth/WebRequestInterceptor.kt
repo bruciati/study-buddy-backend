@@ -1,6 +1,5 @@
 package brc.studybuddy.backend.gateway.auth
 
-import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.JwtParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,23 +22,7 @@ class WebRequestInterceptor : WebGraphQlInterceptor {
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
-        val userId = getHeaderAuthToken(request.headers).map { tok ->
-            try {
-                val jwtClaim = jwtParser.parseClaimsJws(tok)
-                jwtClaim.body.subject.toLong() // UserId
-            } catch (e: JwtException) {
-                logger.error("JWT Parsing", e)
-            }
-
-            -1L
-        }
-
-        logger.info("JWT Subject", request.headers.toString())
-
-        request.configureExecutionInput { _, rxBuilder ->
-            rxBuilder.graphQLContext { ctxBuilder -> ctxBuilder.put(USERID_KEY, userId.get()) }.build()
-        }
-
+        logger.info(this::class.java.toString(), request.headers.toString())
         return chain.next(request)
     }
 }
