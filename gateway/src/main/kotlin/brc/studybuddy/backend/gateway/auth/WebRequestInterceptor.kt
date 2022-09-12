@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 const val USERID_KEY = "X-UserID"
 
 @Component
-//@Order(Int.MIN_VALUE + 1)
+@Order(Int.MIN_VALUE + 1)
 class WebRequestInterceptor : WebGraphQlInterceptor {
     @Autowired
     lateinit var jwtParser: JwtParser
@@ -22,7 +22,9 @@ class WebRequestInterceptor : WebGraphQlInterceptor {
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
-        logger.info("${this::class.java.toString()} - DEBUG", request.headers.getFirst("Authorization"))
+        logger.info("${this::class.java} - DEBUG#1", request.uri.toString())
+        logger.info("${this::class.java} - DEBUG#2", request.headers.toString())
+        logger.info("${this::class.java} - DEBUG#3", request.document)
         return chain.next(request)
     }
 }
