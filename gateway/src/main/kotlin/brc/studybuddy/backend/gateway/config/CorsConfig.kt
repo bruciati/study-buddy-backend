@@ -6,10 +6,8 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
-
 @Configuration
 class CorsConfig : CorsConfiguration() {
-
     @Bean
     fun corsFilter(): CorsWebFilter {
         val corsConfiguration = CorsConfiguration()
@@ -26,5 +24,4 @@ class CorsConfig : CorsConfiguration() {
 
         return CorsWebFilter(source)
     }
-
 }
