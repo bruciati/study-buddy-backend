@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
@@ -41,7 +42,12 @@ class WebRequestFilter : WebFilter {
         val reqPath = exchange.request.path.value()
         val isClientAuthorized = genAuthorizedExchange(exchange.request.headers)
 
-        return when (isClientAuthorized || reqPath.startsWith("/auth")) {
+        // Since CORS send a pre-flight OPTIONS request, we need to let every OPTIONS request in
+        return when (
+            isClientAuthorized ||
+            reqPath.startsWith("/auth") ||
+            exchange.request.method == HttpMethod.OPTIONS
+        ) {
             true -> chain.filter(exchange)
             false -> with(exchange.response) {
                 statusCode = HttpStatus.UNAUTHORIZED
