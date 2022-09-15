@@ -19,7 +19,7 @@ class WebRequestInterceptor : WebGraphQlInterceptor {
     @Autowired
     lateinit var jwtParser: JwtParser
 
-    val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
+    val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestInterceptor::class.java) }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
         logger.info("${this::class.java} - DEBUG#1", request.uri.toString())

@@ -1,6 +1,7 @@
 input GroupInput {
     title: String
     ownerId: ID
+    areaOfInterest: String
     description: String
 }
 

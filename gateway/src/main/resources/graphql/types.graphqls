@@ -1,6 +1,8 @@
 type User {
     id: ID!
     email: String!
+    firstName: String!
+    lastName: String
     groups(owned: Boolean): [Group!]
     meetings(hosted: Boolean): [Meeting!]
 }
@@ -9,6 +11,7 @@ type Group {
     id: ID!
     owner: User
     title: String!
+    areaOfInterest: String!
     description: String
     members: [User!]
     meetings: [Meeting!]
