@@ -94,6 +94,8 @@ class AuthService {
                         usersWebClient.insertUser(
                             UserInput(
                                 user.email,
+                                null,
+                                null,
                                 User.AuthType.FACEBOOK,
                                 it.toString()
                             )

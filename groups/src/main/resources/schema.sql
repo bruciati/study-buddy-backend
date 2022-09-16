@@ -3,9 +3,10 @@
 --
 CREATE TABLE IF NOT EXISTS groups
 (
-    id          SERIAL PRIMARY KEY,
-    title       VARCHAR(128) UNIQUE NOT NULL,
-    description TEXT DEFAULT NULL
+    id               SERIAL PRIMARY KEY,
+    title            VARCHAR(128) UNIQUE NOT NULL,
+    area_of_interest VARCHAR(128) NOT NULL,
+    description      TEXT DEFAULT NULL
 );
 
 --

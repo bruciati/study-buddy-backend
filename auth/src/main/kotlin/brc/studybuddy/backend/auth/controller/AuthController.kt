@@ -5,7 +5,6 @@ import brc.studybuddy.backend.auth.model.AuthSuccess
 import brc.studybuddy.backend.auth.service.AuthService
 import brc.studybuddy.backend.auth.service.RegisterService
 import brc.studybuddy.input.UserInput
-import brc.studybuddy.model.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,7 +39,7 @@ class AuthController {
     @PutMapping
     fun register(@RequestBody user: UserInput): Mono<AuthResponse> =
         registerService.register(user)
-            .flatMap { authService.authenticate(UserInput(it.email, it.authType, it.authValue)) }
+            .flatMap { authService.authenticate(UserInput(it.email, user.firstName, user.lastName, it.authType, it.authValue)) }
             .map { s -> AuthSuccess(s.first, s.second) }
 
 }
