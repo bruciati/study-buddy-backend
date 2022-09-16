@@ -1,6 +1,5 @@
 package brc.studybuddy.backend.gateway.auth
 
-import graphql.schema.DataFetcher
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.JwtParser
 import org.slf4j.Logger
@@ -28,11 +27,8 @@ private val BEARER_PATTERN: Pattern = Pattern.compile("^Bearer (.+?)$")
 
 
 internal fun getHeaderAuthToken(headers: HttpHeaders): Optional<String> =
-    Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER))
-        .filter(Predicate.not(String::isEmpty))
-        .map(BEARER_PATTERN::matcher)
-        .filter(Matcher::find)
-        .map { m -> m.group(1) }
+    Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER)).filter(Predicate.not(String::isEmpty))
+        .map(BEARER_PATTERN::matcher).filter(Matcher::find).map { m -> m.group(1) }
 
 
 @Component
@@ -43,48 +39,41 @@ class WebRequestFilter : WebFilter {
 
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
-    private fun genAuthorizedExchange(request: ServerHttpRequest): Boolean {
+    private fun getAuthorizedUserId(request: ServerHttpRequest): Optional<Long> {
         val authToken = getHeaderAuthToken(request.headers)
         if (authToken.isPresent) {
             try {
                 val jwt = jwtParser.parseClaimsJws(authToken.get())
-
-                DataFetcher {
-                    it.graphQlContext.put(
-                        USERID_KEY,
-                        jwt.body.subject.toLong()
-                    )
-                }
-
-                return true
+                return Optional.of(jwt.body.subject.toLong())
             } catch (e: JwtException) {
                 logger.error("JWT Authentication", e)
             }
         }
 
-        return false
+        return Optional.empty()
     }
 
     // Webflux filter
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val reqPath = exchange.request.path.value()
-        val isClientAuthorized = genAuthorizedExchange(exchange.request)
 
-        // Since CORS send a pre-flight OPTIONS request, we need to let every OPTION request in
-        return when (
-            isClientAuthorized ||
-                    reqPath.startsWith("/auth") ||
-                    exchange.request.method == HttpMethod.OPTIONS
-        ) {
-            true -> chain.filter(exchange)
-            false -> with(exchange.response) {
-                statusCode = HttpStatus.UNAUTHORIZED
-                headers.add(
-                    "WWW-Authenticate",
-                    "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
-                )
-                setComplete()
-            }
+        if (reqPath.startsWith("/auth") || exchange.request.method == HttpMethod.OPTIONS) {
+            return chain.filter(exchange)
+        }
+
+        val authUserId = getAuthorizedUserId(exchange.request)
+        if (authUserId.isPresent) {
+            return chain.filter(exchange)
+                .contextWrite { ctx -> ctx.put(USERID_KEY, authUserId.get()) }
+        }
+        
+        return with(exchange.response) {
+            statusCode = HttpStatus.UNAUTHORIZED
+            headers.add(
+                "WWW-Authenticate",
+                "Bearer realm=\"Access to the user's private area\", charset=\"UTF-8\""
+            )
+            setComplete()
         }
     }
 }

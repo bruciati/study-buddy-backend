@@ -7,7 +7,6 @@ import brc.studybuddy.backend.gateway.client.UsersWebClient
 import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
-import graphql.GraphQLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -33,7 +32,9 @@ class QueryController {
     // ------------------------------------------------------
 
     @QueryMapping
-    fun me(context: GraphQLContext): Mono<User> = usersWebClient.getUser(context.get(USERID_KEY))
+    fun me(): Mono<User> = Mono.deferContextual { ctx ->
+        usersWebClient.getUser(ctx.get(USERID_KEY))
+    }
 
     @QueryMapping
     fun users(@Argument ids: List<Long>?): Flux<User> = usersWebClient.getUsers(Optional.ofNullable(ids))
