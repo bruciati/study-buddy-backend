@@ -26,9 +26,12 @@ private const val AUTHORIZATION_HEADER = "Authorization"
 private val BEARER_PATTERN: Pattern = Pattern.compile("^Bearer (.+?)$")
 
 
-internal fun getHeaderAuthToken(headers: HttpHeaders): Optional<String> =
-    Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER)).filter(Predicate.not(String::isEmpty))
-        .map(BEARER_PATTERN::matcher).filter(Matcher::find).map { m -> m.group(1) }
+private fun getHeaderAuthToken(headers: HttpHeaders): Optional<String> =
+    Optional.ofNullable(headers.getFirst(AUTHORIZATION_HEADER))
+        .filter(Predicate.not(String::isEmpty))
+        .map(BEARER_PATTERN::matcher)
+        .filter(Matcher::find)
+        .map { m -> m.group(1) }
 
 
 @Component
@@ -39,24 +42,21 @@ class WebRequestFilter : WebFilter {
 
     val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
-    private fun getAuthorizedUserId(request: ServerHttpRequest): Optional<Long> {
-        val authToken = getHeaderAuthToken(request.headers)
-        if (authToken.isPresent) {
-            try {
-                val jwt = jwtParser.parseClaimsJws(authToken.get())
-                return Optional.of(jwt.body.subject.toLong())
-            } catch (e: JwtException) {
-                logger.error("JWT Authentication", e)
+    private fun getAuthorizedUserId(request: ServerHttpRequest) =
+        getHeaderAuthToken(request.headers)
+            .map { tok ->
+                try {
+                    val jwt = jwtParser.parseClaimsJws(tok)
+                    jwt.body.subject.toLong()
+                } catch (e: JwtException) {
+                    logger.error("JWT Authentication", e)
+                    null
+                }
             }
-        }
-
-        return Optional.empty()
-    }
 
     // Webflux filter
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val reqPath = exchange.request.path.value()
-
         if (reqPath.startsWith("/auth") || exchange.request.method == HttpMethod.OPTIONS) {
             return chain.filter(exchange)
         }
@@ -66,7 +66,7 @@ class WebRequestFilter : WebFilter {
             return chain.filter(exchange)
                 .contextWrite { ctx -> ctx.put(USERID_KEY, authUserId.get()) }
         }
-        
+
         return with(exchange.response) {
             statusCode = HttpStatus.UNAUTHORIZED
             headers.add(
