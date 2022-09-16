@@ -8,8 +8,6 @@ import brc.studybuddy.model.Group
 import brc.studybuddy.model.Meeting
 import brc.studybuddy.model.User
 import graphql.GraphQLContext
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -29,8 +27,6 @@ class QueryController {
     @Autowired
     private lateinit var meetingsWebClient: MeetingsWebClient
 
-
-    val logger: Logger by lazy { LoggerFactory.getLogger(QueryController::class.java) }
 
     // ------------------------------------------------------
     // --------------------- User Class ---------------------
