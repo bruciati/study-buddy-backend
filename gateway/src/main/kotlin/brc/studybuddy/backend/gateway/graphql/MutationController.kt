@@ -73,15 +73,15 @@ class MutationController {
         @Argument groupId: Long
     ): Mono<Group> = Mono.deferContextual { ctx ->
         groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, ctx.get(USERID_KEY))
-    }
-        .filter(GroupMember::isOwner)
-        .thenMany(usersWebClient.deleteGroupMembersByGroupId(groupId))
-        .then(Mono.deferContextual { ctx ->
-            groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(
-                groupId,
-                ctx.get(USERID_KEY)
+            .filter(GroupMember::isOwner)
+            .thenMany(usersWebClient.deleteGroupMembersByGroupId(groupId))
+            .then(
+                groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(
+                    groupId,
+                    ctx.get(USERID_KEY)
+                )
             )
-        })
+    }
         .onErrorResume { e ->
             groupsWebClient.getGroupMembersByGroupId(groupId)
                 .flatMap { m -> usersWebClient.saveGroupMember(m.toInput()) }
@@ -159,15 +159,15 @@ class MutationController {
         @Argument meetingId: Long
     ): Mono<Meeting> = Mono.deferContextual { ctx ->
         meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, ctx.get(USERID_KEY))
-    }
-        .filter(MeetingAttendee::isHost)
-        .thenMany(usersWebClient.deleteMeetingAttendeesByMeetingId(meetingId))
-        .then(Mono.deferContextual { ctx ->
-            meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(
-                meetingId,
-                ctx.get(USERID_KEY)
+            .filter(MeetingAttendee::isHost)
+            .thenMany(usersWebClient.deleteMeetingAttendeesByMeetingId(meetingId))
+            .then(
+                meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(
+                    meetingId,
+                    ctx.get(USERID_KEY)
+                )
             )
-        })
+    }
         .onErrorResume { e ->
             meetingsWebClient.getMeetingAttendeesByMeetingId(meetingId)
                 .flatMap { a -> usersWebClient.saveMeetingAttendee(a.toInput()) }
