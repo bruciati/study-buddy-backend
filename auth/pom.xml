@@ -19,7 +19,7 @@
     <properties>
         <java.version>17</java.version>
         <kotlin.version>1.6.21</kotlin.version>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <spring-cloud.version>2021.0.4</spring-cloud.version>
         <jsonwebtoken.version>0.11.2</jsonwebtoken.version>
         <studybuddy-models.version>v0.6.5-rev2</studybuddy-models.version>
         <response-wrapper.version>v0.2.4</response-wrapper.version>
