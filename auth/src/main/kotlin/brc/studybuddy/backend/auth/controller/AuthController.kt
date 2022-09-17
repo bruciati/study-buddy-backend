@@ -28,8 +28,12 @@ class AuthController {
 
     @PostMapping
     fun authenticate(@RequestBody user: UserInput): Mono<AuthResponse> =
-        authService.authenticate(user)
-            .map { s -> AuthSuccess(s.first, s.second) }
+        Mono.just(user)
+            .flatMap {
+                val editedUser = user.copy(firstName = null, lastName = null)
+                authService.authenticate(editedUser)
+                    .map { s -> AuthSuccess(s.first, s.second) }
+            }
 
     @PostMapping(path = ["/refresh"])
     fun refresh(@RequestBody refreshToken: String): Mono<AuthResponse> =

@@ -37,25 +37,25 @@ class MutationController {
     @MutationMapping
     fun saveGroup(
         @Argument input: GroupInput
-    ): Mono<Group> = Mono.deferContextual { ctx ->
-        groupsWebClient.saveGroup(input)
-            .flatMap { g ->
+    ): Mono<Group> = groupsWebClient.saveGroup(input)
+        .flatMap { g ->
+            Mono.deferContextual { ctx ->
                 Mono.just(GroupMemberInput(g.id, ctx.get(USERID_KEY), true))
-                    .flatMap { m ->
-                        groupsWebClient.saveGroupMember(m)
-                            .then(usersWebClient.saveGroupMember(m))
-                            .onErrorResume { e ->
-                                groupsWebClient.deleteGroupMember(m)
-                                    .then(Mono.error(e))
-                            }
-                    }
-                    .onErrorResume { e ->
-                        groupsWebClient.deleteGroup(g.id)
-                            .then(Mono.error(e))
-                    }
-                    .thenReturn(g)
             }
-    }
+                .flatMap { m ->
+                    groupsWebClient.saveGroupMember(m)
+                        .then(usersWebClient.saveGroupMember(m))
+                        .onErrorResume { e ->
+                            groupsWebClient.deleteGroupMember(m)
+                                .then(Mono.error(e))
+                        }
+                }
+                .onErrorResume { e ->
+                    groupsWebClient.deleteGroup(g.id)
+                        .then(Mono.error(e))
+                }
+                .thenReturn(g)
+        }
 
     @MutationMapping
     fun updateGroup(
@@ -63,10 +63,10 @@ class MutationController {
         @Argument input: GroupInput
     ): Mono<Group> = Mono.deferContextual { ctx ->
         groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, ctx.get(USERID_KEY))
-            .filter(GroupMember::isOwner)
-            .then(groupsWebClient.updateGroup(groupId, input))
-            .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
     }
+        .filter(GroupMember::isOwner)
+        .then(groupsWebClient.updateGroup(groupId, input))
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun deleteGroup(
@@ -75,14 +75,19 @@ class MutationController {
         groupsWebClient.getGroupMemberByGroupIdAndUserId(groupId, ctx.get(USERID_KEY))
             .filter(GroupMember::isOwner)
             .thenMany(usersWebClient.deleteGroupMembersByGroupId(groupId))
-            .then(groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(groupId, ctx.get(USERID_KEY)))
-            .onErrorResume { e ->
-                groupsWebClient.getGroupMembersByGroupId(groupId)
-                    .flatMap { m -> usersWebClient.saveGroupMember(m.toInput()) }
-                    .then(Mono.error(e))
-            }
-            .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
+            .then(
+                groupsWebClient.deleteGroupByIdAndUserIdAndIsOwnerTrue(
+                    groupId,
+                    ctx.get(USERID_KEY)
+                )
+            )
     }
+        .onErrorResume { e ->
+            groupsWebClient.getGroupMembersByGroupId(groupId)
+                .flatMap { m -> usersWebClient.saveGroupMember(m.toInput()) }
+                .then(Mono.error(e))
+        }
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     @MutationMapping
     fun addGroupMember(@Argument groupId: Long, @Argument userId: Long): Mono<Boolean> =
@@ -117,25 +122,26 @@ class MutationController {
     @MutationMapping
     fun saveMeeting(
         @Argument input: MeetingInput
-    ): Mono<Meeting> = Mono.deferContextual { ctx ->
-        meetingsWebClient.saveMeeting(input)
-            .flatMap { m ->
+    ): Mono<Meeting> = meetingsWebClient.saveMeeting(input)
+        .flatMap { m ->
+            Mono.deferContextual { ctx ->
                 Mono.just(MeetingAttendeeInput(m.id, ctx.get(USERID_KEY), true))
-                    .flatMap { a ->
-                        meetingsWebClient.saveMeetingAttendee(a)
-                            .then(usersWebClient.saveMeetingAttendee(a))
-                            .onErrorResume { e ->
-                                meetingsWebClient.deleteMeetingAttendee(a)
-                                    .then(Mono.error(e))
-                            }
-                    }
-                    .onErrorResume { e ->
-                        meetingsWebClient.deleteMeeting(m.id)
-                            .then(Mono.error(e))
-                    }
-                    .thenReturn(m)
             }
-    }
+                .flatMap { a ->
+                    meetingsWebClient.saveMeetingAttendee(a)
+                        .then(usersWebClient.saveMeetingAttendee(a))
+                        .onErrorResume { e ->
+                            meetingsWebClient.deleteMeetingAttendee(a)
+                                .then(Mono.error(e))
+                        }
+                }
+                .onErrorResume { e ->
+                    meetingsWebClient.deleteMeeting(m.id)
+                        .then(Mono.error(e))
+                }
+                .thenReturn(m)
+        }
+
 
     @MutationMapping
     fun updateMeeting(
@@ -143,9 +149,10 @@ class MutationController {
         @Argument input: MeetingInput
     ): Mono<Meeting> = Mono.deferContextual { ctx ->
         meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, ctx.get(USERID_KEY))
-            .filter(MeetingAttendee::isHost)
-            .then(meetingsWebClient.updateMeeting(meetingId, input))
-            .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
+    }
+        .filter(MeetingAttendee::isHost)
+        .then(meetingsWebClient.updateMeeting(meetingId, input))
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
     }
 
@@ -156,14 +163,20 @@ class MutationController {
         meetingsWebClient.getMeetingAttendeesByMeetingIdAndUserId(meetingId, ctx.get(USERID_KEY))
             .filter(MeetingAttendee::isHost)
             .thenMany(usersWebClient.deleteMeetingAttendeesByMeetingId(meetingId))
-            .then(meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(meetingId, ctx.get(USERID_KEY)))
-            .onErrorResume { e ->
-                meetingsWebClient.getMeetingAttendeesByMeetingId(meetingId)
-                    .flatMap { a -> usersWebClient.saveMeetingAttendee(a.toInput()) }
-                    .then(Mono.error(e))
-            }
-            .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
+            .then(
+                meetingsWebClient.deleteMeetingByIdAndUserIdAndIsHostTrue(
+                    meetingId,
+                    ctx.get(USERID_KEY)
+                )
+            )
     }
+        .onErrorResume { e ->
+            meetingsWebClient.getMeetingAttendeesByMeetingId(meetingId)
+                .flatMap { a -> usersWebClient.saveMeetingAttendee(a.toInput()) }
+                .then(Mono.error(e))
+        }
+        .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
+
 
     @MutationMapping
     fun addMeetingAttendee(@Argument meetingId: Long, @Argument userId: Long): Mono<Boolean> =
