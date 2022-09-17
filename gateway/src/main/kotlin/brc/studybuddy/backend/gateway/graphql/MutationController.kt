@@ -154,8 +154,6 @@ class MutationController {
         .then(meetingsWebClient.updateMeeting(meetingId, input))
         .switchIfEmpty(Mono.error(Exception("The current user is NOT allowed to perform this action!")))
 
-    }
-
     @MutationMapping
     fun deleteMeeting(
         @Argument meetingId: Long
