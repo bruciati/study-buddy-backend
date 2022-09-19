@@ -20,6 +20,7 @@ import java.util.function.Predicate
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+
 const val USERID_KEY = "X-UserId"
 
 private const val AUTHORIZATION_HEADER = "Authorization"
@@ -37,10 +38,10 @@ private fun getHeaderAuthToken(headers: HttpHeaders): Optional<String> =
 @Component
 @Order(Int.MIN_VALUE)
 class WebRequestFilter : WebFilter {
+    private val logger: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
+
     @Autowired
     lateinit var jwtParser: JwtParser
-
-    val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     private fun getAuthorizedUserId(request: ServerHttpRequest) =
         getHeaderAuthToken(request.headers)
