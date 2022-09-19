@@ -45,6 +45,9 @@ class UsersController {
     @GetMapping("/email/{email}")
     fun findByEmail(@PathVariable email: String): Mono<User> = usersRepository.findByEmail(email)
 
+    @GetMapping("/fbid/{id}")
+    fun findByFbId(@PathVariable id: String): Mono<User> = usersRepository.findByFbId(id)
+
     @GetMapping("/group/{id}")
     fun findAllByGroupId(@PathVariable id: Long, @RequestParam("is_owner") isOwner: Optional<Boolean>): Flux<User> =
         when (isOwner.isPresent) {

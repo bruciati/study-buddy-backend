@@ -49,4 +49,9 @@ class UsersWebClient : GroupMembersActions, MeetingAttendeesActions {
         .uri("$USERS_ENDPOINT/email/$email")
         .retrieve()
         .bodyToMono(User::class.java)
+
+    fun getUserByFbId(id: String): Mono<User> = webClient.get()
+        .uri("$USERS_ENDPOINT/fbid/$id")
+        .retrieve()
+        .bodyToMono(User::class.java)
 }
