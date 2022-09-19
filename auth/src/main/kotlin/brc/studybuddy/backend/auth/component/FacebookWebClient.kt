@@ -9,9 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Component
-class FacebookWebClient(
-    @Value("\${auth.facebook.apptoken}") private val appAccessToken: String
-) {
+class FacebookWebClient {
 
     @Autowired
     lateinit var webClientBuilder: WebClient.Builder

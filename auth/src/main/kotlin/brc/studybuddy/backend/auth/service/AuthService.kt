@@ -84,7 +84,7 @@ class AuthService {
             }
             .flatMap {
                 usersWebClient
-                    .getUserByEmail(it.email)
+                    .getUserByFbId(it.id)
                     .switchIfEmpty(
                         usersWebClient.insertUser(
                             UserInput(

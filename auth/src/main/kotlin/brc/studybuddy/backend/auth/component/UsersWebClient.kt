@@ -22,6 +22,12 @@ class UsersWebClient {
                 .retrieve()
                 .bodyToMono(User::class.java)
 
+    fun getUserByFbId(id: Long?): Mono<User> =
+        webClient.get()
+            .uri("/users/fbid/{id}", id)
+            .retrieve()
+            .bodyToMono(User::class.java)
+
     fun insertUser(userInput: UserInput): Mono<User> {
         return webClient.post()
             .uri("/users")

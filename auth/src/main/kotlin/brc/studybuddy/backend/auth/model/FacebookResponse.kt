@@ -16,7 +16,7 @@ interface FacebookResponse
 
 /* Successful Facebook response */
 data class FacebookSuccess(
-    val id: Int,
+    val id: Long,
     val email: String?,
     @JsonProperty("last_name")
     val lastName: String?,

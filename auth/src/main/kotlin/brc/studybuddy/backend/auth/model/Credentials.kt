@@ -16,6 +16,6 @@ data class EmailCredentials (
 ): Credentials
 
 data class FacebookCredentials (
-    val userId: Int,
+    val userId: Long,
     val token: String,
 ): Credentials
