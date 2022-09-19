@@ -4,11 +4,12 @@ import brc.studybuddy.backend.auth.component.FacebookWebClient
 import brc.studybuddy.backend.auth.component.TokenManager
 import brc.studybuddy.backend.auth.component.Tokens
 import brc.studybuddy.backend.auth.component.UsersWebClient
-import brc.studybuddy.backend.auth.model.FacebookError
-import brc.studybuddy.backend.auth.model.FacebookSuccess
+import brc.studybuddy.backend.auth.model.*
 import brc.studybuddy.input.UserInput
 import brc.studybuddy.model.User
 import brc.webflux.response.wrapper.model.Response
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -26,44 +27,38 @@ class AuthService {
     @Autowired
     lateinit var tokenManager: TokenManager
 
+    var logger: Logger? = LoggerFactory.getLogger(AuthService::class.java)
     /*
-    * Authenticate the User using the given credentials
-    * @returns:
-    *   - A Mono of pair that contains the access token and the refresh token of the given user
-    *   - A Mono containing an error that encode the cause
-    */
-    fun authenticate(user: UserInput): Mono<Tokens> =
-        validateUserInput(user)
+     * Authenticate the User using the given credentials
+     * @returns:
+     *   - A Mono of pair that contains the access token and the refresh token of the given user
+     *   - A Mono containing an error that encode the cause
+     */
+    fun authenticate(credentials: Credentials): Mono<Tokens> =
+        Mono.just(credentials)
             .flatMap {
-                when (it.authType) {
-                    User.AuthType.FACEBOOK -> facebookAuthentication(it)
-                    User.AuthType.PASSWORD -> emailAuthentication(it)
-                    else -> Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "Login type not allowed"))
+                when (credentials) {
+                    is FacebookCredentials -> {
+                        logger?.info("Called Facebook Authentication")
+                        facebookAuthentication(it as FacebookCredentials)
+                    }
+                    is EmailCredentials -> {
+                        logger?.info("Called Email Authentication")
+                        emailAuthentication(it as EmailCredentials)
+                    }
+                    else -> Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "The given input does not conform to the API specifications"))
                 }
             }
             .map { tokenManager.generateTokens(it.id) }
 
     /*
-    * Validate the given UserInput by returning an error in case it's invalid
-    * @returns:
-    *   - A Mono<User> containing the validated user
-    *   - A Mono<AuthError> in case it is not valid
-    */
-    private fun validateUserInput(user: UserInput): Mono<UserInput> {
-        return if (user.email != null && user.authValue != null && user.authType != null)
-            Mono.just(user)
-        else
-            Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "The given UserInput is invalid"))
-    }
-
-    /*
     *  Perform the authentication using email and password
     */
-    private fun emailAuthentication(user: UserInput): Mono<User> =
-        Mono.just(user)
-            .flatMap { u ->
-                usersWebClient.getUserByEmail(u.email)
-                    .filter { it.authValue == u.authValue }
+    fun emailAuthentication(credentials: EmailCredentials): Mono<User> =
+        Mono.just(credentials)
+            .flatMap { c ->
+                usersWebClient.getUserByEmail(c.email)
+                    .filter { it.authValue == c.password }
             }
             .switchIfEmpty(Mono.error(Response.Error(HttpStatus.UNAUTHORIZED, "Incorrect credentials")))
 
@@ -78,26 +73,26 @@ class AuthService {
     *     with the given token
     *   - A Mono<AuthError> enconding the encountered error
     */
-    fun facebookAuthentication(user: UserInput): Mono<User> =
-        facebookWebClient.getTokenInfo(user.authValue)
+    fun facebookAuthentication(credentials: FacebookCredentials): Mono<User> =
+        facebookWebClient.getUser(credentials)
             .map { response ->
-                when (response.data) {
-                    is FacebookSuccess -> response.data.userId
-                    is FacebookError -> throw Response.Error(HttpStatus.valueOf(response.data.error.code), response.data.error.message)
+                when (response) {
+                    is FacebookSuccess -> response
+                    is FacebookError -> throw Response.Error(HttpStatus.valueOf(response.error.code), response.error.message)
                     else -> throw Error("An unexpected error occurred while trying to fetch Facebook token data")
                 }
             }
             .flatMap {
                 usersWebClient
-                    .getUserByEmail(user.email)
+                    .getUserByFbId(it.id)
                     .switchIfEmpty(
                         usersWebClient.insertUser(
                             UserInput(
-                                user.email,
-                                null,
-                                null,
+                                it.email,
+                                it.firstName,
+                                it.lastName,
                                 User.AuthType.FACEBOOK,
-                                it.toString()
+                                it.id.toString()
                             )
                         )
                     )

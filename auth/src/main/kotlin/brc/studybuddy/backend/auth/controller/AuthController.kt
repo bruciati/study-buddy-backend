@@ -2,6 +2,8 @@ package brc.studybuddy.backend.auth.controller
 
 import brc.studybuddy.backend.auth.model.AuthResponse
 import brc.studybuddy.backend.auth.model.AuthSuccess
+import brc.studybuddy.backend.auth.model.Credentials
+import brc.studybuddy.backend.auth.model.EmailCredentials
 import brc.studybuddy.backend.auth.service.AuthService
 import brc.studybuddy.backend.auth.service.RegisterService
 import brc.studybuddy.input.UserInput
@@ -27,13 +29,9 @@ class AuthController {
     val logger: Logger = LoggerFactory.getLogger("AuthenticationController")
 
     @PostMapping
-    fun authenticate(@RequestBody user: UserInput): Mono<AuthResponse> =
-        Mono.just(user)
-            .flatMap {
-                val editedUser = user.copy(firstName = null, lastName = null)
-                authService.authenticate(editedUser)
-                    .map { s -> AuthSuccess(s.first, s.second) }
-            }
+    fun authenticate(@RequestBody credentials: Credentials): Mono<AuthResponse> =
+        authService.authenticate(credentials)
+            .map { s -> AuthSuccess(s.first, s.second) }
 
     @PostMapping(path = ["/refresh"])
     fun refresh(@RequestBody refreshToken: String): Mono<AuthResponse> =
@@ -43,7 +41,7 @@ class AuthController {
     @PutMapping
     fun register(@RequestBody user: UserInput): Mono<AuthResponse> =
         registerService.register(user)
-            .flatMap { authService.authenticate(UserInput(it.email, user.firstName, user.lastName, it.authType, it.authValue)) }
+            .flatMap { authService.authenticate(EmailCredentials(it.email, it.authValue)) }
             .map { s -> AuthSuccess(s.first, s.second) }
 
 }
