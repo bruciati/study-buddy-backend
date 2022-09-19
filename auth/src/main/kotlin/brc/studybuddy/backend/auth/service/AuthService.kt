@@ -27,7 +27,6 @@ class AuthService {
     @Autowired
     lateinit var tokenManager: TokenManager
 
-    var logger: Logger? = LoggerFactory.getLogger(AuthService::class.java)
     /*
      * Authenticate the User using the given credentials
      * @returns:
@@ -39,11 +38,9 @@ class AuthService {
             .flatMap {
                 when (credentials) {
                     is FacebookCredentials -> {
-                        logger?.info("Called Facebook Authentication")
                         facebookAuthentication(it as FacebookCredentials)
                     }
                     is EmailCredentials -> {
-                        logger?.info("Called Email Authentication")
                         emailAuthentication(it as EmailCredentials)
                     }
                     else -> Mono.error(Response.Error(HttpStatus.BAD_REQUEST, "The given input does not conform to the API specifications"))
