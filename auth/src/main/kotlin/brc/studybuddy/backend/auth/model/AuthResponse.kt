@@ -1,10 +1,10 @@
 package brc.studybuddy.backend.auth.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-
 sealed interface AuthResponse
 
 data class AuthSuccess(
     val accessToken: String,
-    val refreshToken: String
+    val accessTokenTtl: Short,
+    val refreshToken: String,
+    val refreshTokenTtl: Int,
 ) : AuthResponse

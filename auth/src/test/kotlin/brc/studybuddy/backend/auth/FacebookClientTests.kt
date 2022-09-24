@@ -19,12 +19,6 @@ class FacebookClientTests {
 
     @Test
     fun testFacebookTokenInfo() {
-        val token = "TOKEN_TO_VERIFY"
-        val response = facebookClient.getTokenInfo(token)
-            .doOnError {e -> e.printStackTrace()}
-            .block()
-
-        logger!!.info(response.toString())
     }
 
 }

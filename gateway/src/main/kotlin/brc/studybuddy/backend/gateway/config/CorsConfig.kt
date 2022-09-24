@@ -10,17 +10,21 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 class CorsConfig : CorsConfiguration() {
     @Bean
     fun corsFilter(): CorsWebFilter {
-        val corsConfiguration = CorsConfiguration()
-        corsConfiguration.addAllowedOrigin("*")
-        corsConfiguration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-        corsConfiguration.addAllowedHeader("origin")
-        corsConfiguration.addAllowedHeader("content-type")
-        corsConfiguration.addAllowedHeader("accept")
-        corsConfiguration.addAllowedHeader("authorization")
-        corsConfiguration.addAllowedHeader("cookie")
+        val source = UrlBasedCorsConfigurationSource().apply {
+            val conf = CorsConfiguration().apply {
+                addAllowedOrigin("*")
 
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", corsConfiguration)
+                allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+
+                addAllowedHeader("origin")
+                addAllowedHeader("content-type")
+                addAllowedHeader("accept")
+                addAllowedHeader("authorization")
+                addAllowedHeader("cookie")
+            }
+
+            registerCorsConfiguration("/**", conf)
+        }
 
         return CorsWebFilter(source)
     }

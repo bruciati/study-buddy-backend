@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.gateway.auth
 
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.JwtParser
 import org.slf4j.Logger
@@ -20,6 +21,7 @@ import java.util.function.Predicate
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+
 const val USERID_KEY = "X-UserId"
 
 private const val AUTHORIZATION_HEADER = "Authorization"
@@ -37,10 +39,10 @@ private fun getHeaderAuthToken(headers: HttpHeaders): Optional<String> =
 @Component
 @Order(Int.MIN_VALUE)
 class WebRequestFilter : WebFilter {
+    private val logger: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
+
     @Autowired
     lateinit var jwtParser: JwtParser
-
-    val logger: Logger by lazy { LoggerFactory.getLogger(WebRequestFilter::class.java) }
 
     private fun getAuthorizedUserId(request: ServerHttpRequest) =
         getHeaderAuthToken(request.headers)
@@ -48,6 +50,9 @@ class WebRequestFilter : WebFilter {
                 try {
                     val jwt = jwtParser.parseClaimsJws(tok)
                     jwt.body.subject.toLong()
+                } catch (_: ExpiredJwtException) {
+                    // Do nothing
+                    null
                 } catch (e: JwtException) {
                     logger.error("JWT Authentication", e)
                     null

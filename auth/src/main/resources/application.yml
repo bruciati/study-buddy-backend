@@ -20,17 +20,6 @@ spring:
     import: "optional:configserver:http://localhost:8761" # Same as "eureka.client.service-url.defaultZone"
 
 # ----------------------------------------------------------------------------------------------
-#                                       Custom Configurations
-# ----------------------------------------------------------------------------------------------
-auth:
-  refresh:
-    # Time to live for the fresh token. It is added to the authentication token's ttl
-    # In other words: ttl = authentication.ttl + refresh.ttl
-    ttl: 120
-  facebook:
-    apptoken: "475499464360666|9f81835d84d715b51845635fd481ff25"
-
-# ----------------------------------------------------------------------------------------------
 #                                       Eureka Configurations
 # ----------------------------------------------------------------------------------------------
 eureka:

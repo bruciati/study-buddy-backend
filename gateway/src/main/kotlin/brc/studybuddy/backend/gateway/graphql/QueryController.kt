@@ -45,6 +45,9 @@ class QueryController {
     @QueryMapping
     fun userByEmail(@Argument email: String): Mono<User> = usersWebClient.getUserByEmail(email)
 
+    @QueryMapping
+    fun userByFbId(@Argument id: String): Mono<User> = usersWebClient.getUserByFbId(id)
+
 
     // ------------------------------------------------------
     // --------------------- Group Class --------------------

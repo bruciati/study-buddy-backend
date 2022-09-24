@@ -73,7 +73,7 @@ class MeetingsController {
                     .thenReturn(m)
             }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/name/{name}")
     fun deleteByName(@PathVariable name: String): Mono<Meeting> =
         meetingsRepository.findByName(name)
             .flatMap { m ->

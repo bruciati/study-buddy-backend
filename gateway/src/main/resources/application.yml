@@ -20,8 +20,11 @@ spring:
     import: "optional:configserver:http://localhost:8761" # Same as "eureka.client.service-url.defaultZone"
   # GraphQl configurations
   graphql:
+    path: "/graphql"
     cors:
+      allowed-methods: GET,POST
       allowed-origins: "*"
+      allowed-headers: "*"
       max-age: "1800s"
   # Gateway configurations
   cloud:
