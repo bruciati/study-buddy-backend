@@ -52,6 +52,7 @@ class WebRequestFilter : WebFilter {
                     jwt.body.subject.toLong()
                 } catch (_: ExpiredJwtException) {
                     // Do nothing
+                    null
                 } catch (e: JwtException) {
                     logger.error("JWT Authentication", e)
                     null
