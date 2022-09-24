@@ -1,5 +1,6 @@
 package brc.studybuddy.backend.gateway.auth
 
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.JwtParser
 import org.slf4j.Logger
@@ -49,6 +50,8 @@ class WebRequestFilter : WebFilter {
                 try {
                     val jwt = jwtParser.parseClaimsJws(tok)
                     jwt.body.subject.toLong()
+                } catch (_: ExpiredJwtException) {
+                    // Do nothing
                 } catch (e: JwtException) {
                     logger.error("JWT Authentication", e)
                     null
