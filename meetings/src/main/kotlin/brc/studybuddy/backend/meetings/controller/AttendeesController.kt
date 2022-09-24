@@ -16,7 +16,7 @@ class AttendeesController {
     lateinit var attendeesRepository: AttendeesRepository
 
 
-    @PutMapping
+    @PostMapping
     fun save(@RequestBody input: MeetingAttendeeInput): Mono<MeetingAttendee> =
         Mono.just(input)
             .map(MeetingAttendeeInput::toModel)
